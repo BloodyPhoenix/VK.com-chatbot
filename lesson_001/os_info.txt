@@ -1,0 +1,5 @@
+OS info is 
+uname_result(system='Linux', node='maria-VivoBook-15-ASUS-Laptop-X540UAR', release='5.4.0-42-generic', version='#46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020', machine='x86_64', processor='x86_64')
+
+Python version is 3.8.2 (default, Jul 16 2020, 14:00:26) 
+[GCC 9.3.0] ('64bit', 'ELF')
