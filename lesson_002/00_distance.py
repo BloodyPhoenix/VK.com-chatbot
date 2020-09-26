@@ -14,6 +14,22 @@ sites = {
 
 distances = {}
 
-# TODO здесь заполнение словаря
+moscow_london = ((sites["Moscow"][0] - sites["London"][0])**2+(sites["Moscow"][1]-sites["London"][1]))**0.5
+moscow_paris = ((sites["Moscow"][0] - sites["Paris"][0])**2+(sites["Moscow"][1]-sites["Paris"][1]))**0.5
+london_paris = ((sites["London"][0] - sites["Paris"][0])**2+(sites["London"][1]-sites["Paris"][1]))**0.5
 
-print(distances)
+distances["Moscow"] = {}
+distances["Moscow"]["London"] = float(moscow_london)
+distances["Moscow"]["Paris"] = float(moscow_paris)
+
+distances["London"] = {}
+distances["London"]["Moscow"] = float(moscow_london)
+distances["London"]["Paris"] = float(london_paris)
+
+distances["Paris"] = {}
+distances["Paris"]["London"] = float(london_paris)
+distances["Paris"]["Moscow"] = float(moscow_paris)
+
+import pprint
+
+pprint.pprint(distances)
