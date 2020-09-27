@@ -50,9 +50,64 @@ print('Лампа -', lamps_quantity, 'шт, стоимость', lamps_cost, '�
 # Формат строки <товар> - <кол-во> шт, стоимость <общая стоимость> руб
 
 # WARNING для знающих циклы: БЕЗ циклов. Да, с переменными; да, неэффективно; да, копипаста.
-# Это задание на ручное вычисление - что бы потом понять как работают циклы и насколько с ними проще жить.
+# Это задание на ручное вычисление - что бы потом понять как работают циклы и насколько с ними прощежить.
 
-# TODO здесь ваш код
+# Но есди я знаю циклы, я уже понимаю, как они работают, и насколько с ними проще жить...
+# Вообще странное задание. Учитывая, что есть пример, как решать, оно превращается в сплошую копипасту
+# с незначительными изменениями в переменных. И чему оно должно научить?
+
+table_code = goods['Стол']
+table_item1 = store[lamp_code][0]
+table_quantity1 = table_item1['quantity']
+table_price1 = table_item1['price']
+table_cost1 = table_quantity1 * table_price1
+
+table_item2 = store[table_code][1]
+table_quantity2 = table_item2['quantity']
+table_price2 = table_item2['price']
+table_cost2 = table_quantity2 * table_price2
+
+table_quantity = table_quantity1+table_quantity2
+table_cost = table_cost1+table_cost2
+print('Стол -', table_quantity, 'шт, стоимость', table_cost, 'руб')
+
+#диваны
+sofa_code = goods['Диван']
+sofa_item1 = store[sofa_code][0]
+sofa_quantity1 = sofa_item1['quantity']
+sofa_price1 = sofa_item1['price']
+sofa_cost1 = sofa_quantity1 * sofa_price1
+
+sofa_item2 = store[sofa_code][1]
+sofa_quantity2 = sofa_item2['quantity']
+sofa_price2 = sofa_item2['price']
+sofa_cost2 = sofa_quantity2 * sofa_price2
+
+sofa_quantity=sofa_quantity1+sofa_quantity2
+sofa_cost = sofa_cost1+sofa_cost2
+print('Диван -', sofa_quantity, 'шт, стоимость', sofa_cost, 'руб')
+
+#стулья
+chair_code = goods['Стул']
+
+chair_item1 = store[chair_code][0]
+chair_quantity1 = chair_item1['quantity']
+chair_price1 = chair_item1['price']
+chair_cost1 = chair_quantity1 * chair_price1
+
+chair_item2 = store[chair_code][1]
+chair_quantity2 = chair_item2['quantity']
+chair_price2 = chair_item2['price']
+chair_cost2 = chair_quantity2 * chair_price2
+
+chair_item3 = store[chair_code][2]
+chair_quantity3 = chair_item3['quantity']
+chair_price3 = chair_item3['price']
+chair_cost3 = chair_quantity3 * chair_price3
+
+chair_quantity=chair_quantity1+chair_quantity2+chair_quantity3
+chair_cost = chair_cost1+chair_cost2+chair_cost3
+print('Стул -', chair_quantity, 'шт, стоимость', chair_cost, 'руб')
 
 ##########################################################################################
 # ВНИМАНИЕ! После того как __ВСЯ__ домашняя работа сделана и запушена на сервер,         #
