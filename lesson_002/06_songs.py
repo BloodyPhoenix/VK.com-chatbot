@@ -21,7 +21,7 @@ violator_songs = [
 # где a, это число которое надо округлить, а b количество знаков после запятой
 # более подробно про функцию round смотрите в документации https://docs.python.org/3/search.html?q=round
 
-# Тут по идее можно сделать через violator_songs[int(voilator_songs.index("Название песни")][1], но я не знаю,
+# Тут по идее можно сделать через violator_songs[(voilator_songs.index("Название песни")][1], но я не знаю,
 # нужны ли такие извращения в рамках этого задания.
 summ_time = round(violator_songs[3][1]+violator_songs[5][1]+violator_songs[-1][1],2)
 print("Три песни звучат %s минут" % summ_time)
@@ -45,15 +45,10 @@ pocket_universe_songs = {
 # Распечатайте общее время звучания трех песен: 'On Track', 'To the Sea' и 'Beyond Mirrors'
 #   А другие три песни звучат приблизительно ХХХ минут
 
-# TODO используем round для токого чтобы округлить без дробной части, float не используем
-# TODO преобразование к инт тут делать не нужно тем более каждого элемента! Не используем знак \ для переноса, возьмите
-# TODO в скобки и перенесите по математическому знаку!
+summ_time=((pocket_universe_songs["On Track"])+(pocket_universe_songs["To the Sea"])
+          +(pocket_universe_songs["Beyond Mirrors"]))
 
-summ_time=float(pocket_universe_songs["On Track"])+float(pocket_universe_songs["To the Sea"])\
-          +float(pocket_universe_songs["Beyond Mirrors"])
-
-# TODO скобки у summ убираем
-print("А другие три песни звучат приблизительно %s минут"%(summ_time))
+print("А другие три песни звучат приблизительно %s минут"%summ_time)
 
 # Обратите внимание, что делать много вычислений внутри print() - плохой стиль.
 # Лучше заранее вычислить необходимое, а затем в print(xxx, yyy, zzz)

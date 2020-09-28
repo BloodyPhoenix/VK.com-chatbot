@@ -10,9 +10,8 @@ radius = 42
 #       пи возьмите равным 3.1415926
 #       точность указывается в функции round()
 
-# TODO определим число 3.1415926 в переменную pi
-# TODO формула не верная
-print(round((radius*3.1415926)**2,4))
+pi = 3.1415926
+print(round(pi*radius**2,4))
 
 
 # Далее, пусть есть координаты точки
@@ -27,8 +26,9 @@ point_1 = (23, 34)
 #       квадратный корень - это возведение в степень 0.5
 #       операции сравнения дают булевы константы True и False
 
-# TODO точки получаем из тьюпла используя индексы
-point1_dist = (23**2+34**2)**0.5
+point1_x = point_1[0]
+point1_y = point_1[1]
+point1_dist = (point1_x**2+point1_y**2)**0.5
 if point1_dist > radius:
     print(False)
 else:
@@ -39,7 +39,9 @@ point_2 = (30, 30)
 # Если точка point_2 лежит внутри круга (radius = 42), то выведите на консоль True,
 # Или False, если точка лежит вовне круга.
 
-point2_dist = (30**2+30**2)**0.5
+point2_x = point_2[0],
+point2_y = point_2[1]
+point2_dist = (point_2[0]**2+point_2[1]**2)**0.5
 if point2_dist > radius:
     print(False)
 else:

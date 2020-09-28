@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import pprint
 # Есть словарь координат городов
 
 sites = {
@@ -14,25 +15,21 @@ sites = {
 
 distances = {}
 
-# TODO формула не верная
-moscow_london = ((sites["Moscow"][0] - sites["London"][0])**2+(sites["Moscow"][1]-sites["London"][1]))**0.5
-moscow_paris = ((sites["Moscow"][0] - sites["Paris"][0])**2+(sites["Moscow"][1]-sites["Paris"][1]))**0.5
-london_paris = ((sites["London"][0] - sites["Paris"][0])**2+(sites["London"][1]-sites["Paris"][1]))**0.5
+moscow_london = ((sites["Moscow"][0] - sites["London"][0])**2+(sites["Moscow"][1]-sites["London"][1]**2))**0.5
+moscow_paris = ((sites["Moscow"][0] - sites["Paris"][0])**2+(sites["Moscow"][1]-sites["Paris"][1])**2)**0.5
+london_paris = ((sites["London"][0] - sites["Paris"][0])**2+(sites["London"][1]-sites["Paris"][1])**2)**0.5
 
 distances["Moscow"] = {}
-# TODO нет необходимости еще раз преобразовывать число к float, оно и так уже этого типа!
-distances["Moscow"]["London"] = float(moscow_london)
-distances["Moscow"]["Paris"] = float(moscow_paris)
+distances["Moscow"]["London"] = moscow_london
+distances["Moscow"]["Paris"] = moscow_paris
 
 distances["London"] = {}
-distances["London"]["Moscow"] = float(moscow_london)
-distances["London"]["Paris"] = float(london_paris)
+distances["London"]["Moscow"] = moscow_london
+distances["London"]["Paris"] = london_paris
 
 distances["Paris"] = {}
-distances["Paris"]["London"] = float(london_paris)
-distances["Paris"]["Moscow"] = float(moscow_paris)
+distances["Paris"]["London"] = london_paris
+distances["Paris"]["Moscow"] = moscow_paris
 
-# TODO всегда импорты делаются в начале модуля
-import pprint
 
 pprint.pprint(distances)

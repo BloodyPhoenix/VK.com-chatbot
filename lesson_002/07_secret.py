@@ -32,12 +32,10 @@ secret_message = [
 #   слова, идущее в обратном порядке, нужно получить за 1 срез (используя отрицательный шаг)
 #   Если нужны вычисления и разные пробы - делайте это в консоли пайтона, тут нужен только результат
 
-# TODO Склейка строк тут не нужна, все перечисляем в принте, принт сам расставит пробелы
-# TODO каждому срезу присвоить свое имя, и в принте вывести только имена переменных
-decoded = str(secret_message[0][3])
-decoded +=" "+str(secret_message[1][9:13])
-decoded +=" "+str(secret_message[2][5:15:2])
-decoded +=" "+str(secret_message[3][12:6:-1])
-decoded +=" "+str(secret_message[4][20:15:-1])
+decoded1 = (secret_message[0][3])
+decoded2 =(secret_message[1][9:13])
+decoded3 =(secret_message[2][5:15:2])
+decoded4 =(secret_message[3][12:6:-1])
+decoded5 =(secret_message[4][20:15:-1])
 # В принте можно все написать через запятую, он сам расставит пробелы между переменными
-print(decoded)
+print(decoded1, decoded2, decoded3, decoded4, decoded5)
