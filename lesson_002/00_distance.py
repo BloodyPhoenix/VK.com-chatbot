@@ -14,11 +14,13 @@ sites = {
 
 distances = {}
 
+# TODO формула не верная
 moscow_london = ((sites["Moscow"][0] - sites["London"][0])**2+(sites["Moscow"][1]-sites["London"][1]))**0.5
 moscow_paris = ((sites["Moscow"][0] - sites["Paris"][0])**2+(sites["Moscow"][1]-sites["Paris"][1]))**0.5
 london_paris = ((sites["London"][0] - sites["Paris"][0])**2+(sites["London"][1]-sites["Paris"][1]))**0.5
 
 distances["Moscow"] = {}
+# TODO нет необходимости еще раз преобразовывать число к float, оно и так уже этого типа!
 distances["Moscow"]["London"] = float(moscow_london)
 distances["Moscow"]["Paris"] = float(moscow_paris)
 
@@ -30,6 +32,7 @@ distances["Paris"] = {}
 distances["Paris"]["London"] = float(london_paris)
 distances["Paris"]["Moscow"] = float(moscow_paris)
 
+# TODO всегда импорты делаются в начале модуля
 import pprint
 
 pprint.pprint(distances)
