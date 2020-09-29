@@ -23,7 +23,7 @@ violator_songs = [
 
 # Тут по идее можно сделать через violator_songs[(voilator_songs.index("Название песни")][1], но я не знаю,
 # нужны ли такие извращения в рамках этого задания.
-summ_time = round(violator_songs[3][1]+violator_songs[5][1]+violator_songs[-1][1],2)
+summ_time = round(violator_songs[3][1]+violator_songs[5][1]+violator_songs[-1][1], 2)
 print("Три песни звучат %s минут" % summ_time)
 
 
@@ -44,11 +44,11 @@ pocket_universe_songs = {
 
 # Распечатайте общее время звучания трех песен: 'On Track', 'To the Sea' и 'Beyond Mirrors'
 #   А другие три песни звучат приблизительно ХХХ минут
-
-summ_time=((pocket_universe_songs["On Track"])+(pocket_universe_songs["To the Sea"])
-          +(pocket_universe_songs["Beyond Mirrors"]))
-
-print("А другие три песни звучат приблизительно %s минут"%summ_time)
+# TODO зачем двойные скобки в скобках ?
+summ_time = ((pocket_universe_songs["On Track"])+(pocket_universe_songs["To the Sea"])
+             + (pocket_universe_songs["Beyond Mirrors"]))
+# TODO  А другие три песни звучат приблизительно ХХХ минут без дробной части используйте round
+print("А другие три песни звучат приблизительно %s минут" % summ_time)
 
 # Обратите внимание, что делать много вычислений внутри print() - плохой стиль.
 # Лучше заранее вычислить необходимое, а затем в print(xxx, yyy, zzz)

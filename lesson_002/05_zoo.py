@@ -14,6 +14,7 @@ print(*zoo)
 # добавьте птиц из списка birds в последние клетки зоопарка
 birds = ['rooster', 'ostrich', 'lark']
 #  и выведите список на консоль
+# TODO используйте просто метод extend
 for b in birds:
     zoo.extend(b)
 print(*zoo)
@@ -32,3 +33,5 @@ real_lark = zoo.lark("lark")+1
 
 print("Лев сидит в клетке номер "+real_lion)
 print("Жаворонок сидит в клетке "+real_lark)
+
+# TODO код падает с ошибкой исправить!
