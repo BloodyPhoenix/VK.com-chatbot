@@ -45,8 +45,10 @@ pocket_universe_songs = {
 # Распечатайте общее время звучания трех песен: 'On Track', 'To the Sea' и 'Beyond Mirrors'
 #   А другие три песни звучат приблизительно ХХХ минут
 summ_time = round(pocket_universe_songs["On Track"]+pocket_universe_songs["To the Sea"]+
-                  pocket_universe_songs["Beyond Mirrors"],0)
+                  pocket_universe_songs["Beyond Mirrors"])  # без параметров, не будет запятой
 print("А другие три песни звучат приблизительно %s минут" % summ_time)
 
 # Обратите внимание, что делать много вычислений внутри print() - плохой стиль.
 # Лучше заранее вычислить необходимое, а затем в print(xxx, yyy, zzz)
+
+# зачет!

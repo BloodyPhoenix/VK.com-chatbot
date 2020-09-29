@@ -32,3 +32,4 @@ real_lark = zoo.index("lark")+1
 print("Лев сидит в клетке номер",real_lion)
 print("Жаворонок сидит в клетке",real_lark)
 
+# зачет!

@@ -22,3 +22,5 @@ summ_family_height=0
 for _ in my_family_height:
     summ_family_height += _[1]
 print("Общий рост моей семьи:", summ_family_height)
+
+# зачет!
