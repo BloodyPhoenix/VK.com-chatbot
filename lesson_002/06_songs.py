@@ -44,10 +44,8 @@ pocket_universe_songs = {
 
 # Распечатайте общее время звучания трех песен: 'On Track', 'To the Sea' и 'Beyond Mirrors'
 #   А другие три песни звучат приблизительно ХХХ минут
-# TODO зачем двойные скобки в скобках ?
-summ_time = ((pocket_universe_songs["On Track"])+(pocket_universe_songs["To the Sea"])
-             + (pocket_universe_songs["Beyond Mirrors"]))
-# TODO  А другие три песни звучат приблизительно ХХХ минут без дробной части используйте round
+summ_time = round(pocket_universe_songs["On Track"]+pocket_universe_songs["To the Sea"]+
+                  pocket_universe_songs["Beyond Mirrors"],0)
 print("А другие три песни звучат приблизительно %s минут" % summ_time)
 
 # Обратите внимание, что делать много вычислений внутри print() - плохой стиль.

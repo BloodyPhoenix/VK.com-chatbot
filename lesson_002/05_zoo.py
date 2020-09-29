@@ -14,9 +14,7 @@ print(*zoo)
 # добавьте птиц из списка birds в последние клетки зоопарка
 birds = ['rooster', 'ostrich', 'lark']
 #  и выведите список на консоль
-# TODO используйте просто метод extend
-for b in birds:
-    zoo.extend(b)
+zoo.extend(birds)
 print(*zoo)
 
 # уберите слона
@@ -29,9 +27,8 @@ print(*zoo)
 # Номера при выводе должны быть понятны простому человеку, не программисту.
 
 real_lion = zoo.index("lion")+1
-real_lark = zoo.lark("lark")+1
+real_lark = zoo.index("lark")+1
 
-print("Лев сидит в клетке номер "+real_lion)
-print("Жаворонок сидит в клетке "+real_lark)
+print("Лев сидит в клетке номер",real_lion)
+print("Жаворонок сидит в клетке",real_lark)
 
-# TODO код падает с ошибкой исправить!
