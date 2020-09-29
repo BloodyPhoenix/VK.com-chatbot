@@ -15,7 +15,8 @@ sites = {
 
 distances = {}
 
-moscow_london = ((sites["Moscow"][0] - sites["London"][0])**2+(sites["Moscow"][1]-sites["London"][1]**2))**0.5
+# внимательней со скобками!
+moscow_london = ((sites["Moscow"][0] - sites["London"][0])**2+(sites["Moscow"][1]-sites["London"][1])**2)**0.5
 moscow_paris = ((sites["Moscow"][0] - sites["Paris"][0])**2+(sites["Moscow"][1]-sites["Paris"][1])**2)**0.5
 london_paris = ((sites["London"][0] - sites["Paris"][0])**2+(sites["London"][1]-sites["Paris"][1])**2)**0.5
 
@@ -33,3 +34,5 @@ distances["Paris"]["Moscow"] = moscow_paris
 
 
 pprint.pprint(distances)
+
+# зачет!

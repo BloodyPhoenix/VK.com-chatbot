@@ -32,10 +32,13 @@ secret_message = [
 #   слова, идущее в обратном порядке, нужно получить за 1 срез (используя отрицательный шаг)
 #   Если нужны вычисления и разные пробы - делайте это в консоли пайтона, тут нужен только результат
 
-decoded1 = (secret_message[0][3])
-decoded2 =(secret_message[1][9:13])
-decoded3 =(secret_message[2][5:15:2])
-decoded4 =(secret_message[3][12:6:-1])
-decoded5 =(secret_message[4][20:15:-1])
+# в наглядности и читаемости кода, и у вас главная цель была сделать пробелы между слов! Что делает принт!
+decoded1 = secret_message[0][3]
+decoded2 = secret_message[1][9:13]
+decoded3 = secret_message[2][5:15:2]
+decoded4 = secret_message[3][12:6:-1]
+decoded5 = secret_message[4][20:15:-1]
 # В принте можно все написать через запятую, он сам расставит пробелы между переменными
 print(decoded1, decoded2, decoded3, decoded4, decoded5)
+
+# зачет!
