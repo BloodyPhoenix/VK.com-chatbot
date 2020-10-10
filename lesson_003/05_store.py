@@ -54,14 +54,20 @@ store = {
 #         подсчет стоимости товара
 #     вывод на консоль количества и стоимости товара на складе
 
+
+# TODO Используйте все силу Python, можно сразу распаковать имя и код методом у словаря .items()
+# TODO + нейминг переменной что мы тут получаем!?
 for i in goods:
+    # TODO это мы получим в цикле
     good_code = goods[i]
     total_quantity = 0
     total_cost = 0
+    # TODO нейминг, тут мы получаем параметры_продукта так и назовите ее
     for k in store[good_code]:
         quantity = k["quantity"]
         cost = quantity*k["price"]
         total_quantity += quantity
         total_cost += cost
+    # TODO используйте лучше f - строки, этот формат уже устарел
     print ("%s - %s шт, стоимость %s руб."%(i, total_quantity, total_cost))
 

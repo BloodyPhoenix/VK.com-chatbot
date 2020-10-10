@@ -33,3 +33,5 @@ for _ in range(10):
 
 
 draw.pause()
+
+# зачет!

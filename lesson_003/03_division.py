@@ -16,4 +16,6 @@ a1 = a
 while a1 >= b:
     a1 -= b
     result += 1
-print("Целочисленное деление %s на %s даёт %s"%(a, b, result))
+print("Целочисленное деление %s на %s даёт %s" % (a, b, result))
+
+# зачет!
