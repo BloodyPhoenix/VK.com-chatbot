@@ -55,6 +55,23 @@ brick_x, brick_y, brick_z = 11, 10, 2
 # brick_x, brick_y, brick_z = 3, 11, 6
 # (просто раскоментировать нужную строку и проверить свой код)
 
+# TODO Подсказка: итоговый вариант должен выглядеть так:
+# TODO      if ... and ...:
+# TODO          ...
+# TODO      elif ... and ...:
+# TODO          ...
+# TODO      elif ... and ...:
+# TODO          ...
+# TODO      elif ... and ...:
+# TODO          ...
+# TODO      elif ... and ...:
+# TODO          ...
+# TODO      elif ... and ...:
+# TODO          ...
+# TODO      else:
+# TODO          ...
+
+
 if brick_x <= brick_y:
     brick_small_side1 = brick_x
     if brick_y <= brick_z:
