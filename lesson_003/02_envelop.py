@@ -55,39 +55,16 @@ brick_x, brick_y, brick_z = 11, 10, 2
 # brick_x, brick_y, brick_z = 3, 11, 6
 # (просто раскоментировать нужную строку и проверить свой код)
 
-# TODO Подсказка: итоговый вариант должен выглядеть так:
-# TODO      if ... and ...:
-# TODO          ...
-# TODO      elif ... and ...:
-# TODO          ...
-# TODO      elif ... and ...:
-# TODO          ...
-# TODO      elif ... and ...:
-# TODO          ...
-# TODO      elif ... and ...:
-# TODO          ...
-# TODO      elif ... and ...:
-# TODO          ...
-# TODO      else:
-# TODO          ...
 
+# И тут я поняла, что, по сути, проверить нужно только две грани...
 
-if brick_x <= brick_y:
-    brick_small_side1 = brick_x
-    if brick_y <= brick_z:
-        brick_small_side2 = brick_y
-    else:
-        brick_small_side2 = brick_z
-else:
-    brick_small_side1 = brick_y
-    if brick_x <= brick_z:
-        brick_small_side2 = brick_x
-    else:
-        brick_small_side2 = brick_z
-
-if hole_x >= brick_small_side1 and hole_y >= brick_small_side2:
+if hole_x >= brick_x and hole_y >= brick_y:
     print("ДА")
-elif hole_x >= brick_small_side2 and hole_y >= brick_small_side1:
+elif hole_x >= brick_y and hole_y >= brick_x:
     print("ДА")
-else:
-    print("НЕТ")
+elif hole_x >= brick_y and hole_y >= brick_z:
+    print("ДА")
+elif hole_x >= brick_z and hole_y >= brick_y:
+    print("ДА")
+elde:
+print("НЕТ")

@@ -10,16 +10,11 @@
 #   Студенту надо попросить ХХХ.ХХ рублей
 
 educational_grant, expenses = 10000, 12000
-month = 0
+month = 1
 money_need = 0
 
 while month <11:
     money_need = money_need + expenses - educational_grant
-    # TODO округлять в цикле это анти паттерн
-    expenses = expenses+round(expenses/100*3, 2)
+    expenses = expenses+expenses*0.03
     month += 1
-# TODO используйте лучше f - строки, этот формат уже устарел
-print("Студенту надо попросить %s рублей"% money_need)
-
-# TODO результат не соответствует ожиданиям, нужно дорабатывать весь алгоритм
-# TODO предлагаю вам решить письменно(на листочке) а потом построить алгоритм
+print(f"Студенту надо попросить {money_need} рублей")

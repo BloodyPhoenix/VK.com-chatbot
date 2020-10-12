@@ -8,18 +8,18 @@
 
 # Номер месяца получать от пользователя следующим образом
 user_input = input('Введите, пожалуйста, номер месяца: ')
-# TODO Что будет если пользователь введет не число, нужно воспользоваться строковым методом проверки на число
-# TODO  .isdigit()
-month = int(user_input)
-print('Вы ввели', month)
+if user_input.isdigit() == True:
+    month = int(user_input)
+    print('Вы ввели', month)
 
-monthes_days = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-if month <= 0 or month >12:
-    print("Такого месяца не существует!")
-else:
-    days = monthes_days[month-1]
-    if days%10 == 1:
-        # TODO используйте лучше f - строки, этот формат уже устарел
-        print("В месяце номер %s %s день" % (month, days))
+    monthes_days = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    if month <= 0 or month >12:
+        print("Такого месяца не существует!")
     else:
-        print ("В месяце номер %s %s дней"% (month, days))
+        days = monthes_days[month-1]
+        if days%10 == 1:
+            print(f"В месяце номер {month} {days} день")
+        else:
+            print (f"В месяце номер {month} {days} дней")
+else:
+    print("Вы ввели неверное значение! Пожалуйста, введите целое число.")
