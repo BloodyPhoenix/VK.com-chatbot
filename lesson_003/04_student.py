@@ -13,8 +13,9 @@ educational_grant, expenses = 10000, 12000
 month = 1
 money_need = 0
 
-while month <11:
+while month < 11:
     money_need = money_need + expenses - educational_grant
     expenses = expenses+expenses*0.03
     month += 1
+# TODO отлично все верно, осталось округлить до 2 знаков, до принта!
 print(f"Студенту надо попросить {money_need} рублей")
