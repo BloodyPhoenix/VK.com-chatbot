@@ -35,6 +35,6 @@ for colors in rainbow_colors:
     sd.circle(center, radius, colors, width)
     radius -= step
 
-
-
 sd.pause()
+
+# зачет!

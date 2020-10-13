@@ -9,13 +9,12 @@ from random import randint as random
 # Использовать вложенные циклы for
 
 
-
 for row, y in enumerate(range(0, 601, 50)):
     if row % 2 == 0:
         zero_point = 0
     else:
         zero_point = -50
-    for x in range (zero_point, 601, 100):
+    for x in range(zero_point, 601, 100):
         start_point = draw.get_point(x, y)
         final_point = draw.get_point(x+100, y+50)
         color = (random(0, 225), random(0, 225), random(0, 225))
@@ -32,3 +31,7 @@ for row, y in enumerate(range(0, 601, 50)):
 #           рисуем кирпич
 
 draw.pause()
+
+# Прекрасно!
+
+# зачет!
