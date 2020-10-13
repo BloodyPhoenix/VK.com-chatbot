@@ -56,9 +56,6 @@ brick_x, brick_y, brick_z = 11, 10, 2
 # (просто раскоментировать нужную строку и проверить свой код)
 
 
-# TODO лучше проверьте все для надежности )
-# TODO еще две!
-
 if hole_x >= brick_x and hole_y >= brick_y:
     print("ДА")
 elif hole_x >= brick_y and hole_y >= brick_x:
@@ -66,6 +63,10 @@ elif hole_x >= brick_y and hole_y >= brick_x:
 elif hole_x >= brick_y and hole_y >= brick_z:
     print("ДА")
 elif hole_x >= brick_z and hole_y >= brick_y:
+    print("ДА")
+elif hole_x >= brick_x and hole_y >= brick_z:
+    print("ДА")
+elif hole_x >= brick_z and hole_y >= hole_x:
     print("ДА")
 else:
     print("НЕТ")

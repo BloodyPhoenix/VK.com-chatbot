@@ -17,5 +17,7 @@ while month < 11:
     money_need = money_need + expenses - educational_grant
     expenses = expenses+expenses*0.03
     month += 1
-# TODO отлично все верно, осталось округлить до 2 знаков, до принта!
+
+money_need = round(money_need, 2)
+
 print(f"Студенту надо попросить {money_need} рублей")

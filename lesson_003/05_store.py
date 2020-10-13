@@ -58,10 +58,9 @@ store = {
 for good_name, good_code in goods.items():
     total_quantity = 0
     total_cost = 0
-    # TODO тут мы получаем не good! А параметры_продукта так и назовите переменную
-    for good in store[good_code]:
-        quantity = good["quantity"]
-        cost = quantity*good["price"]
+    for good_parameters in store[good_code]:
+        quantity = good_parameters["quantity"]
+        cost = quantity*good_parameters["price"]
         total_quantity += quantity
         total_cost += cost
     print (f"{good_name} - {total_quantity} шт, стоимость {total_cost} руб.")
