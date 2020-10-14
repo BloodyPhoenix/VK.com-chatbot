@@ -65,3 +65,4 @@ for good_name, good_code in goods.items():
         total_cost += cost
     print (f"{good_name} - {total_quantity} шт, стоимость {total_cost} руб.")
 
+# зачет!

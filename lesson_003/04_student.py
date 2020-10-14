@@ -21,3 +21,5 @@ while month < 11:
 money_need = round(money_need, 2)
 
 print(f"Студенту надо попросить {money_need} рублей")
+
+# зачет!

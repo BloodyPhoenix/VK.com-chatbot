@@ -70,3 +70,5 @@ elif hole_x >= brick_z and hole_y >= hole_x:
     print("ДА")
 else:
     print("НЕТ")
+
+# зачет!

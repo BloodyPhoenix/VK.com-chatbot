@@ -42,5 +42,6 @@ for _ in range(100):
     bubble(point, 5, color)
 
 
-
 sd.pause()
+
+# зачет!
