@@ -36,7 +36,60 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-# TODO здесь ваш код
+
+def draw_triangle(start_point, angle, side_length):
+    point_1 = sd.get_point(*start_point)
+    side_1 = sd.get_vector(point_1, angle, side_length)
+    side_1.draw(sd.COLOR_DARK_ORANGE, width=3)
+    side_2 = sd.get_vector(side_1.end_point, angle+120, side_length)
+    side_2.draw(sd.COLOR_DARK_ORANGE, width=3)
+    sd.line(side_2.end_point, point_1, sd.COLOR_DARK_ORANGE, width=3)
+
+draw_triangle((100, 100), 20, 200)
+
+def draw_square(start_point, angle, side_length):
+    point_1 = sd.get_point(*start_point)
+    side_1 = sd.get_vector(point_1, angle, side_length)
+    side_1.draw(sd.COLOR_PURPLE, width=3)
+    side_2 = sd.get_vector(side_1.end_point, angle + 90, side_length)
+    side_2.draw(sd.COLOR_PURPLE, width=3)
+    side_3 = sd.get_vector(side_2.end_point, angle + 180, side_length)
+    side_3.draw(sd.COLOR_PURPLE, width=3)
+    sd.line(side_3.end_point, point_1, sd.COLOR_PURPLE, width=3)
+
+draw_square((300,300), 50, 150)
+
+def draw_pentagon(start_point, angle, side_length):
+    point_1 = sd.get_point(*start_point)
+    side_1 = sd.get_vector(point_1, angle, side_length)
+    side_1.draw(sd.COLOR_PURPLE, width=3)
+    side_2 = sd.get_vector(side_1.end_point, angle + 180-108, side_length)
+    side_2.draw(sd.COLOR_PURPLE, width=3)
+    side_3 = sd.get_vector(side_2.end_point, angle + (180-108)*2, side_length)
+    side_3.draw(sd.COLOR_PURPLE, width=3)
+    side_4 = sd.get_vector(side_3.end_point, angle + (180-108)*3, side_length)
+    side_4.draw(sd.COLOR_PURPLE, width=3)
+    side_5.draw(sd.COLOR_PURPLE, width=3)
+    sd.line(side_4.end_point, point_1, sd.COLOR_PURPLE, width=3)
+
+draw_pentagon((100,400), 50, 50)
+
+def draw_hexagon(start_point, angle, side_length):
+    point_1 = sd.get_point(*start_point)
+    side_1 = sd.get_vector(point_1, angle, side_length)
+    side_1.draw(sd.COLOR_DARK_RED, width=3)
+    side_2 = sd.get_vector(side_1.end_point, angle + 180-120, side_length)
+    side_2.draw(sd.COLOR_DARK_RED, width=3)
+    side_3 = sd.get_vector(side_2.end_point, angle + (180-120)*2, side_length)
+    side_3.draw(sd.COLOR_DARK_RED, width=3)
+    side_4 = sd.get_vector(side_3.end_point, angle + (180-120)*3, side_length)
+    side_4.draw(sd.COLOR_DARK_RED, width=3)
+    side_5 = sd.get_vector(side_4.end_point, angle + (180-120)*4, side_length)
+    side_5.draw(sd.COLOR_DARK_RED, width=3)
+    sd.line(side_5.end_point, point_1, sd.COLOR_DARK_RED, width=3)
+
+
+draw_hexagon((300, 400), 50, 100)
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.

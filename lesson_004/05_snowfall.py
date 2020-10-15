@@ -10,6 +10,9 @@ import simple_draw as sd
 
 N = 20
 
+
+
+
 # Пригодятся функции
 # sd.get_point()
 # sd.snowflake()
@@ -18,12 +21,41 @@ N = 20
 # sd.user_want_exit()
 
 
-while True:
-    sd.clear_screen()
-    # TODO здесь ваш код
-    sd.sleep(0.1)
-    if sd.user_want_exit():
-        break
+
+def snowfall ():
+    while True:
+        y_start = 600
+        snowflakes_amount = sd.random_number(1, 20)
+        x_start = []
+        snowflakes_length = []
+        for start_x in range(snowflakes_amount):
+            x_start += [sd.random_number(0, 600)]
+            snowflakes_length += [sd.random_number(10, 100)]
+        snowflakes_falling(y_start, snowflakes_amount, snowflakes_length, x_start)
+        if sd.user_want_exit():
+            break
+
+
+def snowflakes_falling(y_start, snowflakes_amount, snowflakes_length, x_start):
+    speeding = 0
+    y = y_start
+    while True:
+        if y < -80:
+            break
+        sd.clear_screen()
+        for flake in range(snowflakes_amount):
+            sd.snowflake(sd.get_point(x_start[flake], y), length=snowflakes_length[flake])
+        y -= 10+speeding
+        speeding += 0.2
+        sd.sleep(0.1)
+        if sd.user_want_exit():
+            break
+
+
+
+
+snowfall()
+
 sd.pause()
 
 # Примерный алгоритм отрисовки снежинок
