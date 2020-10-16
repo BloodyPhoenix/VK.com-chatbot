@@ -9,6 +9,7 @@ import simple_draw as sd
 # Код функций из упр lesson_004/02_global_color.py скопировать сюда
 # Результат решения см lesson_004/results/exercise_03_shape_select.jpg
 
+# TODO все аналогично от 02 задания
 COLOR_LIST = (sd.COLOR_RED, sd.COLOR_ORANGE,  sd.COLOR_YELLOW, sd.COLOR_GREEN, sd.COLOR_CYAN, sd.COLOR_BLUE,
               sd.COLOR_PURPLE)
 print("""Введите число от 1 до 7, чтобы выбрать цвет.
@@ -23,6 +24,7 @@ while True:
     chosen_color = input()
     if chosen_color.isdigit():
         if 0< int(chosen_color) <8:
+            # TODO тут получаем цвет
             break
         else:
             print("Вы ввели неверное число! Повторите ввод.")
@@ -35,6 +37,9 @@ while True:
 
 chosen_color = COLOR_LIST[int(chosen_color)-1]
 
+# TODO только в новом объекте данных может храниться еще и функция
+# TODO Примерно новый объект данных может выглядеть вот так:
+# TODO colors = {0: ['треугольник', функция_треугольник], 1: ['квадрат', функция_квадрат], и так далее!
 print("""Выберите фигуру, которую хотите нарисовать.
 3 - треугольник
 4 - квадрат
@@ -45,6 +50,7 @@ while True:
     chosen_shape = input()
     if chosen_shape.isdigit():
         if 2 < int(chosen_shape) < 7:
+            # TODO тут вызываем функцию
             break
         else:
             print("Вы указали неверный номер фигуры. Пожалуйста, повторите ввод.")
@@ -56,7 +62,8 @@ while True:
         print()
         continue
 
-
+# TODO функции объявляем до основной логики программы!
+# TODO используем обновленный код от 01 задания
 def draw_triangle(start_point, angle, side_length, color):
     point_1 = sd.get_point(*start_point)
     side_1 = sd.get_vector(point_1, angle, side_length)
@@ -101,7 +108,9 @@ def draw_hexagon(start_point, angle, side_length, color):
     side_5.draw(color=color, width=3)
     sd.line(side_5.end_point, point_1, color=color, width=3)_point, angle + (180 - 120) * 5, side_length)
 
+# TODO это объединяем в один объект данных
 shapes = (draw_triangle, draw_square, draw_pentagon, draw_hexagon)
+# TODO тут что то явно нет так с chosen_shape
 chosen_shape = int(chosen_shape)-3
 
 shapes[chosen_shape]((250, 250), 0, 100, chosen_color)

@@ -36,6 +36,8 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
+# TODO для рисования фигур(их линий) используем цикл во всех функциях, в цикле через range получаем angle
+# TODO получаем angle сразу в цикле через range(0, 361, шаг-наклон) не забываем что круг у нас всего 360 градусов(361)
 
 def draw_triangle(start_point, angle, side_length):
     point_1 = sd.get_point(*start_point)

@@ -9,10 +9,6 @@ import simple_draw as sd
 # - создать список рандомных длин лучей снежинок (от 10 до 100) и пусть все снежинки будут разные
 
 N = 20
-
-
-
-
 # Пригодятся функции
 # sd.get_point()
 # sd.snowflake()
@@ -20,8 +16,14 @@ N = 20
 # sd.random_number()
 # sd.user_want_exit()
 
+# TODO давайте пока что все реализуем без функций
 
-
+# TODO чтобы не писать вот так, запишем через for _ in range(N): сократим пару 10-ок строк
+# TODO Для начало сформирует нужный нам список списков, объявим его до цикла
+# TODO Используя цикл фор _ in range(N): в нем
+# TODO x,y,length будем получать используя допустим x = sd.random_number(100,1200), y = sd.random_number(500, 600),
+#  length = sd.random_number(10,100)
+# TODO Создадим один общий список списков и назовем его параметры_снежинок.добавить([x,y,length])
 def snowfall ():
     while True:
         y_start = 600
@@ -35,6 +37,26 @@ def snowfall ():
         if sd.user_want_exit():
             break
 
+# TODO придерживаемся вот этого алгоритма зачем вы его изменили ?
+
+while True:
+    sd.clear_screen()
+    # TODO заводим цикл: фор i in range(N), будем получать i для индексов, на каждой итерации этого цикла
+    # TODO мы будем получать нужные нам x,y,length каждой снежинки в списке, изменять их,
+    # TODO рисовать и потом записывать измененные значения обратно в список список по индексу!
+        # TODO получим данные x,y,length из списка списков по индексу снежинки
+        # TODO и далее по коду будем использовать x, y, length
+        # TODO создаем точку и печатем снежинку тоже отдельными строками.
+        # TODO тут мы будем изменять 'y' и 'x' отдельными строками.
+        # TODO после того как мы изменили 'y' и 'x' мы их должны будем сохранить в общий список списков
+        # TODO по своему индексу для каждого параметра.
+        # TODO Напишем тут сразу если Y < 50 то в списке параметры_снежинок мы по индексу присвоим 600, это потолок!
+    sd.sleep(0.1)
+    if sd.user_want_exit():
+        break
+sd.pause()
+
+# TODO код который нас не нужен удаляем
 
 def snowflakes_falling(y_start, snowflakes_amount, snowflakes_length, x_start):
     speeding = 0
@@ -50,8 +72,6 @@ def snowflakes_falling(y_start, snowflakes_amount, snowflakes_length, x_start):
         sd.sleep(0.1)
         if sd.user_want_exit():
             break
-
-
 
 
 snowfall()
