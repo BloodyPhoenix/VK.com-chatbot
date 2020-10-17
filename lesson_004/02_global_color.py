@@ -14,6 +14,7 @@ import simple_draw as sd
 # и константы COLOR_RED, COLOR_ORANGE, COLOR_YELLOW, COLOR_GREEN, COLOR_CYAN, COLOR_BLUE, COLOR_PURPLE
 # Результат решения см lesson_004/results/exercise_02_global_color.jpg
 
+# TODO использовать код от 01 задания
 def draw_triangle(start_point, start_angle, side_length, color, sides = 3):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
@@ -75,12 +76,14 @@ for number in range (1, len(COLORS_AVALIBLE)+1):
     print(f"{number} - {COLORS_AVALIBLE[number][0]}")
 
 while True:
+    # TODO try: except: не используем делаем проверку на число
     try:
         chosen_color = int(input())
     except:
         print("Вы ввели не целое число. Повторите ввод.")
         print()
         continue
+    # TODO тут делаем проверку на вхождение в словарь по ключу
     if 0< chosen_color < len(COLORS_AVALIBLE)+1:
         chosen_color_code = COLORS_AVALIBLE[chosen_color][1]
         draw_triangle(start_point=(100, 100), start_angle=0, side_length=100, color=chosen_color_code)
@@ -91,7 +94,10 @@ while True:
     else:
         print("Вы ввели неверное число! Повторите ввод.")
         print()
+        # TODO continue писать не обязательно цикл повториться и так
         continue
+
+# TODO есть недочеты по оформлению кода по PEP8?. Используйте пункт меню пайчарма code-reformatCode
 
 # Альтернативный вариант через список кортежей. Да, чуть больше переменных, зато более адекватная итерация по циклу
 
