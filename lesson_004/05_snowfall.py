@@ -23,31 +23,38 @@ min_y = sd.resolution[1]+100
 snowflakes = []
 
 for _ in range(N):
-    x = (sd.random_number(100, max_x))
-    y = (sd.random_number(min_y, max_y))
-    lengh = (sd.random_number(10, 100))
+    # удалил вам лишние скобки они не нужны
+    x = sd.random_number(100, max_x)
+    y = sd.random_number(min_y, max_y)
+    lengh = sd.random_number(10, 100)
     snowflakes.append([x, y, lengh])
 
 
 while True:
     sd.clear_screen()
-    for i in range (N):
+    for i in range(N):
         snowflake_x = snowflakes[i][0]
         snowflake_y = snowflakes[i][1]
-        if snowflake_y < -100:
-            snowflake_y = (sd.random_number(min_y, max_y))
         snowflake_length = snowflakes[i][2]
+
         center = sd.get_point(snowflake_x, snowflake_y)
         sd.snowflake(center=center, length=snowflake_length)
-        snowflake_x = snowflake_x + sd.random_number(-5, 5)
-        snowflakes[i][0] = snowflake_x
+        # можно сократить вот так, и немного диапазон увеличим
+        snowflake_x += sd.random_number(-30, 30)
         snowflake_y -= 10
+
+        snowflakes[i][0] = snowflake_x
         snowflakes[i][1] = snowflake_y
+        # это в конец цикла
+        if snowflake_y < -100:
+            # тут тоже скобки не нужны
+            snowflake_y = sd.random_number(min_y, max_y)
     sd.sleep(0.1)
     if sd.user_want_exit():
         break
 sd.pause()
 
+# TODO делаем вторую часть!
 
 # sd.pause()
 
