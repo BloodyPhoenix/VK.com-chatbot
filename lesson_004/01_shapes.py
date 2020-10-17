@@ -44,6 +44,7 @@ import simple_draw as sd
 def draw_triangle(start_point, start_angle, side_length, sides = 3):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
+    # TODO а что если int(360 \ sides)
     inner_angle = 180*(sides-2)/sides
     step = int(180-inner_angle)
     for angle_step in range(0, 361, step):
@@ -103,6 +104,8 @@ def draw_hexagon(start_point, start_angle, side_length, sides = 6):
     sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
 
 draw_hexagon((300, 400), 50, 100)
+
+# TODO есть недочеты по оформлению кода по PEP8?. Используйте пункт меню пайчарма code-reformatCode
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
