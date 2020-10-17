@@ -5,6 +5,7 @@ from random import randint as random
 
 sd.resolution = (1000, 1000)
 
+
 # 1) Написать функцию draw_branches, которая должна рисовать две ветви дерева из начальной точки
 # Функция должна принимать параметры:
 # - точка начала рисования,
@@ -29,17 +30,14 @@ sd.resolution = (1000, 1000)
 
 # можно поиграть -шрифтами- цветами и углами отклонения
 
-# TODO во всех функциях нужно использовать только один вектор и две внутренние рекурсии!
-
-def blossom_tree(point, angle, length, base_angle=90):
+def blossom_tree(point, angle, length, delta=30):
     if length < 1:
         return
     if isinstance(point, sd.Point):
         start_point = point
     else:
         start_point = sd.get_point(*point)
-        sd.line(sd.get_point(300, 0), start_point, color=sd.COLOR_YELLOW, width=2)
-    if 1<length<2:
+    if 1 < length < 2:
         if random(1, 10) == 10:
             color = sd.COLOR_RED
         elif random(1, 10) == 5:
@@ -48,22 +46,13 @@ def blossom_tree(point, angle, length, base_angle=90):
             color = sd.COLOR_GREEN
     else:
         color = sd.COLOR_YELLOW
-    branch_angle = angle*0.5
-    branch_1 = sd.get_vector(start_point, base_angle-branch_angle, length, 2)
-    branch_1.draw(color=color)
-    branch_2 = sd.get_vector(start_point, base_angle + branch_angle, length, 2)
-    branch_2.draw(color=color)
-    next_length = length*0.75
-    next_point_1= branch_1.end_point
-    next_base_angle_1 = base_angle-branch_angle
-    next_point_2 = branch_2.end_point
-    next_base_angle_2 = base_angle+branch_angle
-    blossom_tree(point=next_point_1, angle=angle, length=next_length, base_angle=next_base_angle_1)
-    blossom_tree(point=next_point_2, angle=angle, length=next_length, base_angle=next_base_angle_2)
-
-
-
-
+    branch = sd.get_vector(start_point=start_point, angle=angle, length=length)
+    branch.draw(color=color, width=3)
+    next_point = branch.end_point
+    next_angle = angle - delta
+    next_length = length * .75
+    blossom_tree(point=next_point, angle=next_angle, length=next_length, delta=delta)
+    blossom_tree(point=next_point, angle=next_angle + delta * 2, length=next_length, delta=delta)
 
 
 # 4) Усложненное задание (делать по желанию)
@@ -74,38 +63,39 @@ def blossom_tree(point, angle, length, base_angle=90):
 # Пригодятся функции
 # sd.random_number()
 
-def blossom_tree_update(point, angle, length, base_angle=90):
+def blossom_tree_update(point, angle, length, dispersion=30):
     if length < 1:
         return
     if isinstance(point, sd.Point):
         start_point = point
     else:
         start_point = sd.get_point(*point)
-        sd.line(sd.get_point(300, 0), start_point, color=sd.COLOR_YELLOW, width=3)
-    if 1<length<2:
+        # А что, если рисование начинаем не от низа экрана?
+        if start_point.y > 0:
+            x = sd.resolution[0]*.5
+            sd.line(sd.get_point(x, 0), start_point, width=3)
+    if 1 < length < 2:
         if random(1, 10) == 10:
             color = sd.COLOR_RED
         elif random(1, 10) == 5:
             color = (255, 255, 255)
         else:
             color = sd.COLOR_GREEN
-    elif 2<=length<5:
+    elif 2 <= length < 5:
         color = sd.COLOR_GREEN
     else:
         color = sd.COLOR_YELLOW
-    branch_angle = angle*0.5
-    branch_1 = sd.get_vector(start_point, base_angle-branch_angle, length, 2)
-    branch_1.draw(color=color)
-    branch_2 = sd.get_vector(start_point, base_angle + branch_angle, length, 2)
-    branch_2.draw(color=color)
-    next_length = length*(0.75+sd.random_number(-10, 10)*0.01)
-    next_point_1= branch_1.end_point
-    next_base_angle_1 = base_angle-branch_angle+sd.random_number(-6,6)
-    next_point_2 = branch_2.end_point
-    next_base_angle_2 = base_angle+branch_angle+sd.random_number(-6,6)
-    blossom_tree_update(point=next_point_1, angle=angle, length=next_length, base_angle=next_base_angle_1)
-    blossom_tree_update(point=next_point_2, angle=angle, length=next_length, base_angle=next_base_angle_2)
 
-blossom_tree_update((450, 200), 60, 100)
+    branch = sd.get_vector(start_point=start_point, angle=angle, length=length)
+    branch.draw(color=color, width=3)
+    next_point = branch.end_point
+    next_angle = angle - dispersion + sd.random_number(-6, 6)
+    next_length = length * (.75 + sd.random_number(-10, 10) * 0.01)
+    blossom_tree_update(point=next_point, angle=next_angle, length=next_length, dispersion=dispersion)
+    blossom_tree_update(point=next_point, angle=next_angle + dispersion * 2, length=next_length, dispersion=dispersion)
 
+
+blossom_tree_update((450, 150), 60, 100)
+# Мне кажется, с двумя векторами и одним вызовом рекурсии функция отрабатывала быстрее...
 sd.pause()
+

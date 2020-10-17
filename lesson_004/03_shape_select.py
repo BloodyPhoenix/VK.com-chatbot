@@ -9,111 +9,105 @@ import simple_draw as sd
 # Код функций из упр lesson_004/02_global_color.py скопировать сюда
 # Результат решения см lesson_004/results/exercise_03_shape_select.jpg
 
-# TODO все аналогично от 02 задания
-COLOR_LIST = (sd.COLOR_RED, sd.COLOR_ORANGE,  sd.COLOR_YELLOW, sd.COLOR_GREEN, sd.COLOR_CYAN, sd.COLOR_BLUE,
-              sd.COLOR_PURPLE)
-print("""Введите число от 1 до 7, чтобы выбрать цвет.
-1 - красный
-2 - оранжевый
-3 - жёлтый
-4 - зелёный
-5 - голубой
-6 - синий
-7 - фиолетовый""")
+def draw_triangle(start_point, start_angle, side_length, color, sides = 3):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180*(sides-2)/sides
+    step = int(180-inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color=color, width=3)
+        start_point = side.end_point
+
+def draw_square(start_point, start_angle, side_length, color, sides = 4):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180 * (sides - 2) / sides
+    step = int(180 - inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
+
+def draw_pentagon(start_point, start_angle, side_length, color, sides = 5):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180 * (sides - 2) / sides
+    step = int(180 - inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
+
+def draw_hexagon(start_point, start_angle, side_length, color, sides = 6):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180 * (sides - 2) / sides
+    step = int(180 - inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
+
+COLORS_AVALIBLE = {
+    1: ("красный", sd.COLOR_RED),
+    2: ("оранжевый", sd.COLOR_ORANGE),
+    3: ("жёлтый", sd.COLOR_YELLOW),
+    4: ("зелёный", sd.COLOR_GREEN),
+    5: ("голубой", sd.COLOR_CYAN),
+    6: ("синий", sd.COLOR_BLUE),
+    7: ("фиолетовый", sd.COLOR_PURPLE)
+}
+
+print("Введите число от 1 до 7, чтобы выбрать цвет.")
+for number in range (1, len(COLORS_AVALIBLE)+1):
+    print(f"{number} - {COLORS_AVALIBLE[number][0]}")
+
 while True:
-    chosen_color = input()
-    if chosen_color.isdigit():
-        if 0< int(chosen_color) <8:
-            # TODO тут получаем цвет
-            break
-        else:
-            print("Вы ввели неверное число! Повторите ввод.")
-            print()
-            continue
-    else:
+    try:
+        chosen_color = int(input())
+    except:
         print("Вы ввели не целое число. Повторите ввод.")
         print()
         continue
-
-chosen_color = COLOR_LIST[int(chosen_color)-1]
-
-# TODO только в новом объекте данных может храниться еще и функция
-# TODO Примерно новый объект данных может выглядеть вот так:
-# TODO colors = {0: ['треугольник', функция_треугольник], 1: ['квадрат', функция_квадрат], и так далее!
-print("""Выберите фигуру, которую хотите нарисовать.
-3 - треугольник
-4 - квадрат
-5 - пятугольник
-6 - шестиугольник""")
-
-while True:
-    chosen_shape = input()
-    if chosen_shape.isdigit():
-        if 2 < int(chosen_shape) < 7:
-            # TODO тут вызываем функцию
-            break
-        else:
-            print("Вы указали неверный номер фигуры. Пожалуйста, повторите ввод.")
-            # Принт для отступа, ятобы было красивее
-            print()
-            continue
+    if 0< chosen_color < len(COLORS_AVALIBLE)+1:
+        chosen_color_code = COLORS_AVALIBLE[chosen_color][1]
+        break
     else:
-        print("Вы ввели не целое число. Повторите ввод.")
+        print("Вы ввели неверное число! Повторите ввод.")
         print()
         continue
 
-# TODO функции объявляем до основной логики программы!
-# TODO используем обновленный код от 01 задания
-def draw_triangle(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle+120, side_length)
-    side_2.draw(color=color, width=3)
-    sd.line(side_2.end_point, point_1, color=color, width=3)
+shapes = {
+    3: ("треугольник", draw_triangle),
+    4: ("квадрат", draw_square),
+    5: ("пятиугольник", draw_pentagon),
+    6: ("шестиугольник", draw_hexagon)
+}
 
-def draw_square(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle + 90, side_length)
-    side_2.draw(color=color, width=3)
-    side_3 = sd.get_vector(side_2.end_point, angle + 180, side_length)
-    side_3.draw(color=color, width=3)
-    sd.line(side_3.end_point, point_1, color=color, width=3)
+print("Выберите фигуру, которую хотите нарисовать.")
+# Если мы предполагаем расширение списка, то получаем тут такое замечательное уродство, так как предлагаем
+# сделать выбор, начиная с тройки (по кол-ву углов/сторон)
+for number in range (3, len(shapes)+3):
+    print (f"{number} - {shapes[number][0]}")
 
-def draw_pentagon(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle + 180-108, side_length)
-    side_2.draw(color=color, width=3)
-    side_3 = sd.get_vector(side_2.end_point, angle + (180-108)*2, side_length)
-    side_3.draw(color=color, width=3)
-    side_4 = sd.get_vector(side_3.end_point, angle + (180-108)*3, side_length)
-    side_4.draw(color=color, width=3)
-    sd.line(side_4.end_point, point_1, color=color, width=3)
 
-def draw_hexagon(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle + 180-120, side_length)
-    side_2.draw(color=color, width=3)
-    side_3 = sd.get_vector(side_2.end_point, angle + (180-120)*2, side_length)
-    side_3.draw(color=color, width=3)
-    side_4 = sd.get_vector(side_3.end_point, angle + (180-120)*3, side_length)
-    side_4.draw(color=color, width=3)
-    side_5 = sd.get_vector(side_4.end_point, angle + (180-120)*4, side_length)
-    side_5.draw(color=color, width=3)
-    sd.line(side_5.end_point, point_1, color=color, width=3)_point, angle + (180 - 120) * 5, side_length)
 
-# TODO это объединяем в один объект данных
-shapes = (draw_triangle, draw_square, draw_pentagon, draw_hexagon)
-# TODO тут что то явно нет так с chosen_shape
-chosen_shape = int(chosen_shape)-3
-
-shapes[chosen_shape]((250, 250), 0, 100, chosen_color)
+while True:
+    try:
+        chosen_shape = int(input())
+    except:
+        print("Вы ввели не целое число. Повторите ввод.")
+        print()
+        continue
+    if 2 < chosen_shape < len(shapes)+3:
+            shapes[chosen_shape][1]((250, 250), 0, 100, chosen_color_code)
+            break
+    else:
+        print("Вы указали неверный номер фигуры. Пожалуйста, повторите ввод.")
+        # Принт для отступа, чтобы было красивее
+        print()
+        continue
 
 
 sd.pause()

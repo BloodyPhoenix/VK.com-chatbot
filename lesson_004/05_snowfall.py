@@ -16,67 +16,40 @@ N = 20
 # sd.random_number()
 # sd.user_want_exit()
 
-# TODO давайте пока что все реализуем без функций
+# Пусть генерируются до верха экрана
+max_x = sd.resolution[0]-100
+max_y = sd.resolution[1]+200
+min_y = sd.resolution[1]+100
+snowflakes = []
 
-# TODO чтобы не писать вот так, запишем через for _ in range(N): сократим пару 10-ок строк
-# TODO Для начало сформирует нужный нам список списков, объявим его до цикла
-# TODO Используя цикл фор _ in range(N): в нем
-# TODO x,y,length будем получать используя допустим x = sd.random_number(100,1200), y = sd.random_number(500, 600),
-#  length = sd.random_number(10,100)
-# TODO Создадим один общий список списков и назовем его параметры_снежинок.добавить([x,y,length])
-def snowfall ():
-    while True:
-        y_start = 600
-        snowflakes_amount = sd.random_number(1, 20)
-        x_start = []
-        snowflakes_length = []
-        for start_x in range(snowflakes_amount):
-            x_start += [sd.random_number(0, 600)]
-            snowflakes_length += [sd.random_number(10, 100)]
-        snowflakes_falling(y_start, snowflakes_amount, snowflakes_length, x_start)
-        if sd.user_want_exit():
-            break
+for _ in range(N):
+    x = (sd.random_number(100, max_x))
+    y = (sd.random_number(min_y, max_y))
+    lengh = (sd.random_number(10, 100))
+    snowflakes.append([x, y, lengh])
 
-# TODO придерживаемся вот этого алгоритма зачем вы его изменили ?
 
 while True:
     sd.clear_screen()
-    # TODO заводим цикл: фор i in range(N), будем получать i для индексов, на каждой итерации этого цикла
-    # TODO мы будем получать нужные нам x,y,length каждой снежинки в списке, изменять их,
-    # TODO рисовать и потом записывать измененные значения обратно в список список по индексу!
-        # TODO получим данные x,y,length из списка списков по индексу снежинки
-        # TODO и далее по коду будем использовать x, y, length
-        # TODO создаем точку и печатем снежинку тоже отдельными строками.
-        # TODO тут мы будем изменять 'y' и 'x' отдельными строками.
-        # TODO после того как мы изменили 'y' и 'x' мы их должны будем сохранить в общий список списков
-        # TODO по своему индексу для каждого параметра.
-        # TODO Напишем тут сразу если Y < 50 то в списке параметры_снежинок мы по индексу присвоим 600, это потолок!
+    for i in range (N):
+        snowflake_x = snowflakes[i][0]
+        snowflake_y = snowflakes[i][1]
+        if snowflake_y < -100:
+            snowflake_y = (sd.random_number(min_y, max_y))
+        snowflake_length = snowflakes[i][2]
+        center = sd.get_point(snowflake_x, snowflake_y)
+        sd.snowflake(center=center, length=snowflake_length)
+        snowflake_x = snowflake_x + sd.random_number(-5, 5)
+        snowflakes[i][0] = snowflake_x
+        snowflake_y -= 10
+        snowflakes[i][1] = snowflake_y
     sd.sleep(0.1)
     if sd.user_want_exit():
         break
 sd.pause()
 
-# TODO код который нас не нужен удаляем
 
-def snowflakes_falling(y_start, snowflakes_amount, snowflakes_length, x_start):
-    speeding = 0
-    y = y_start
-    while True:
-        if y < -80:
-            break
-        sd.clear_screen()
-        for flake in range(snowflakes_amount):
-            sd.snowflake(sd.get_point(x_start[flake], y), length=snowflakes_length[flake])
-        y -= 10+speeding
-        speeding += 0.2
-        sd.sleep(0.1)
-        if sd.user_want_exit():
-            break
-
-
-snowfall()
-
-sd.pause()
+# sd.pause()
 
 # Примерный алгоритм отрисовки снежинок
 #   навсегда

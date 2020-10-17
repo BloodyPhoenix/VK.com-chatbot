@@ -14,97 +14,121 @@ import simple_draw as sd
 # и константы COLOR_RED, COLOR_ORANGE, COLOR_YELLOW, COLOR_GREEN, COLOR_CYAN, COLOR_BLUE, COLOR_PURPLE
 # Результат решения см lesson_004/results/exercise_02_global_color.jpg
 
-# TODO А что будет если попросят еще один цвет добавить? в скольких местах надо будет правки вносить?
-# TODO нужно сделать хранения цвета, его названия и его номера для выбора - в специальной структуре данных
-# TODO (список/словарь). Проверяем вхождения введенного номера в словаре по ключу, если есть берем все данные по нему!
-# TODO Это нужно для расширения кода, минимальными доработками! В Будущем.
+def draw_triangle(start_point, start_angle, side_length, color, sides = 3):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180*(sides-2)/sides
+    step = int(180-inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color=color, width=3)
+        start_point = side.end_point
 
-# TODO Примерно новый объект данных может выглядеть вот так:
-# TODO colors = {0: ['red', sd.COLOR_RED], 1: ['orange', sd.COLOR_ORANGE], и так далее!
-# TODO По ключу мы сразу будем получать список нужных нам данных и уже ими оперировать в коде через индекс!
+def draw_square(start_point, start_angle, side_length, color, sides = 4):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180 * (sides - 2) / sides
+    step = int(180 - inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
 
-# TODO LIST - это зарезервированное слово и его лучше не использовать, даже в константе
-COLOR_LIST = (sd.COLOR_RED, sd.COLOR_ORANGE,  sd.COLOR_YELLOW, sd.COLOR_GREEN, sd.COLOR_CYAN, sd.COLOR_BLUE,
-              sd.COLOR_PURPLE)
+def draw_pentagon(start_point, start_angle, side_length, color, sides = 5):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180 * (sides - 2) / sides
+    step = int(180 - inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
 
-# TODO вывод делаем динамическим используя цикл фор по объекту данных который вы сформируете выше
-print("""Введите число от 1 до 7, чтобы выбрать цвет.
-1 - красный
-2 - оранжевый
-3 - жёлтый
-4 - зелёный
-5 - голубой
-6 - синий
-7 - фиолетовый""")
+def draw_hexagon(start_point, start_angle, side_length, color, sides = 6):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    inner_angle = 180 * (sides - 2) / sides
+    step = int(180 - inner_angle)
+    for angle_step in range(0, 361, step):
+        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
+
+# Честно говоря, я бы делала через список кортежей, чтобы спокойно ссылаться на индексы, а не на ключи, раз уж мы всё
+# равно работаем с жёстко нумерованным упорядоченным списком
+
+COLORS_AVALIBLE = {
+    1: ("красный", sd.COLOR_RED),
+    2: ("оранжевый", sd.COLOR_ORANGE),
+    3: ("жёлтый", sd.COLOR_YELLOW),
+    4: ("зелёный", sd.COLOR_GREEN),
+    5: ("голубой", sd.COLOR_CYAN),
+    6: ("синий", sd.COLOR_BLUE),
+    7: ("фиолетовый", sd.COLOR_PURPLE)
+}
+
+# А здесь бы тогда был enumerate от COLORS_AVALIBLE. Конструкция вида COLORS_AVALIBLE[number][0] тоже не особо читаема
+# Если мы предполагаем расширение списка, то нам тут нужно ещё и проверять его длину, причём прибалять к ней 1.
+# Очень понятный код...
+print("Введите число от 1 до 7, чтобы выбрать цвет.")
+for number in range (1, len(COLORS_AVALIBLE)+1):
+    print(f"{number} - {COLORS_AVALIBLE[number][0]}")
 
 while True:
-    chosen_color = input()
-    if chosen_color.isdigit():
-        # TODO тут у нас будет проверка на вхождение числа по ключу в словарь
-        if 0< int(chosen_color) <8:
-            # TODO тогда все действия по получения цвета и вызов самих функций делаем тут!
-            break
-        else:
-            print("Вы ввели неверное число! Повторите ввод.")
-            print()
-            continue
-    else:
+    try:
+        chosen_color = int(input())
+    except:
         print("Вы ввели не целое число. Повторите ввод.")
         print()
         continue
+    if 0< chosen_color < len(COLORS_AVALIBLE)+1:
+        chosen_color_code = COLORS_AVALIBLE[chosen_color][1]
+        draw_triangle(start_point=(100, 100), start_angle=0, side_length=100, color=chosen_color_code)
+        draw_square(start_point=(100, 400), start_angle=0, side_length=100, color=chosen_color_code)
+        draw_pentagon(start_point=(400, 400), start_angle=0, side_length=100, color=chosen_color_code)
+        draw_hexagon(start_point=(400, 100), start_angle=0, side_length=100, color=chosen_color_code)
+        break
+    else:
+        print("Вы ввели неверное число! Повторите ввод.")
+        print()
+        continue
 
-chosen_color = COLOR_LIST[int(chosen_color)-1]
+# Альтернативный вариант через список кортежей. Да, чуть больше переменных, зато более адекватная итерация по циклу
 
-# TODO функции объявляем до основной логики программы!
-# TODO используем обновленный код от 01 задания
-def draw_triangle(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle+120, side_length)
-    side_2.draw(color=color, width=3)
-    sd.line(side_2.end_point, point_1, color=color, width=3)
+# COLORS_AVALIBLE = [
+#     ("красный", sd.COLOR_RED),
+#     ("оранжевый", sd.COLOR_ORANGE),
+#     ("жёлтый", sd.COLOR_YELLOW),
+#     ("зелёный", sd.COLOR_GREEN),
+#     ("голубой", sd.COLOR_CYAN),
+#     ("синий", sd.COLOR_BLUE),
+#     ("фиолетовый", sd.COLOR_PURPLE)
+# ]
 
-def draw_square(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle + 90, side_length)
-    side_2.draw(color=color, width=3)
-    side_3 = sd.get_vector(side_2.end_point, angle + 180, side_length)
-    side_3.draw(color=color, width=3)
-    sd.line(side_3.end_point, point_1, color=color, width=3)
-
-def draw_pentagon(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle + 180-108, side_length)
-    side_2.draw(color=color, width=3)
-    side_3 = sd.get_vector(side_2.end_point, angle + (180-108)*2, side_length)
-    side_3.draw(color=color, width=3)
-    side_4 = sd.get_vector(side_3.end_point, angle + (180-108)*3, side_length)
-    side_4.draw(color=color, width=3)
-    sd.line(side_4.end_point, point_1, color=color, width=3)
-
-def draw_hexagon(start_point, angle, side_length, color):
-    point_1 = sd.get_point(*start_point)
-    side_1 = sd.get_vector(point_1, angle, side_length)
-    side_1.draw(color=color, width=3)
-    side_2 = sd.get_vector(side_1.end_point, angle + 180-120, side_length)
-    side_2.draw(color=color, width=3)
-    side_3 = sd.get_vector(side_2.end_point, angle + (180-120)*2, side_length)
-    side_3.draw(color=color, width=3)
-    side_4 = sd.get_vector(side_3.end_point, angle + (180-120)*3, side_length)
-    side_4.draw(color=color, width=3)
-    side_5 = sd.get_vector(side_4.end_point, angle + (180-120)*4, side_length)
-    side_5.draw(color=color, width=3)
-    sd.line(side_5.end_point, point_1, color=color, width=3)
-
-# TODO вызываем в главном цикле
-draw_triangle(start_point=(100, 100), angle = 0, side_length=100, color=chosen_color)
-draw_square(start_point=(100, 400), angle = 0, side_length=100, color=chosen_color)
-draw_pentagon(start_point=(400, 400), angle = 0, side_length=100, color=chosen_color)
-draw_hexagon(start_point=(400, 100), angle = 0, side_length=100, color=chosen_color)
+# print("Введите число от 1 до 7, чтобы выбрать цвет.")
+# for number, color in enumerate(COLORS_AVALIBLE):
+#     real_number = number + 1
+#     color_name = color[0]
+#     print(f"{real_number} - {color_name}")
+#
+# while True:
+#     try:
+#         chosen_color = int(input())
+#     except:
+#         print("Вы ввели не целое число. Повторите ввод.")
+#         print()
+#         continue
+#     chosen_color -= 1
+#     if 0< chosen_color < len(COLORS_AVALIBLE):
+#         chosen_color_code = COLORS_AVALIBLE[chosen_color][1]
+#         draw_triangle(start_point=(100, 100), start_angle=0, side_length=100, color=chosen_color_code)
+#         draw_square(start_point=(100, 400), start_angle=0, side_length=100, color=chosen_color_code)
+#         draw_pentagon(start_point=(400, 400), start_angle=0, side_length=100, color=chosen_color_code)
+#         draw_hexagon(start_point=(400, 100), start_angle=0, side_length=100, color=chosen_color_code)
+#         break
+#     else:
+#         print("Вы ввели неверное число! Повторите ввод.")
+#         print()
+#         continue
 
 sd.pause()
