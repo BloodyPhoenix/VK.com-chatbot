@@ -29,34 +29,40 @@ for _ in range(N):
     lengh = sd.random_number(10, 100)
     snowflakes.append([x, y, lengh])
 
+fallen_snowflakes = []
 
 while True:
-    sd.clear_screen()
+    sd.start_drawing()
     for i in range(N):
         snowflake_x = snowflakes[i][0]
         snowflake_y = snowflakes[i][1]
         snowflake_length = snowflakes[i][2]
-
         center = sd.get_point(snowflake_x, snowflake_y)
-        sd.snowflake(center=center, length=snowflake_length)
-        # можно сократить вот так, и немного диапазон увеличим
+        sd.snowflake(center=center, length=snowflake_length, color=sd.background_color)
         snowflake_x += sd.random_number(-30, 30)
         snowflake_y -= 10
-
+        center = sd.get_point(snowflake_x, snowflake_y)
+        sd.snowflake(center=center, length=snowflake_length)
         snowflakes[i][0] = snowflake_x
         snowflakes[i][1] = snowflake_y
-        # это в конец цикла
-        if snowflake_y < -100:
-            # тут тоже скобки не нужны
-            snowflake_y = sd.random_number(min_y, max_y)
+        if snowflake_y <= 10:
+            # Используем список для повторной отрисовки, чтобы не возникало артефактов от падаюих сверху снежинок
+            # Параметры снежинок записываем кортежем, так как они уже не поменяются
+            fallen_snowflakes.append((snowflake_x, snowflake_y, snowflake_length))
+            # Чтобы список не получился бесконечным, удаляем из него первые элементы, когда длина достигнет 100
+            # На этом моменте исезновение первых снежинок и замена на новые уже не заметна
+            if len(fallen_snowflakes) > 100:
+                del fallen_snowflakes[0]
+            for flake in fallen_snowflakes:
+                center = sd.get_point(flake[0], flake[1])
+                sd.snowflake(center, length=flake[2])
+            #Создаём новую снежинку, переназначая координату y для упавшей, которая "ушла" в fallen_snowflakes
+            snowflakes[i][1] = sd.random_number(min_y, max_y)
+    sd.finish_drawing()
     sd.sleep(0.1)
     if sd.user_want_exit():
         break
 sd.pause()
-
-# TODO делаем вторую часть!
-
-# sd.pause()
 
 # Примерный алгоритм отрисовки снежинок
 #   навсегда

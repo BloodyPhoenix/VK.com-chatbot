@@ -2,52 +2,57 @@
 
 import simple_draw as sd
 
+
 # Запросить у пользователя желаемую фигуру посредством выбора из существующих
 #   вывести список всех фигур с номерами и ждать ввода номера желаемой фигуры.
 # и нарисовать эту фигуру в центре экрана
 
 # Код функций из упр lesson_004/02_global_color.py скопировать сюда
 # Результат решения см lesson_004/results/exercise_03_shape_select.jpg
-# TODO использовать код от 01 задания
-def draw_triangle(start_point, start_angle, side_length, color, sides = 3):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    inner_angle = 180*(sides-2)/sides
-    step = int(180-inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
-        side.draw(color=color, width=3)
-        start_point = side.end_point
 
-def draw_square(start_point, start_angle, side_length, color, sides = 4):
+def draw_triangle(start_point, start_angle, side_length, color, sides=3):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
-    inner_angle = 180 * (sides - 2) / sides
-    step = int(180 - inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
         side.draw(color, width=3)
         start_point = side.end_point
+    sd.line(point_1, start_point, color, width=3)
 
-def draw_pentagon(start_point, start_angle, side_length, color, sides = 5):
+
+def draw_square(start_point, start_angle, side_length, color, sides=4):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
-    inner_angle = 180 * (sides - 2) / sides
-    step = int(180 - inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
         side.draw(color, width=3)
         start_point = side.end_point
+    sd.line(point_1, start_point, color, width=3)
 
-def draw_hexagon(start_point, start_angle, side_length, color, sides = 6):
+
+def draw_pentagon(start_point, start_angle, side_length, color, sides=5):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
-    inner_angle = 180 * (sides - 2) / sides
-    step = int(180 - inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
         side.draw(color, width=3)
         start_point = side.end_point
+    sd.line(point_1, start_point, color, width=3)
+
+
+def draw_hexagon(start_point, start_angle, side_length, color, sides=6):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
+        side.draw(color, width=3)
+        start_point = side.end_point
+    sd.line(point_1, start_point, color, width=3)
+
 
 COLORS_AVALIBLE = {
     1: ("красный", sd.COLOR_RED),
@@ -60,26 +65,19 @@ COLORS_AVALIBLE = {
 }
 
 print("Введите число от 1 до 7, чтобы выбрать цвет.")
-for number in range (1, len(COLORS_AVALIBLE)+1):
+for number in range(1, len(COLORS_AVALIBLE) + 1):
     print(f"{number} - {COLORS_AVALIBLE[number][0]}")
 
 while True:
-    # TODO try: except: не используем делаем проверку на число
-    try:
-        chosen_color = int(input())
-    except:
-        print("Вы ввели не целое число. Повторите ввод.")
-        print()
-        continue
-    # TODO тут делаем проверку на вхождение в словарь по ключу
-    if 0< chosen_color < len(COLORS_AVALIBLE)+1:
-        chosen_color_code = COLORS_AVALIBLE[chosen_color][1]
+    chosen_color = input()
+    if chosen_color.isdigit():
+        chosen_color = int(chosen_color)
+        if chosen_color in COLORS_AVALIBLE:
+            chosen_color_code = COLORS_AVALIBLE[chosen_color][1]
         break
     else:
         print("Вы ввели неверное число! Повторите ввод.")
         print()
-        # TODO continue писать не обязательно цикл повториться и так
-        continue
 
 shapes = {
     3: ("треугольник", draw_triangle),
@@ -91,31 +89,21 @@ shapes = {
 print("Выберите фигуру, которую хотите нарисовать.")
 # Если мы предполагаем расширение списка, то получаем тут такое замечательное уродство, так как предлагаем
 # сделать выбор, начиная с тройки (по кол-ву углов/сторон)
-for number in range (3, len(shapes)+3):
-    print (f"{number} - {shapes[number][0]}")
-
-
+for number in range(3, len(shapes) + 3):
+    print(f"{number} - {shapes[number][0]}")
 
 while True:
-    # TODO try: except: не используем делаем проверку на число
-    try:
-        chosen_shape = int(input())
-    except:
-        print("Вы ввели не целое число. Повторите ввод.")
-        print()
-        continue
-    # TODO тут делаем проверку на вхождение в словарь по ключу
-    if 2 < chosen_shape < len(shapes)+3:
+    chosen_shape = input()
+    if chosen_shape.isdigit():
+        chosen_shape = int(chosen_shape)
+        if chosen_shape in shapes:
             shapes[chosen_shape][1]((250, 250), 0, 100, chosen_color_code)
             break
+        else:
+            print("Вы ввели неверный номер фигуры. Пожалуйста, повторите ввод.")
     else:
         print("Вы указали неверный номер фигуры. Пожалуйста, повторите ввод.")
         # Принт для отступа, чтобы было красивее
         print()
-        # TODO continue писать не обязательно цикл повториться и так
-        continue
-
 
 sd.pause()
-
-# TODO есть недочеты по оформлению кода по PEP8?. Используйте пункт меню пайчарма code-reformatCode

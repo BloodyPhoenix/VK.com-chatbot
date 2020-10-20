@@ -2,6 +2,7 @@
 
 import simple_draw as sd
 
+
 # Часть 1.
 # Написать функции рисования равносторонних геометрических фигур:
 # - треугольника
@@ -36,76 +37,57 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-# Использование range по полному кругу даёт то, что последняя линия рисуется дважды, причём не всегда чётко
-# поверх самой себя, что выглядит некрасиво. Чтобы фигура нормально замкнулась, её необходимо заканчивать через
-# sd.line. Можно делать цикл от количества сторон, тем более что по уму оно используется для расчёта шага, так как
-# сумма углов правильного многоугольника равна 180 * (кол-во сторон - 2)
-
-def draw_triangle(start_point, start_angle, side_length, sides = 3):
+def draw_triangle(start_point, start_angle, side_length, sides=3):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
-    # TODO а что если int(360 \ sides)
-    inner_angle = 180*(sides-2)/sides
-    step = int(180-inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
-        side.draw(sd.COLOR_DARK_ORANGE, width=3)
-        start_point = side.end_point
-
-draw_triangle((100, 100), 20, 200)
-
-def draw_square(start_point, start_angle, side_length, sides = 4):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    inner_angle = 180 * (sides - 2) / sides
-    step = int(180 - inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
-        side.draw(sd.COLOR_DARK_ORANGE, width=3)
-        start_point = side.end_point
-
-draw_square((300,300), 50, 150)
-
-def draw_pentagon(start_point, start_angle, side_length, sides = 5):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    inner_angle = 180 * (sides - 2) / sides
-    step = int(180 - inner_angle)
-    for angle_step in range(0, 361, step):
-        side = sd.get_vector(start_point, start_angle + angle_step, side_length)
-        side.draw(sd.COLOR_DARK_ORANGE, width=3)
-        start_point = side.end_point
-
-draw_pentagon((100,400), 50, 50)
-
-# def draw_hexagon(start_point, start_angle, side_length, sides = 6):
-#     point_1 = sd.get_point(*start_point)
-#     start_point = point_1
-#     inner_angle = 180 * (sides - 2) / sides
-#     step = int(180 - inner_angle)
-#     for angle_step in range(0, 361, step):
-#         side = sd.get_vector(start_point, start_angle + angle_step, side_length)
-#         side.draw(sd.COLOR_DARK_ORANGE, width=3)
-#         start_point = side.end_point
-
-
-
-# Вариант с использованием количества сторон как счётчика цикла
-
-def draw_hexagon(start_point, start_angle, side_length, sides = 6):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    inner_angle = 180 * (sides - 2) / sides
-    step = int(180 - inner_angle)
-    for n in range(0, sides-1):
-        side = sd.get_vector(start_point, start_angle + step*n, side_length)
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
         side.draw(sd.COLOR_DARK_ORANGE, width=3)
         start_point = side.end_point
     sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
 
-draw_hexagon((300, 400), 50, 100)
 
-# TODO есть недочеты по оформлению кода по PEP8?. Используйте пункт меню пайчарма code-reformatCode
+def draw_square(start_point, start_angle, side_length, sides=4):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
+        side.draw(sd.COLOR_DARK_ORANGE, width=3)
+        start_point = side.end_point
+    sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
+
+
+def draw_pentagon(start_point, start_angle, side_length, sides=5):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
+        side.draw(sd.COLOR_DARK_ORANGE, width=3)
+        start_point = side.end_point
+    sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
+
+
+def draw_hexagon(start_point, start_angle, side_length, sides=6):
+    point_1 = sd.get_point(*start_point)
+    start_point = point_1
+    step = 360 / sides
+    for n in range(0, sides - 1):
+        side = sd.get_vector(start_point, start_angle + step * n, side_length)
+        side.draw(sd.COLOR_DARK_ORANGE, width=3)
+        start_point = side.end_point
+    sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
+
+
+draw_triangle((100, 100), 20, 200)
+
+draw_square((300, 300), 50, 150)
+
+draw_pentagon((100, 400), 50, 50)
+
+draw_hexagon((300, 400), 50, 100)
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
