@@ -97,6 +97,7 @@ while True:
     if chosen_shape.isdigit():
         chosen_shape = int(chosen_shape)
         if chosen_shape in shapes:
+            # TODO chosen_color_code нужно объявить в глобальном скоупе! Пайчар ругается
             shapes[chosen_shape][1]((250, 250), 0, 100, chosen_color_code)
             break
         else:
