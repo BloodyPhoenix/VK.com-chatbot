@@ -64,13 +64,10 @@ def draw_hexagon(start_point, start_angle, side_length):
     draw_shape(start_point, start_angle, side_length, sides=6)
 
 
-draw_triangle((100, 100), 20, 200)
 
-draw_square((300, 300), 50, 150)
 
-draw_pentagon((100, 400), 50, 50)
+draw_shape((300, 300), 50, 50, 10)
 
-draw_hexagon((300, 400), 50, 100)
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
