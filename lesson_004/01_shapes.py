@@ -37,7 +37,7 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-def draw_triangle(start_point, start_angle, side_length, sides=3):
+def draw_shape(start_point, start_angle, side_length, sides):
     point_1 = sd.get_point(*start_point)
     start_point = point_1
     step = 360 / sides
@@ -48,37 +48,20 @@ def draw_triangle(start_point, start_angle, side_length, sides=3):
     sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
 
 
-def draw_square(start_point, start_angle, side_length, sides=4):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    step = 360 / sides
-    for n in range(0, sides - 1):
-        side = sd.get_vector(start_point, start_angle + step * n, side_length)
-        side.draw(sd.COLOR_DARK_ORANGE, width=3)
-        start_point = side.end_point
-    sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
+def draw_triangle(start_point, start_angle, side_length):
+    draw_shape(start_point, start_angle, side_length, sides=3)
 
 
-def draw_pentagon(start_point, start_angle, side_length, sides=5):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    step = 360 / sides
-    for n in range(0, sides - 1):
-        side = sd.get_vector(start_point, start_angle + step * n, side_length)
-        side.draw(sd.COLOR_DARK_ORANGE, width=3)
-        start_point = side.end_point
-    sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
+def draw_square(start_point, start_angle, side_length):
+    draw_shape(start_point, start_angle, side_length, sides=4)
 
 
-def draw_hexagon(start_point, start_angle, side_length, sides=6):
-    point_1 = sd.get_point(*start_point)
-    start_point = point_1
-    step = 360 / sides
-    for n in range(0, sides - 1):
-        side = sd.get_vector(start_point, start_angle + step * n, side_length)
-        side.draw(sd.COLOR_DARK_ORANGE, width=3)
-        start_point = side.end_point
-    sd.line(point_1, start_point, sd.COLOR_DARK_ORANGE, width=3)
+def draw_pentagon(start_point, start_angle, side_length):
+    draw_shape(start_point, start_angle, side_length, sides=5)
+
+
+def draw_hexagon(start_point, start_angle, side_length):
+    draw_shape(start_point, start_angle, side_length, sides=6)
 
 
 draw_triangle((100, 100), 20, 200)
@@ -112,13 +95,5 @@ draw_hexagon((300, 400), 50, 100)
 # Поэтому среди программистов есть принцип D.R.Y. https://clck.ru/GEsA9
 # Будьте ленивыми, не используйте копи-пасту!
 
-# TODO Делаем вторую часть, что у нас должно получится в коде
-# TODO одна большая общая функция которая рисует нужную нам фигуру если ей задать соответсвующие параметры
-
-# TODO функция отрисовки будет иметь в себе все то что повторяется в коде во всех функциях!
-
-# TODO в итого код должен быть вот таким для каждой функции-(фигуры):
-# TODO def triangle(нужные параметры):
-# TODO     общая_функция(парметры_для_отрисовки_треугольника)
 
 sd.pause()
