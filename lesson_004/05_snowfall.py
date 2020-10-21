@@ -30,6 +30,7 @@ for _ in range(N):
     snowflakes.append([x, y, lengh])
 
 fallen_snowflakes = []
+snowdrift_height = 0
 
 while True:
     sd.start_drawing()
@@ -115,3 +116,5 @@ sd.pause()
 # - сделать сугоб внизу экрана - если снежинка долетает до низа, оставлять её там,
 #   и добавлять новую снежинку
 # Результат решения см https://youtu.be/XBx0JtxHiLg
+
+# зачет!
