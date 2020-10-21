@@ -30,6 +30,7 @@ for _ in range(N):
     snowflakes.append([x, y, lengh])
 
 fallen_snowflakes = []
+snowdrift_height = 10
 
 while True:
     sd.start_drawing()
@@ -45,16 +46,17 @@ while True:
         sd.snowflake(center=center, length=snowflake_length)
         snowflakes[i][0] = snowflake_x
         snowflakes[i][1] = snowflake_y
-        # TODO предлагаю вам тогда доделать усложненное с сугробом, чтобы он копился в высоту(рос)
-        # TODO Нужно сделать параметр "50" динамическим и увеличить его!
-        if snowflake_y <= 10:
+        if snowflake_y <= snowdrift_height:
             # Используем список для повторной отрисовки, чтобы не возникало артефактов от падаюих сверху снежинок
             # Параметры снежинок записываем кортежем, так как они уже не поменяются
             fallen_snowflakes.append((snowflake_x, snowflake_y, snowflake_length))
-            # Чтобы список не получился бесконечным, удаляем из него первые элементы, когда длина достигнет 100
-            # На этом моменте исезновение первых снежинок и замена на новые уже не заметна
-            if len(fallen_snowflakes) > 100:
+            # Сохраняем проверку на кол-во упавших снежинок, чтобы сугроб не рос бесконечно
+            if len(fallen_snowflakes) > 200:
                 del fallen_snowflakes[0]
+                snowdrift_height = 10
+            # Если длина списка упавших снежинок кратна N (т.е. если упала вся порция), увеличиваем шаг
+            elif len(fallen_snowflakes) % N == 0:
+                snowdrift_height += 10
             for flake in fallen_snowflakes:
                 center = sd.get_point(flake[0], flake[1])
                 sd.snowflake(center, length=flake[2])

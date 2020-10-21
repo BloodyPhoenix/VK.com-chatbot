@@ -68,6 +68,8 @@ print("Введите число от 1 до 7, чтобы выбрать цве
 for number in range(1, len(COLORS_AVALIBLE) + 1):
     print(f"{number} - {COLORS_AVALIBLE[number][0]}")
 
+chosen_color_code = (0, 0 ,0)
+
 while True:
     chosen_color = input()
     if chosen_color.isdigit():
@@ -97,7 +99,6 @@ while True:
     if chosen_shape.isdigit():
         chosen_shape = int(chosen_shape)
         if chosen_shape in shapes:
-            # TODO chosen_color_code нужно объявить в глобальном скоупе! Пайчар ругается
             shapes[chosen_shape][1]((250, 250), 0, 100, chosen_color_code)
             break
         else:
