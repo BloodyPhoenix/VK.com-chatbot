@@ -30,7 +30,6 @@ for _ in range(N):
     snowflakes.append([x, y, lengh])
 
 fallen_snowflakes = []
-snowdrift_height = 10
 
 while True:
     sd.start_drawing()
@@ -53,9 +52,10 @@ while True:
             # Сохраняем проверку на кол-во упавших снежинок, чтобы сугроб не рос бесконечно
             if len(fallen_snowflakes) > 200:
                 del fallen_snowflakes[0]
-            # Если длина списка упавших снежинок кратна N (т.е. если упала вся порция), увеличиваем шаг
+            # Когда пора убирать старые снежинки, сбрасываем высоту сугроба на высоту по умолчанию
             if snowdrift_height == N*10:
                 snowdrift_height = 10
+            # Если длина списка упавших снежинок кратна N (т.е. если упала вся порция), увеличиваем шаг
             elif len(fallen_snowflakes) % N == 0:
                 snowdrift_height += 10
             for flake in fallen_snowflakes:
