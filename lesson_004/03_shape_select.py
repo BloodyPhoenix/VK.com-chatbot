@@ -109,3 +109,5 @@ while True:
         print()
 
 sd.pause()
+
+# зачет!
