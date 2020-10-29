@@ -15,6 +15,8 @@ from district.soviet_street.house2 import room1 as soviet_2_1
 from district.soviet_street.house2 import room1 as soviet_2_2
 
 district_rooms = [central_1_1, central_1_2, central_2_1, central_2_2, soviet_1_1, soviet_1_2, soviet_2_1, soviet_2_2]
+
+# TODO попробуйте применить join без всего этого лишнего вычисления
 district_folks = []
 
 for room in district_rooms:

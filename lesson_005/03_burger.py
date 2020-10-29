@@ -17,7 +17,10 @@
 
 import my_burger
 
+
 def double_cheesburger():
+    # TODO тут мы не создаем, новый список, нужно вызывать только те функции в нужной последовательности из
+    # TODO модуля my_burger
     recipie = ["Состав:"]
     recipie.append(my_burger.add_bread())
     recipie.append(my_burger.add_cutlet())
@@ -33,6 +36,7 @@ def double_cheesburger():
 
 
 def my_favorite_burger():
+    # TODO аналогично
     recipie = ["Состав:"]
     recipie.append(my_burger.add_bread())
     recipie.append(my_burger.add_cutlet())
@@ -45,3 +49,5 @@ def my_favorite_burger():
 
 
 my_favorite_burger()
+
+
