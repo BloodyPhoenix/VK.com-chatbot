@@ -24,7 +24,7 @@ def rainbow(start_color=0, rainbow_delta=0.5):
 
 
 def animated_rainbow():
-    import  simple_draw as draw
+    import simple_draw as draw
     while True:
         for color in range (0, 7):
             if draw.user_want_exit():

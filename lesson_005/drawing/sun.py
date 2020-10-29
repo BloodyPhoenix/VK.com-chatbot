@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def sun(beam_1_lengh):
+def sun(beam_1_lengh=25):
 
     import simple_draw as sd
 
