@@ -19,33 +19,23 @@ import my_burger
 
 
 def double_cheesburger():
-    # TODO тут мы не создаем, новый список, нужно вызывать только те функции в нужной последовательности из
-    # TODO модуля my_burger
-    recipie = ["Состав:"]
-    recipie.append(my_burger.add_bread())
-    recipie.append(my_burger.add_cutlet())
-    recipie.append(my_burger.add_cheese())
-    recipie.append(my_burger.add_cutlet())
-    recipie.append(my_burger.add_cheese())
-    recipie.append(my_burger.add_cucumber())
-    recipie.append(my_burger.add_cetchup())
-    recipie.append(my_burger.add_bread())
-    formated_recipie = "\n"
-    formated_recipie = formated_recipie.join(recipie)
-    print (formated_recipie)
+    my_burger.add_bread()
+    my_burger.add_cutlet()
+    my_burger.add_cheese()
+    my_burger.add_cutlet()
+    my_burger.add_cheese()
+    my_burger.add_cucumber()
+    my_burger.add_cetchup()
+    my_burger.add_bread()
 
 
 def my_favorite_burger():
-    # TODO аналогично
-    recipie = ["Состав:"]
-    recipie.append(my_burger.add_bread())
-    recipie.append(my_burger.add_cutlet())
-    recipie.append(my_burger.add_cheese())
-    recipie.append(my_burger.add_tomato())
-    recipie.append(my_burger.add_bread())
-    formated_recipie = "\n"
-    formated_recipie = formated_recipie.join(recipie)
-    print(formated_recipie)
+    my_burger.add_bread()
+    my_burger.add_cutlet()
+    my_burger.add_cheese()
+    my_burger.add_tomato()
+    my_burger.add_bread()
+
 
 
 my_favorite_burger()

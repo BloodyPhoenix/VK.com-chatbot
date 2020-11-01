@@ -16,16 +16,17 @@ from district.soviet_street.house2 import room1 as soviet_2_2
 
 district_rooms = [central_1_1, central_1_2, central_2_1, central_2_2, soviet_1_1, soviet_1_2, soviet_2_1, soviet_2_2]
 
-# TODO попробуйте применить join без всего этого лишнего вычисления
-district_folks = []
-
+print("На районе живут: ", end="")
 for room in district_rooms:
-    district_folks += room.folks
+    if room is district_rooms[-1]:
+        people = ", "
+        people = people.join(room.folks)
+        print(people, end=".")
+    elif len(room.folks) > 0:
+        people = ", "
+        people = people.join(room.folks)
+        print(people, end=", ")
+    else:
+        continue
 
-formated_folks = ", "
-formated_folks = formated_folks.join(district_folks)
-
-print("На районе живут:", formated_folks)
-
-
-
+# print("На районе живут:", district_folks)

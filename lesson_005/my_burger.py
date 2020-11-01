@@ -1,29 +1,28 @@
 # -*- coding: utf-8 -*-
 
 def add_bread():
-    # TODO тут делаем принты типо добавили булочку
-    return "Булочка"
+    print("Добавили булочку")
 
 
 def add_cutlet():
-    return "Котлета"
+    print("Добавили котлету")
 
 
 def add_cucumber():
-    return "Огурчик"
+    print("Добавили огурчику")
 
 
 def add_tomato():
-    return "Помидор"
+    print("Добавили помидор")
 
 
 def add_mayo():
-    return "Майонез"
+    print("Добавили майонез")
 
 
 def add_cheese():
-    return "Сыр"
+    print("Добавили сыр")
 
 def add_cetchup():
-    return "Кетчуп"
+    print("Добавили кетчуп")
 
