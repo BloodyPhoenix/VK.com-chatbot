@@ -37,7 +37,6 @@ def my_favorite_burger():
     my_burger.add_bread()
 
 
-
 my_favorite_burger()
 
-
+# зачет!
