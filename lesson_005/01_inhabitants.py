@@ -14,4 +14,5 @@ room_2_folks = room_2_folks.join(room_2.folks)
 print("В комнате room_1 живут:", room_1_folks)
 print("В комнате room_2 живут:", room_2_folks)
 
+
 # зачет!
