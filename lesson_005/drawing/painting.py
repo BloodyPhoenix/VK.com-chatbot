@@ -2,6 +2,7 @@
 
 def static_painting ():
 
+    # TODO импорты делаются в самом начале модуля!
     import simple_draw as draw
     from drawing import rainbow, snow, sun, tree, house
 
