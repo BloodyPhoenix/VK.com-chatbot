@@ -23,28 +23,62 @@
 # Пусть слева идет снегопад, радуга переливается цветами, смайлик моргает, солнце крутит лучами, етс.
 # Задержку в анимировании все равно надо ставить, пусть даже 0.01 сек - так библиотека устойчивей работает.
 
-# TODO уже лучше, немного не так не нужно создавать еще две функции которые содержат в себе тоже самый длинный код
-# TODO который нужно разбить по модулям!
-from drawing.painting import static_painting
-from drawing.painting import animated_painting
-# TODO Получается вам нужно импортировать from drawing import house, rainbow, snow, sun, tree и остальные модули
+import simple_draw as draw
+from drawing import rainbow, snow, sun, tree, house
 
-# Раскомментировать строку и запустить модуль, чтобы увидеть статичную картинку
 
-# TODO от этих двух функций можно избавиться перенести код по модулям!
-# TODO Сразу можно делать анимацию, один цикл while True на все модуля будет тут, так же страт и финиш дравтинг тоже
-# TODO тут в этом цикле, статитку вызываем до цикла, в цикле вызываем динамику.
-# static_painting()
 
-animated_painting(rainbow_delta=1)
+draw.set_screen_size(1500, 1000)
 
-# TODO А тут уже вызвать эти функции из модулей,
-#  в каждом модуле допустим house будет функция которая отвечает за полною отрисовку
-# TODO В модуле будут храниться все нужные переменные для этого
-# TODO И тут вы ее только вызовите!
-# TODO house_draw(атрибуты)
+# Статичная картинка
+# draw.start_drawing()
+# sun.sun()
+# rainbow.rainbow(rainbow_delta=1)
+# house.field()
+# tree.three_trees_scenery()
+# snow.draw_snowdrift(snow.snowdrift(base_height=190, max_x=450))
+# house.house()
+# draw.finish_drawing()
 
-# TODO так и для снежинок будет функция которая отвечает за отрисовку полностью
-# TODO в модуле будет все что нужно!
-# TODO вызываем:
-# TODO snowflakes_draw(атрибуты)
+# Анимированная картинка
+
+tree.two_trees_scenery()
+draw.take_background()
+animation_counter = 0
+rainbow_counter = 0
+left_snowdrift = snow.snowdrift(base_height=190, max_x=450)
+front_snowdrift = snow.snowdrift(base_height=10, max_x=1500)
+beam_1_lenght = 25
+falling_flakes = 0
+while True:
+    draw.start_drawing()
+    draw.draw_background()
+    rainbow.rainbow(start_color=rainbow_counter, rainbow_delta=1)
+    house.field()
+    beam_1_lenght = sun.animated_sun(beam_1_lenght)
+    if beam_1_lenght > 55:
+        beam_1_lenght = 25
+    if animation_counter % 10 == 0 or animation_counter % 11 == 0 or animation_counter % 12 == 0:
+        house.house(blink=1)
+    else:
+        house.house(blink=0)
+    snow.draw_snowdrift(left_snowdrift)
+    snow.draw_snowdrift(front_snowdrift)
+    if animation_counter < 1:
+        falling_flakes = snow.snowfall()
+    else:
+        falling_flakes = snow.snowfall(falling_flakes)
+    animation_counter += 1
+    if animation_counter > 120:
+        animation_counter = 0
+    if animation_counter % 4 == 0:
+        rainbow_counter += 1
+        if rainbow_counter > 6:
+            rainbow_counter = 0
+    draw.finish_drawing()
+    draw.sleep(0.1)
+
+    if draw.user_want_exit():
+        break
+
+draw.pause()
