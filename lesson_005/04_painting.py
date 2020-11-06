@@ -82,3 +82,5 @@ while True:
         break
 
 draw.pause()
+
+# зачет!
