@@ -6,6 +6,11 @@ _secret_number = []
 
 
 def guess_number():
+    # TODO Можно упростить заводим бесконечный цикл
+    # TODO final_result присваиваем строку в которой randint(1000, 9999)
+    # TODO Потом проверяем если set этой строки без дублей, (и прочекать длину)
+    # TODO то выходим из цикла
+    # TODO и возвращаем нужный нам результат
     global _secret_number
     if len(_secret_number) > 0:
         _secret_number = []
@@ -17,7 +22,12 @@ def guess_number():
                 break
     return None
 
+# TODO вот тут как раз пишем функцию проверки которая наружу будет выдавать True\False
+# TODO нам нужен отдельный метод который чекает число пользователя на ошибки,
+# TODO Можно создать список булевых значений и чекать его сразу в if функцией all, будет один if!
+# TODO У вас должно быть 4 проверки: на число, на длинну, на длинну set, и на первый 0, только в нужном порядке!
 
+# TODO разделить эту функцию на две
 def counting_bulls_and_cows(user_number):
     bulls_and_cows = {"bulls": 0, "cows": 0}
     if len(user_number) < 4:
