@@ -23,8 +23,10 @@ while True:
     sd.start_drawing()
     draw_snowflakes(sd.background_color)
     move_snowflakes()
+    # TODO используем константы цвета из библиотеке
     draw_snowflakes(color=(255, 255, 255))
     fallen_flakes = fallen_flakes_numbers()
+    # TODO тут можно написать просто if fallen_flakes:
     if len(fallen_flakes) > 0:
         delete_snowflakes(fallen_flakes)
         create_snowflakes(len(fallen_flakes))
