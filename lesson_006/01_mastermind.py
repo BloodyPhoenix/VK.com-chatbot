@@ -44,4 +44,51 @@
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
 
-# TODO здесь ваш код...
+from mastermind_engine import guess_number, counting_bulls_and_cows
+from termcolor import cprint
+
+guess_number()
+tries_counter = 0
+while True:
+    cprint("Введите четырёхзначное число от 1 до 9 и нажмите Enter", "yellow")
+    user_number = input()
+    user_number = list(user_number)
+    bulls_and_cows = counting_bulls_and_cows(user_number)
+    if bulls_and_cows == "less_than_four":
+        cprint("Вы ввели менее четырёх знаков! Повторите ввод.", "red")
+        print()
+        continue
+    elif bulls_and_cows == "more_than_four":
+        cprint("Вы ввели более четырёх знаков! Повторите ввод.", "red")
+        print()
+        continue
+    elif bulls_and_cows == "value_error":
+        cprint("Не все введённые знаки - числа! Повторите ввод.", "red")
+        print()
+        continue
+    elif bulls_and_cows == "double_value":
+        cprint("Вы ввели повторяющиеся цифры! Повторите ввод.", "red")
+        print()
+        continue
+    elif bulls_and_cows == "zero_in_list":
+        cprint("Одно из введённых чисел - 0! Повторите ввод.", "red")
+        print()
+        continue
+    elif bulls_and_cows == "win":
+        cprint("Поздравляем! Вы выиграли!", "magenta")
+        print("Ходов сделано:", tries_counter)
+        print()
+        cprint("Если хотите сыграть ещё раз, введите \"Да\" и нажмите Enter", "green")
+        play_again = input().lower()
+        if not play_again.startswith("д"):
+            break
+        tries_counter = 0
+        guess_number()
+        print()
+    else:
+        answer = "Быки - " + str(bulls_and_cows["bulls"]) + ", коровы - " + str(bulls_and_cows["cows"]) + "."
+        cprint(answer, "yellow")
+        tries_counter += 1
+        print()
+
+
