@@ -20,8 +20,11 @@ def create_snowflakes(number):
 
 
 def draw_snowflakes(color=sd.COLOR_WHITE):
+    # TODO если мы не изменяем список _snowflakes то глобал можно не указывать он ее возьмет сам из глобального
+    # TODO скоупа
     global _snowflakes
         for i in range(len(_snowflakes)):
+            # TODO съехал таб
         snowflake_x = _snowflakes[i][0]
         snowflake_y = _snowflakes[i][1]
         snowflake_length = _snowflakes[i][2]
@@ -32,6 +35,7 @@ def draw_snowflakes(color=sd.COLOR_WHITE):
 def move_snowflakes():
     global _snowflakes
     draw_snowflakes(sd.background_color)
+    # TODO первый 0 можно не указывать! Поправить ниже по коду
     for i in range(0, len(_snowflakes)):
         snowflake_x = _snowflakes[i][0]
         snowflake_y = _snowflakes[i][1]
@@ -43,7 +47,10 @@ def move_snowflakes():
 
 def fallen_flakes_numbers():
     fallen_flakes = []
-    # Зачем тут enumerate, если мне нужны индексы снежинок, а не сами снежики?
+    # TODO можно было записать вот так:
+    # for index, snowflake in enumerate(_snowflakes):
+    #     if snowflake[1] < 0:
+    #         fallen_flakes.append(index)
     for i in range (0, len(_snowflakes)):
         snowflake_y = _snowflakes[i][1]
         snowflake_lenght = _snowflakes[i][2]
@@ -52,8 +59,11 @@ def fallen_flakes_numbers():
     return fallen_flakes
 
 
-# Не поняла ни что надо сделать, ни зачем. Fallen_flakes УЖЕ возвращает именно индексы
 
+# TODO для того чтобы удалять снежинки по индексам вам нужно
+# TODO в цикле получить те самые индексы, но предварительно список fallen_flakes отсортировать и перевернуть
+# TODO Как только получили индекс по нему можно сразу удалить снежинку из списка _snowflakes
+# TODO останется решить проблему как и где обнулить fallen_flakes
 def delete_snowflakes(snowflakes_numbers):
     global _snowflakes
     for i in range(0, len(_snowflakes)):
