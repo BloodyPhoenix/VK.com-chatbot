@@ -44,7 +44,7 @@
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
 
-from mastermind_engine import guess_number, counting_bulls_and_cows
+from mastermind_engine import guess_number, check_user_number, counting_bulls_and_cows, new_game
 from termcolor import cprint
 
 guess_number()
@@ -52,12 +52,17 @@ tries_counter = 0
 while True:
     cprint("Введите четырёхзначное число и нажмите Enter. Первая цифра не может быть нулём.", "yellow")
     user_number = input()
-    correct, bulls_and_cows = counting_bulls_and_cows(user_number)
+    correct, message = check_user_number(user_number)
     if not correct:
-        cprint(bulls_and_cows, "red")
+        cprint(message, "red")
         print()
-    elif bulls_and_cows == "win":
-        tries_counter += 1
+        continue
+    tries_counter += 1
+    win, bulls_and_cows = counting_bulls_and_cows(user_number)
+    if not win:
+        answer = "Быки - " + str(bulls_and_cows["bulls"]) + ", коровы - " + str(bulls_and_cows["cows"]) + "."
+        cprint(answer, "yellow")
+    else:
         cprint("Поздравляем! Вы выиграли!", "magenta")
         print("Ходов сделано:", tries_counter)
         print()
@@ -65,15 +70,7 @@ while True:
         play_again = input().lower()
         if not play_again.startswith("д"):
             break
-        tries_counter = 0
-        guess_number()
-        print()
-    else:
-        answer = "Быки - " + str(bulls_and_cows["bulls"]) + ", коровы - " + str(bulls_and_cows["cows"]) + "."
-        cprint(answer, "yellow")
-        tries_counter += 1
-        print()
+        tries_counter = new_game()
 
 
-# TODO Подсказывать буду вам поэтапно, пока подумайте как разбить код который находится в цикла на функции
-# TODO и вынести их выше цикла, о функциях я вам уже писал в прошлый раз. Пока поработаем с движком.
+
