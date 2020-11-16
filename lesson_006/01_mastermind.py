@@ -47,60 +47,17 @@
 from mastermind_engine import guess_number, counting_bulls_and_cows
 from termcolor import cprint
 
-# TODO тут мы дописываем две функции:
-
-# TODO Первая которая будет просить ввести число, будет обращаться у API за проверкой этого числа,
-# TODO и выводить только что мы ввели верное число или неверное и просить ввести его заново!
-
-# TODO Вторая как раз будет функция новая_игра() в ней мы совместим общение с пользователем если он выиграл
-# TODO + попросим выбрать его будет ли он играть еще раз или выходим!
-
-
-# TODO в главном цикле мы только вызываем нужные нам функции!
-# TODO Алгоритм примерно такой:
-
-# TODO просим_ввести_число_корректное()
-# TODO получаем данные из функции, которая чекает число на результат и возвращает словарь
-# TODO печатаем этот результат
-# TODO увеличиваем число ходов
-# TODO условие на победу и новую иру в виде двух функций:
-# TODO Если выиграли_игру():
-# TODO    новая_игра()
-
-
-# TODO важно функции которые ведут диалог с пользователем в API быть не должно, там только логика и вычисления
-# TODO объявляем их тут
-
-# TODO пример алгоритма как в 02 задании, там только функции в цикле
-
 guess_number()
 tries_counter = 0
 while True:
-    cprint("Введите четырёхзначное число от 1 до 9 и нажмите Enter", "yellow")
+    cprint("Введите четырёхзначное число и нажмите Enter. Первая цифра не может быть нулём.", "yellow")
     user_number = input()
-    user_number = list(user_number)
-    bulls_and_cows = counting_bulls_and_cows(user_number)
-    if bulls_and_cows == "less_than_four":
-        cprint("Вы ввели менее четырёх знаков! Повторите ввод.", "red")
+    correct, bulls_and_cows = counting_bulls_and_cows(user_number)
+    if not correct:
+        cprint(bulls_and_cows, "red")
         print()
-        continue
-    elif bulls_and_cows == "more_than_four":
-        cprint("Вы ввели более четырёх знаков! Повторите ввод.", "red")
-        print()
-        continue
-    elif bulls_and_cows == "value_error":
-        cprint("Не все введённые знаки - числа! Повторите ввод.", "red")
-        print()
-        continue
-    elif bulls_and_cows == "double_value":
-        cprint("Вы ввели повторяющиеся цифры! Повторите ввод.", "red")
-        print()
-        continue
-    elif bulls_and_cows == "zero_in_list":
-        cprint("Одно из введённых чисел - 0! Повторите ввод.", "red")
-        print()
-        continue
     elif bulls_and_cows == "win":
+        tries_counter += 1
         cprint("Поздравляем! Вы выиграли!", "magenta")
         print("Ходов сделано:", tries_counter)
         print()
@@ -116,5 +73,3 @@ while True:
         cprint(answer, "yellow")
         tries_counter += 1
         print()
-
-
