@@ -47,46 +47,42 @@
 from mastermind_engine import guess_number, check_user_number, counting_bulls_and_cows, new_game
 from termcolor import cprint
 
-guess_number()
-tries_counter = 0
 
-# TODO хорошо, давай те разобьем данный код на логические блоги и вынесем в функции
-# TODO Должно получиться примерно вот так
-# TODO Функции пишем тут выше, цикла.
+def user_input():
+    while True:
+        cprint("Введите четырёхзначное число и нажмите Enter. Первая цифра не может быть нулём.", "yellow")
+        user_number = input()
+        correct, message = check_user_number(user_number)
+        if not correct:
+            cprint(message, "red")
+            print()
+            continue
+        return user_number
 
-# TODO в главном цикле мы только вызываем нужные нам функции!
-# TODO Алгоритм примерно такой:
 
-# TODO просим_ввести_число_корректное() - функция
-# TODO получаем данные из функции, которая чекает число на результат и возвращает словарь
-# TODO печатаем этот результат, тут тоже вызов функции() и запись в переменную
-# TODO увеличиваем число ходов - тут простой счетчик
-# TODO условие на победу и новую иру в виде двух функций:
-# TODO Если выиграли_игру(): - функция
-# TODO    новая_игра() - функция
-
-while True:
-    cprint("Введите четырёхзначное число и нажмите Enter. Первая цифра не может быть нулём.", "yellow")
-    user_number = input()
-    correct, message = check_user_number(user_number)
-    if not correct:
-        cprint(message, "red")
-        print()
-        continue
-    tries_counter += 1
-    win, bulls_and_cows = counting_bulls_and_cows(user_number)
+def check_win(number):
+    win, bulls_and_cows = counting_bulls_and_cows(number)
     if not win:
         answer = "Быки - " + str(bulls_and_cows["bulls"]) + ", коровы - " + str(bulls_and_cows["cows"]) + "."
         cprint(answer, "yellow")
+        print()
+        return False
     else:
         cprint("Поздравляем! Вы выиграли!", "magenta")
         print("Ходов сделано:", tries_counter)
         print()
         cprint("Если хотите сыграть ещё раз, введите \"Да\" и нажмите Enter", "green")
+        return True
+
+
+guess_number()
+tries_counter = 0
+while True:
+    user_number = user_input()
+    tries_counter += 1
+    if check_win(user_number):
         play_again = input().lower()
         if not play_again.startswith("д"):
+            cprint("До свидания!", "magenta")
             break
         tries_counter = new_game()
-
-
-

@@ -2,7 +2,6 @@
 
 import simple_draw as sd
 
-
 _snowflakes = []
 
 
@@ -42,37 +41,13 @@ def move_snowflakes():
 
 def fallen_flakes_numbers():
     fallen_flakes = []
-    # TODO почему в большей части нужно делать так, это более питонический подход
-    # TODO Посмотрите статью по этому поводу.
-    # TODO https://habr.com/ru/company/ruvds/blog/485648/
-
-    for i in range(len(_snowflakes)):
-        snowflake_y = _snowflakes[i][1]
-        snowflake_lenght = _snowflakes[i][2]
-        # TODO для удобочитаемости 0-(snowflake_lenght)*2 вынесете в отдельную переменную, скобки не нужны!
-        if snowflake_y < 0-(snowflake_lenght)*2:
+    for i, snowflake in enumerate(_snowflakes):
+        if snowflake[1] < 0 - snowflake[2] * 2:
             fallen_flakes.append(i)
     return fallen_flakes
 
 
-# Зачем его переворачивать, если он УЖЕ содержит индексы? От того, что я его переверну, значения индексов не изменятся.
-# TODO чтобы удаление было с конца, допустим у нас список [5, 9] если мы удалим индекс 5, длинна сместиться
-# TODO и 9 индекса уже не будет!
-# счёт обнуления fallen_flakes - он пересчитывается заново при отрисовке каждого кажра, зачем его обнулять?
-# TODO Хорошо давайте посмотрим как будет работать скрипт с этими изменениями.
-
-
 def delete_snowflakes(snowflakes_numbers):
-    global _snowflakes
-    # TODO исправить, писал вам про это в прошлых туду про 0
-    for i in range(0, len(_snowflakes)):
-        if i in snowflakes_numbers:
-            # TODO отрисовывать тут мы ничего не должны, только удаляем! Может быть по этому сразу было не видно
-            # TODO что происходит с снежинками если список не перевернуть
-            snowflake_x = _snowflakes[i][0]
-            snowflake_y = _snowflakes[i][1]
-            snowflake_length = _snowflakes[i][2]
-            center = sd.get_point(snowflake_x, snowflake_y)
-            sd.snowflake(center=center, length=snowflake_length, color=sd.background_color)
-            del _snowflakes[i]
-
+    snowflakes_numbers = snowflakes_numbers[::-1]
+    for i in (snowflakes_numbers):
+        del _snowflakes[i]
