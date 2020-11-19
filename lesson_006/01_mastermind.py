@@ -86,3 +86,5 @@ while True:
             cprint("До свидания!", "magenta")
             break
         tries_counter = new_game()
+
+# зачет!
