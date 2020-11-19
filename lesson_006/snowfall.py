@@ -49,5 +49,5 @@ def fallen_flakes_numbers():
 
 def delete_snowflakes(snowflakes_numbers):
     snowflakes_numbers = snowflakes_numbers[::-1]
-    for i in (snowflakes_numbers):
+    for i in snowflakes_numbers:
         del _snowflakes[i]
