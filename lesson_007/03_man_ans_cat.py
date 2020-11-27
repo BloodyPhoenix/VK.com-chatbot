@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from random import randint
 
 # Доработать практическую часть урока lesson_007/python_snippets/08_practice.py
 
@@ -25,10 +24,198 @@ from random import randint
 
 # Человеку и коту надо вместе прожить 365 дней.
 
-# TODO здесь ваш код
+from random import randint, shuffle
+
+
+# Реализуем модель человека.
+# Человек может есть, работать, играть, ходить в магазин.
+# У человека есть степень сытости, немного еды и денег.
+# Если сытость < 0 единиц, человек умирает.
+# Человеку надо прожить 365 дней.
+from termcolor import cprint
+
+
+class Man:
+
+    def __init__(self, name):
+        self.name = name
+        self.fullness = 50
+        self.house = None
+        self.cats = []
+
+    def __str__(self):
+        return f'Я - {self.name}, моя сытость {self.fullness}'
+
+    def eat(self):
+        if self.house.food >= 10:
+            cprint(f'{self.name} поел', color='yellow')
+            self.fullness += 10
+            self.house.food -= 10
+        else:
+            cprint(f'{self.name} нет еды', color='red')
+
+    def work(self):
+        cprint(f'{self.name} сходил на работу', color='blue')
+        self.house.money += 150
+        self.fullness -= 10
+
+    def watch_MTV(self):
+        cprint(f'{self.name} смотрел MTV целый день', color='green')
+        self.fullness -= 10
+
+    def shopping(self):
+        if self.house.money >= 50:
+            cprint(f'{self.name} сходил в магазин за едой', color='magenta')
+            self.house.money -= 50
+            self.house.food += 50
+        else:
+            cprint(f'{self.name} деньги кончились!', color='red')
+
+    def go_to_the_house(self, house):
+        self.house = house
+        self.fullness -= 10
+        cprint(f'{self.name} вьехал в дом', color='cyan')
+
+    def take_cat(self, cat):
+        cat.house = self.house
+        self.cats.append(cat)
+        self.fullness -= 10
+        cat.fullness -= 10
+        cprint(f"Завёл кота по имени {cat.name}", color="green")
+
+    def buy_cat_food(self):
+        if self.house.money >= 50:
+            cprint(f'{self.name} купил кошачий корм', color='magenta')
+            self.house.money -= 50
+            self.house.cat_food += 50
+        else:
+            cprint(f'{self.name} деньги кончились!', color='red')
+
+    def clean_house(self):
+        self.house.dirt -= 100
+        self.fullness -= 20
+        cprint(f"{self.name} убрал дом", color="magenta")
+
+    def act(self):
+        if self.fullness <= 0:
+            cprint(f'{self.name} умер...', color='red')
+            return
+        dice = randint(1, 6)
+        if self.house.money < 50:
+            self.work()
+        elif self.house.cat_food <= 10:
+            self.buy_cat_food()
+        elif self.house.food < 10:
+            self.shopping()
+        elif self.fullness <= 20:
+            self.eat()
+        elif self.house.dirt >=100:
+            self.clean_house()
+        elif dice == 1:
+            self.work()
+        elif dice == 2:
+            self.eat()
+        else:
+            self.watch_MTV()
+
+
+class Cat:
+
+    def __init__(self, name):
+        self.name = name
+        self.fullness = 30
+        self.house = None
+
+    def __str__(self):
+        return f"Я - {self.name}, моя сытость {self.fullness}"
+
+    def tear_wallpaper(self):
+        self.house.dirt += 5
+        self.fullness -= 10
+        cprint(f"{self.name} драл обои. {self.name} хороший кот", color = "yellow")
+
+    def eat(self):
+        if self.house.cat_food >= 10:
+            if self.fullness % 10 == 0:
+                self.fullness += 20
+                self.house.cat_food -= 10
+            elif self.house.cat_food == 5:
+                self.fullness += 10
+                self.house.cat_food -= 5
+            else:
+                self.fullness += 25
+                self.house.cat_food -= 15
+            cprint(f"{self.name} поел", color="green")
+        else:
+            cprint(f"Безобразие! Коту нечего есть!", color="red")
+            self.fullness -= 5
+
+    def sleep(self):
+        self.fullness -= 10
+        cprint(f"{self.name} спал весь день", color="green")
+
+    def act(self):
+        if self.fullness <= 0:
+            cprint(f"{self.name} умер...", color="red")
+            return
+        dice = randint(1, 6)
+        if self.fullness <= 10:
+            self.eat()
+        elif dice < 4:
+            self.tear_wallpaper()
+        else:
+            self.sleep()
+
+
+
+class House:
+
+    def __init__(self):
+        self.food = 50
+        self.money = 0
+        self.dirt = 0
+        self.cat_food = 30
+
+    def __str__(self):
+        return f'В доме еды осталось {self.food}, кошачьего корма осталось {self.cat_food}, ' \
+               f'денег осталось {self.money}, грязи в доме - {self.dirt}'
+
+
 
 # Усложненное задание (делать по желанию)
 # Создать несколько (2-3) котов и подселить их в дом к человеку.
 # Им всем вместе так же надо прожить 365 дней.
 
 # (Можно определить критическое количество котов, которое может прокормить человек...)
+
+my_home = House()
+human_slave = Man("Человеческий раб")
+cat_tzar = Cat("Царь")
+cat_emperor = Cat("Император")
+cat_his_majesty = Cat("Его Величество")
+human_slave.go_to_the_house(my_home)
+human_slave.take_cat(cat_tzar)
+human_slave.take_cat(cat_emperor)
+# human_slave.take_cat(cat_his_majesty)
+human_slave.eat()
+
+# Если повезёт, человек может прокормить трёх котов. Если не повезёт - человек умрёт от голода, не успевая кормить котов
+# и убирать за ними. Или умрёт кот...
+
+
+for day in range(1, 366):
+    print(f'================ день {day} ==================')
+    human_slave.act()
+    if human_slave.fullness <= 0:
+        cprint(f"{human_slave.name} умер. Давайте не будем ждать, пока умрут котики...", color="red")
+        break
+    shuffle(human_slave.cats)
+    for cat in human_slave.cats:
+        cat.act()
+    print('--- в конце дня ---')
+    print(cat_tzar)
+    print(cat_emperor)
+    # print(cat_his_majesty)
+    print(human_slave)
+    print(my_home)
+
