@@ -120,7 +120,8 @@ class Man:
     def check_if_alive(self):
         if self.fullness <= 0:
             cprint(f'{self.name} умер...', color='red')
-            return
+            return False
+        return True
 
 
 class Cat:
@@ -140,10 +141,10 @@ class Cat:
 
     def eat(self):
         # TODO после доработок потестим этот метод, возможно его нужно будет упростить.
-        # Я его так усложнила, когда тестила 2 и более котов. Задача - чтобы кот хотя бы один день прожил, если еды нет
-        # А потом, когда она появилась - отъелся до максимальной сытости.
-        # Кстати, не имеет ли смысл сделать смерть, если сытость строго меньше 0, а не меньше или равна?
-        # Чтобы был запас времени на поесть
+        # TODO Я его так усложнила, когда тестила 2 и более котов, чтобы кот хотя бы один день прожил, если еды нет
+        # TODO А потом, когда она появилась - отъелся до максимальной сытости.
+        # TODO Кстати, не имеет ли смысл сделать смерть, если сытость строго меньше 0, а не меньше или равна?
+        # TODO Чтобы был запас времени на поесть
         if self.house.cat_food >= 10:
             if self.fullness % 10 == 0:
                 self.fullness += 20
@@ -175,7 +176,9 @@ class Cat:
     def check_if_alive(self):
         if self.fullness <= 0:
             cprint(f"{self.name} умер...", color="red")
-            return
+            return False
+        else:
+            return True
 
 
 class House:
@@ -202,8 +205,8 @@ human_slave = Man("Человеческий раб")
 cats = [Cat("Царь"), Cat("Император"), ]
 # cat_his_majesty = Cat("Его Величество")
 human_slave.go_to_the_house(my_home)
-# Тут надо до начала основного цикла принудительно покормить человека или не прописывать ему уменьшение сытости от того,
-# что он завёл котов. Иначе он сразу умирает...
+# TODO Тут надо до начала основного цикла принудительно покормить человека или не прописывать ему уменьшение сытости от
+# TODO того, что он завёл котов. Иначе он сразу умирает...
 for cat in cats:
     human_slave.take_cat(cat)
 
@@ -217,13 +220,9 @@ for cat in cats:
 
 for day in range(1, 366):
     print(f'================ день {day} ==================')
-    human_slave.act()
-    # TODO это условие нужно убрать!
-    if human_slave.fullness <= 0:
-        cprint(f"{human_slave.name} умер. Давайте не будем ждать, пока умрут котики...", color="red")
-        break
     # TODO для чего мы их мешаем ? в любом в случае цикл по ним пройдется
     # TODO так shuffle не работает!
+    # TODO того, чтобы у них каждый день менялс порядок, в котором они действуют. Так интереснее.
     shuffle(cats)
     for cat in cats:
         cat.act()
@@ -232,8 +231,8 @@ for day in range(1, 366):
         print(cat)
     print(human_slave)
     print(my_home)
-    # TODO а вот тут как раз сделать проверку из ходя из метода check_if_alive, и выходить из цикла.
-    human_slave.check_if_alive()
+    if not human_slave.check_if_alive():
+        break
     for cat in cats:
-        # TODO нужно доработать так чтобы в случае фейл мы остановили главный цикл!
-        cat.check_if_alive()
+        if not cat.check_if_alive():
+            break

@@ -21,9 +21,9 @@ class Snowflake:
         sd.snowflake(self.center, self.lenght, color=sd.background_color)
 
     def move(self):
-        # TODO тут используем метод класса если может_падать то меняем значения
-        self.y -= 15
-        self.x += sd.random_number(-10, 10)
+        if self.can_fall():
+            self.y -= 15
+            self.x += sd.random_number(-10, 10)
 
     def draw(self):
         self.center = sd.get_point(self.x, self.y)
@@ -47,12 +47,12 @@ class Snowflake:
 
 # шаг 2: создать снегопад - список объектов Снежинка в отдельном списке, обработку примерно так:
 
-flakes = []
+_flakes = []
 
 
 def get_flakes(count):
     for _ in range(count):
-        flakes.append(Snowflake())
+        _flakes.append(Snowflake())
 
 
 def get_fallen_flakes():
@@ -71,7 +71,7 @@ def append_flakes(fallen_flakes):
 get_flakes(20)
 while True:
     sd.start_drawing()
-    for flake in flakes:
+    for flake in _flakes:
         flake.clear_previous_picture()
         flake.move()
         flake.draw()
