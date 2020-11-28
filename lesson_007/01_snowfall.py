@@ -9,37 +9,11 @@ import simple_draw as sd
 #  - отрисовку
 
 
-# TODO экземпляр класса должен отвечать только за создание одной снежинки
 class Snowflake:
 
-    fallen_flakes = 0
-    flakes = []
-    count=20
-
-    # TODO эти три функции по заданию не должны находиться в классе
-    def get_flakes():
-        for _ in range(Snowflake.count):
-            Snowflake.flakes.append(Snowflake())
-
-    def get_fallen_flakes():
-        for i, flake in enumerate(Snowflake.flakes):
-            if not flake.can_fall():
-                del Snowflake.flakes[i]
-                Snowflake.fallen_flakes += 1
-
-
-    def append_flakes():
-        Snowflake.count = Snowflake.fallen_flakes
-        Snowflake.get_flakes()
-        Snowflake.fallen_flakes = 0
-
     def __init__(self):
-        # TODO тут у нас должно быть по сути только три параметра, это получение X Y LENGTH - lower case
-        max_x = sd.resolution[0] - 100
-        max_y = sd.resolution[1] + 200
-        min_y = sd.resolution[1] + 100
-        self.y = sd.random_number(min_y, max_y)
-        self.x = sd.random_number(100, max_x)
+        self.y = sd.random_number(sd.resolution[1] + 100, sd.resolution[1] + 200)
+        self.x = sd.random_number(100, sd.resolution[0] - 100)
         self.lenght = sd.random_number(20, 50)
         self.center = sd.get_point(self.x, self.y)
 
@@ -49,10 +23,9 @@ class Snowflake:
     def move(self):
         self.y -= 15
         self.x += sd.random_number(-10, 10)
-        # TODO точку должны получать в методе draw и clear_previous_picture ее можно сделать внутренней
-        self.center = sd.get_point(self.x, self.y)
 
     def draw(self):
+        self.center = sd.get_point(self.x, self.y)
         sd.snowflake(self.center, self.lenght)
 
     def can_fall(self):
@@ -73,16 +46,35 @@ class Snowflake:
 
 # шаг 2: создать снегопад - список объектов Снежинка в отдельном списке, обработку примерно так:
 
-Snowflake.get_flakes()
+flakes = []
+
+def get_flakes(count):
+    for _ in range(count):
+        flakes.append(Snowflake())
+
+def get_fallen_flakes():
+    fallen_flakes = 0
+    for i, flake in enumerate(flakes):
+        if not flake.can_fall():
+            del flakes[i]
+            fallen_flakes += 1
+    return fallen_flakes
+
+
+def append_flakes(fallen_flakes):
+    get_flakes(fallen_flakes)
+
+
+get_flakes(20)
 while True:
     sd.start_drawing()
-    for flake in Snowflake.flakes:
+    for flake in flakes:
         flake.clear_previous_picture()
         flake.move()
         flake.draw()
-    Snowflake.get_fallen_flakes()  # подчитать сколько снежинок уже упало
-    if Snowflake.fallen_flakes:
-        Snowflake.append_flakes()  # добавить еще сверху
+    fallen_flakes = get_fallen_flakes()  # подчитать сколько снежинок уже упало
+    if fallen_flakes:
+        append_flakes(fallen_flakes)  # добавить еще сверху
     sd.finish_drawing()
     sd.sleep(0.1)
     if sd.user_want_exit():
