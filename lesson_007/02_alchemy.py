@@ -166,9 +166,11 @@ class Swamp:
     def __str__(self):
         return "Болото"
 
+
 class Sand:
     def __str__(self):
         return "Песок"
+
 
 class Plankton:
     def __str__(self):
@@ -181,3 +183,5 @@ print(Water(), "+", Ground(), "=", Water()+Ground(), "+", Fire(), "=", Water() +
 # Усложненное задание (делать по желанию)
 # Добавить еще элемент в игру.
 # Придумать что будет при сложении существующих элементов с новым.
+
+# зачет!
