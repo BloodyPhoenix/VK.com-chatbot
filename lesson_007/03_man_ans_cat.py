@@ -147,7 +147,6 @@ class Cat:
         else:
             cprint(f"Безобразие! Коту нечего есть!", color="red")
 
-
     def sleep(self):
         self.fullness -= 10
         cprint(f"{self.name} спал весь день", color="green")
@@ -215,3 +214,6 @@ for day in range(1, 366):
         break
     if any([not cat.check_if_alive() for cat in cats]):
         break
+
+
+# зачет!
