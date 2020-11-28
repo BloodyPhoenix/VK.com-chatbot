@@ -55,6 +55,7 @@ def get_flakes(count):
         _flakes.append(Snowflake())
 
 
+# TODO функция должна принимать flakes
 def get_fallen_flakes():
     fallen_flakes = 0
     for i, flake in enumerate(flakes):
