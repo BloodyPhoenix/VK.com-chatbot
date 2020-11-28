@@ -99,16 +99,19 @@ class Man:
         cprint(f"{self.name} убрал дом", color="magenta")
 
     def act(self):
+        # TODO подправил вам алгоритм, сначала еда потом поход в магазин и далее ...
+        # TODO Теперь человек живет стабильно, а с котами если 3 много то можно их оставить 2, но вроде и 3 справляется
         dice = randint(1, 6)
-        if self.house.money < 50:
-            self.work()
-        elif self.house.cat_food <= 10:
-            self.buy_cat_food()
-        elif self.house.food < 10:
-            self.shopping()
-        elif self.fullness <= 20:
+        if self.fullness <= 20:
             self.eat()
-        elif self.house.dirt >= 100:
+        elif self.house.food <= 10:
+            self.shopping()
+        elif self.house.money <= 50:
+            self.work()
+        # TODO тут сделал 30 потому что если они разом поедят то понятно дело потом первому не хватит
+        elif self.house.cat_food <= 30:
+            self.buy_cat_food()
+        elif self.house.dirt > 100:
             self.clean_house()
         elif dice == 1:
             self.work()
@@ -140,12 +143,7 @@ class Cat:
         cprint(f"{self.name} драл обои. {self.name} хороший кот", color="yellow")
 
     def eat(self):
-        #  Я его так усложнила, когда тестила 2 и более котов, чтобы кот хотя бы один день прожил, если еды нет
-        # А потом, когда она появилась - отъелся до максимальной сытости.
-        # Кстати, не имеет ли смысл сделать смерть, если сытость строго меньше 0, а не меньше или равна?
-        # Чтобы был запас времени на поесть
-        # TODO вообще не принципиально, потому что мы кормим котов >=10
-        # TODO принципиально, когда в какой-то день одному коту еды хватило, а второму - уже нет.
+        # значит три кота это критическое количество котов и цикл нужно запускать только с двумя.
 
         if self.house.cat_food >= 10:
             if self.fullness % 10 == 0:
@@ -170,8 +168,11 @@ class Cat:
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
-        elif dice <= 3:
+        # TODO тут сделаем вот так
+        elif dice == 1:
             self.tear_wallpaper()
+        elif dice == 2:
+            self.eat()
         else:
             self.sleep()
 
@@ -203,24 +204,13 @@ class House:
 # (Можно определить критическое количество котов, которое может прокормить человек...)
 
 my_home = House()
+
 human_slave = Man("Человеческий раб")
 cats = [Cat("Царь"), Cat("Император"), Cat("Король")]
+
 human_slave.go_to_the_house(my_home)
-
-# TODO думаю этого делать не стоит, пусть сам в действиях о себе позаботится !
-# TODO Пробовала. Или не прописывать уменьшение сытости от заведения котов, или кормить вручную до начала цикла.
-# TODO Иначе смерть на 3-4 день из-за того, что он не успевает кормить себя, котов, покупать корм и т.д.
-# TODO Или надо дать возможность ему пожить денёк при уровне сытости, равном нолю.
-
-# Тут надо до начала основного цикла принудительно покормить человека или не прописывать ему уменьшение сытости от
-# того, что он завёл котов. Иначе он сразу умирает...
 for cat in cats:
     human_slave.take_cat(cat)
-
-
-
-# Если повезёт, человек может прокормить трёх котов. Если не повезёт - человек умрёт от голода, не успевая кормить котов
-# и убирать за ними. Или умрёт кот...
 
 
 for day in range(1, 366):
@@ -236,10 +226,15 @@ for day in range(1, 366):
     print(my_home)
     if not human_slave.check_if_alive():
         break
-    for cat in cats:
-        if not cat.check_if_alive():
-            del cat
-    if not cats:
-        cprint("Все коты умерли!", color="red")
+    # TODO можно сделать так, суть этого что если кто то из списка False то выходим из главного цикла
+    if any([not cat.check_if_alive() for cat in cats]):
         break
+    # for cat in cats:
+    #     if not cat.check_if_alive():
+    # TODO мы не должны были ничего удалять
+    #         del cat
+    # if not cats:
+    #     cprint("Все коты умерли!", color="red")
+    #     break
 
+# TODO если нет вопросов то будет зачет! Если есть вопросы задавайте.
