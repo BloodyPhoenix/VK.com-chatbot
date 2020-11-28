@@ -55,8 +55,7 @@ def get_flakes(count):
         _flakes.append(Snowflake())
 
 
-# TODO функция должна принимать flakes
-def get_fallen_flakes():
+def get_fallen_flakes(flakes):
     fallen_flakes = 0
     for i, flake in enumerate(flakes):
         if not flake.can_fall():
@@ -76,7 +75,7 @@ while True:
         flake.clear_previous_picture()
         flake.move()
         flake.draw()
-    fallen_flakes = get_fallen_flakes()  # подчитать сколько снежинок уже упало
+    fallen_flakes = get_fallen_flakes(_flakes)  # подчитать сколько снежинок уже упало
     if fallen_flakes:
         append_flakes(fallen_flakes)  # добавить еще сверху
     sd.finish_drawing()
