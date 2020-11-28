@@ -99,8 +99,6 @@ class Man:
         cprint(f"{self.name} убрал дом", color="magenta")
 
     def act(self):
-        # TODO подправил вам алгоритм, сначала еда потом поход в магазин и далее ...
-        # TODO Теперь человек живет стабильно, а с котами если 3 много то можно их оставить 2, но вроде и 3 справляется
         dice = randint(1, 6)
         if self.fullness <= 20:
             self.eat()
@@ -108,7 +106,6 @@ class Man:
             self.shopping()
         elif self.house.money <= 50:
             self.work()
-        # TODO тут сделал 30 потому что если они разом поедят то понятно дело потом первому не хватит
         elif self.house.cat_food <= 30:
             self.buy_cat_food()
         elif self.house.dirt > 100:
@@ -143,22 +140,13 @@ class Cat:
         cprint(f"{self.name} драл обои. {self.name} хороший кот", color="yellow")
 
     def eat(self):
-        # значит три кота это критическое количество котов и цикл нужно запускать только с двумя.
-
         if self.house.cat_food >= 10:
-            if self.fullness % 10 == 0:
-                self.fullness += 20
-                self.house.cat_food -= 10
-            elif self.house.cat_food == 5:
-                self.fullness += 10
-                self.house.cat_food -= 5
-            else:
-                self.fullness += 25
-                self.house.cat_food -= 15
+            self.fullness += 20
+            self.house.cat_food -= 10
             cprint(f"{self.name} поел", color="green")
         else:
             cprint(f"Безобразие! Коту нечего есть!", color="red")
-            self.fullness -= 5
+
 
     def sleep(self):
         self.fullness -= 10
@@ -168,7 +156,6 @@ class Cat:
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
-        # TODO тут сделаем вот так
         elif dice == 1:
             self.tear_wallpaper()
         elif dice == 2:
@@ -226,15 +213,5 @@ for day in range(1, 366):
     print(my_home)
     if not human_slave.check_if_alive():
         break
-    # TODO можно сделать так, суть этого что если кто то из списка False то выходим из главного цикла
     if any([not cat.check_if_alive() for cat in cats]):
         break
-    # for cat in cats:
-    #     if not cat.check_if_alive():
-    # TODO мы не должны были ничего удалять
-    #         del cat
-    # if not cats:
-    #     cprint("Все коты умерли!", color="red")
-    #     break
-
-# TODO если нет вопросов то будет зачет! Если есть вопросы задавайте.
