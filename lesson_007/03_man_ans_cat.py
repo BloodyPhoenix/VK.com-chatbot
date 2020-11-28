@@ -26,7 +26,6 @@
 
 from random import randint, shuffle
 
-
 # Реализуем модель человека.
 # Человек может есть, работать, играть, ходить в магазин.
 # У человека есть степень сытости, немного еды и денег.
@@ -41,8 +40,6 @@ class Man:
         self.name = name
         self.fullness = 50
         self.house = None
-        # TODO у человека не может быть параметра списка котов
-        self.cats = []
 
     def __str__(self):
         return f'Я - {self.name}, моя сытость {self.fullness}'
@@ -53,7 +50,7 @@ class Man:
             self.fullness += 10
             self.house.food -= 10
         else:
-            # TODO уменьшаем сытость
+            self.fullness -= 10
             cprint(f'{self.name} нет еды', color='red')
 
     def work(self):
@@ -79,12 +76,11 @@ class Man:
         cprint(f'{self.name} вьехал в дом', color='cyan')
 
     def take_cat(self, cat):
-        # TODO тут делаем проверку если у человека есть дом то мы его можем взять кота, если нет то информируем
-        cat.house = self.house
-        self.cats.append(cat)
-        self.fullness -= 10
-        cat.fullness -= 10
-        cprint(f"Завёл кота по имени {cat.name}", color="green")
+        if self.house:
+            cat.house = self.house
+            cprint(f"Завёл кота по имени {cat.name}", color="green")
+        else:
+            cprint(f"У человека по имени {self.name} нет дома!", color="red")
 
     def buy_cat_food(self):
         if self.house.money >= 50:
@@ -95,17 +91,14 @@ class Man:
             cprint(f'{self.name} деньги кончились!', color='red')
 
     def clean_house(self):
-        # TODO делаем проверку если грязи больше 100 то уборка - 100, если меньше то тоже уборка только сколько
-        # TODO на сколько накопилось грязи.
-        self.house.dirt -= 100
-        self.fullness -= 20
+        if self.house.dirt >= 100:
+            self.house.dirt -= 100
+            self.fullness -= 20
+        else:
+            self.house.dirt = 0
         cprint(f"{self.name} убрал дом", color="magenta")
 
     def act(self):
-        # TODO это вынесем в отдельный метод и будем использовать в конце главного цикла
-        if self.fullness <= 0:
-            cprint(f'{self.name} умер...', color='red')
-            return
         dice = randint(1, 6)
         if self.house.money < 50:
             self.work()
@@ -124,6 +117,11 @@ class Man:
         else:
             self.watch_MTV()
 
+    def check_if_alive(self):
+        if self.fullness <= 0:
+            cprint(f'{self.name} умер...', color='red')
+            return
+
 
 class Cat:
 
@@ -138,10 +136,14 @@ class Cat:
     def tear_wallpaper(self):
         self.house.dirt += 5
         self.fullness -= 10
-        cprint(f"{self.name} драл обои. {self.name} хороший кот", color = "yellow")
+        cprint(f"{self.name} драл обои. {self.name} хороший кот", color="yellow")
 
     def eat(self):
         # TODO после доработок потестим этот метод, возможно его нужно будет упростить.
+        # Я его так усложнила, когда тестила 2 и более котов. Задача - чтобы кот хотя бы один день прожил, если еды нет
+        # А потом, когда она появилась - отъелся до максимальной сытости.
+        # Кстати, не имеет ли смысл сделать смерть, если сытость строго меньше 0, а не меньше или равна?
+        # Чтобы был запас времени на поесть
         if self.house.cat_food >= 10:
             if self.fullness % 10 == 0:
                 self.fullness += 20
@@ -162,22 +164,20 @@ class Cat:
         cprint(f"{self.name} спал весь день", color="green")
 
     def act(self):
-        # TODO это вынесем в отдельный метод и будем использовать в конце главного цикла
-        if self.fullness <= 0:
-            cprint(f"{self.name} умер...", color="red")
-            return
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
-        # TODO тут нужно приравнять чтобы было одно число
-        elif dice < 4:
+        elif dice <= 3:
             self.tear_wallpaper()
         else:
             self.sleep()
 
+    def check_if_alive(self):
+        if self.fullness <= 0:
+            cprint(f"{self.name} умер...", color="red")
+            return
 
-# TODO не забывайте про оформление кода, что касается отступов, где пайчарм подчеркивает
-# TODO межде классами должно быть минимум 2 пустые строки
+
 class House:
 
     def __init__(self):
@@ -191,7 +191,6 @@ class House:
                f'денег осталось {self.money}, грязи в доме - {self.dirt}'
 
 
-
 # Усложненное задание (делать по желанию)
 # Создать несколько (2-3) котов и подселить их в дом к человеку.
 # Им всем вместе так же надо прожить 365 дней.
@@ -200,17 +199,16 @@ class House:
 
 my_home = House()
 human_slave = Man("Человеческий раб")
-# TODO создайте список из экземпляров класса кот
-cat_tzar = Cat("Царь")
-cat_emperor = Cat("Император")
-cat_his_majesty = Cat("Его Величество")
+cats = [Cat("Царь"), Cat("Император"), ]
+# cat_his_majesty = Cat("Его Величество")
 human_slave.go_to_the_house(my_home)
-# TODO в цикле человеком заселите всех в дом
-human_slave.take_cat(cat_tzar)
-human_slave.take_cat(cat_emperor)
+# Тут надо до начала основного цикла принудительно покормить человека или не прописывать ему уменьшение сытости от того,
+# что он завёл котов. Иначе он сразу умирает...
+for cat in cats:
+    human_slave.take_cat(cat)
+
 # human_slave.take_cat(cat_his_majesty)
-# TODO все действия у нас только в цикле
-human_slave.eat()
+
 
 # Если повезёт, человек может прокормить трёх котов. Если не повезёт - человек умрёт от голода, не успевая кормить котов
 # и убирать за ними. Или умрёт кот...
@@ -222,14 +220,14 @@ for day in range(1, 366):
     if human_slave.fullness <= 0:
         cprint(f"{human_slave.name} умер. Давайте не будем ждать, пока умрут котики...", color="red")
         break
-    # TODO из за того что у человека не может быть параметра список котов, многое должно измениться
-    shuffle(human_slave.cats)
-    for cat in human_slave.cats:
+    shuffle(cats)
+    for cat in cats:
         cat.act()
     print('--- в конце дня ---')
-    print(cat_tzar)
-    print(cat_emperor)
-    # print(cat_his_majesty)
+    for cat in cats:
+        print(cat)
     print(human_slave)
     print(my_home)
-    # TODO проверки на жизнь и человека и котов будем делать в конце цикла.
+    human_slave.check_if_alive()
+    for cat in cats:
+        cat.check_if_alive()
