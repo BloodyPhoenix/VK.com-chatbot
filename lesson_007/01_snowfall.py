@@ -9,12 +9,14 @@ import simple_draw as sd
 #  - отрисовку
 
 
+# TODO экземпляр класса должен отвечать только за создание одной снежинки
 class Snowflake:
 
     fallen_flakes = 0
     flakes = []
     count=20
 
+    # TODO эти три функции по заданию не должны находиться в классе
     def get_flakes():
         for _ in range(Snowflake.count):
             Snowflake.flakes.append(Snowflake())
@@ -32,6 +34,7 @@ class Snowflake:
         Snowflake.fallen_flakes = 0
 
     def __init__(self):
+        # TODO тут у нас должно быть по сути только три параметра, это получение X Y LENGTH - lower case
         max_x = sd.resolution[0] - 100
         max_y = sd.resolution[1] + 200
         min_y = sd.resolution[1] + 100
@@ -46,6 +49,7 @@ class Snowflake:
     def move(self):
         self.y -= 15
         self.x += sd.random_number(-10, 10)
+        # TODO точку должны получать в методе draw и clear_previous_picture ее можно сделать внутренней
         self.center = sd.get_point(self.x, self.y)
 
     def draw(self):
