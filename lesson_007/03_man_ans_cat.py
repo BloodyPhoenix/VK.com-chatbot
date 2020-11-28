@@ -93,9 +93,9 @@ class Man:
     def clean_house(self):
         if self.house.dirt >= 100:
             self.house.dirt -= 100
-            self.fullness -= 20
         else:
             self.house.dirt = 0
+        self.fullness -= 20
         cprint(f"{self.name} убрал дом", color="magenta")
 
     def act(self):
@@ -209,6 +209,7 @@ for cat in cats:
 
 # human_slave.take_cat(cat_his_majesty)
 
+# TODO у нас главная задача сделать так чтобы они жили примерно 70 на 30% из 8-10 запусков.
 
 # Если повезёт, человек может прокормить трёх котов. Если не повезёт - человек умрёт от голода, не успевая кормить котов
 # и убирать за ними. Или умрёт кот...
@@ -217,9 +218,12 @@ for cat in cats:
 for day in range(1, 366):
     print(f'================ день {day} ==================')
     human_slave.act()
+    # TODO это условие нужно убрать!
     if human_slave.fullness <= 0:
         cprint(f"{human_slave.name} умер. Давайте не будем ждать, пока умрут котики...", color="red")
         break
+    # TODO для чего мы их мешаем ? в любом в случае цикл по ним пройдется
+    # TODO так shuffle не работает!
     shuffle(cats)
     for cat in cats:
         cat.act()
@@ -228,6 +232,8 @@ for day in range(1, 366):
         print(cat)
     print(human_slave)
     print(my_home)
+    # TODO а вот тут как раз сделать проверку из ходя из метода check_if_alive, и выходить из цикла.
     human_slave.check_if_alive()
     for cat in cats:
+        # TODO нужно доработать так чтобы в случае фейл мы остановили главный цикл!
         cat.check_if_alive()
