@@ -21,6 +21,7 @@ class Snowflake:
         sd.snowflake(self.center, self.lenght, color=sd.background_color)
 
     def move(self):
+        # TODO тут используем метод класса если может_падать то меняем значения
         self.y -= 15
         self.x += sd.random_number(-10, 10)
 
