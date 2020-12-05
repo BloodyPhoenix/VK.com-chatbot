@@ -54,9 +54,10 @@ class House:
         self.total_money_earned = 0
 
     def __str__(self):
-        # TODO часть с грязью выносим в отдельный метод в этом классе
-        self.dirt += 5
         return f"Денег в доме {self.money}, еды в доме {self.food}, грязи в доме {self.dirt}."
+
+    def dirt(self):
+        self.dirt += 5
 
     def year_result(self):
         cprint(f"Денег за год заработано: {self.total_money_earned}", color="yellow")
@@ -66,32 +67,25 @@ class House:
 
 class Human:
 
-    # TODO человек не только имя но и дом должен принимать на вход
-    def __init__(self, name):
+    def __init__(self, name, house):
         self.name = name
         self.fullness = 30
         self.happines = 100
-        # TODO тут мы должны записать так self.house = house
-        self.house = 0
+        self.house = house
 
     def __str__(self):
-        # TODO выносим в отдельный метод
+        return f"Я {self.name}. Моя сытость {self.fullness}, мой уровень счастья {self.happines}. Живём!"
+
+    def check_house_dirt(self):
         if self.house.dirt > 90:
             self.happines -= 10
-        # TODO принты из этой проверки нужно перенести в check_if_alive
-        if not self.check_if_alive():
-            if self.fullness <= 0:
-                return f"{self.name} - смерть от голода"
-            if self.happines <= 10:
-                return f"{self.name} - смерть от депрессии"
-        else:
-            # TODO в методе str оставляем только этот ретурн с принтом!
-            return f"Я {self.name}. Моя сытость {self.fullness}, мой уровень счастья {self.happines}. Живём!"
 
     def check_if_alive(self):
         if self.fullness <= 0:
+            cprint(f"{self.name} - смерть от голода", color="red")
             return False
         elif self.happines <= 10:
+            cprint(f"{self.name} - смерть от депрессии", color="red")
             return False
         else:
             return True
@@ -117,45 +111,25 @@ class Human:
             cprint("В доме нет еды!", color="red")
             return False
 
-    # TODO тут может этот метод не указывать
-    def relax(self):
-        pass
-
-    # TODO этот метод у каждого из дочерних классов будет свой, тут его не объявляем
-    def act(self):
-        if self.fullness <= 10:
-            self.eat()
-            return True
-        elif self.happines <= 20:
-            self.relax()
-            return True
-        else:
-            return False
-
 
 class Husband(Human):
-
-    # TODO эти методы переопределяются если в них нужно что то добавить, сейчас в их переопределять не нужно
-    def __init__(self, name):
-        super().__init__(name)
-
-    def __str__(self):
-        return super().__str__()
-
     def act(self):
-        # TODO доработать метод акт из хотя что нет родительского
-        if not super().act():
-            dice = randint(1, 6)
-            if self.house.money <= 150:
-                self.work()
-            elif dice == 1:
-                self.work()
-            elif dice == 2:
-                self.eat()
-            else:
-                self.relax()
+        dice = randint(1, 6)
+        if self.fullness <= 10:
+            self.eat()
+        elif self.happines <= 20:
+            self.play_tanks()
+        elif self.house.money <= 150:
+            self.work()
+        elif dice == 1:
+            self.work()
+        elif dice == 2:
+            self.eat()
+        else:
+            self.play_tanks()
 
     # TODO сделаем принт более универсальный в родительском классе, и тут его не будем переопределять
+    # TODO и сделать некрасивый вывод на консоль без указания рода?  можно всё-таки оставить так?
     def eat(self):
         if super().eat():
             cprint(f"{self.name} поел.", color="yellow")
@@ -167,7 +141,7 @@ class Husband(Human):
         self.house.total_money_earned += 150
         cprint(f"{self.name} сходил на работу", color="magenta")
 
-    def relax(self):
+    def play_tanks(self):
         self.happines += 20
         self.fullness -= 10
         cprint(f"{self.name} играл в танки весь день. {self.name} доволен!", color="green")
@@ -175,27 +149,21 @@ class Husband(Human):
 
 class Wife(Human):
 
-    # TODO аналогично от мужа ТУДУ
-    def __init__(self, name):
-        super().__init__(name)
-
-    def __str__(self):
-        return super().__str__()
-
     def act(self):
-        # TODO от мужа ТУДУ
-        if not super().act():
-            dice = randint(1, 6)
-            if self.house.food <= 60:
-                self.shopping()
-            elif dice == 1:
-                self.clean_house()
-            elif dice == 2:
-                self.shopping()
-            else:
-                self.relax()
+        dice = randint(1, 6)
+        if self.fullness <= 10:
+            self.eat()
+        elif self.happines <= 20:
+            self.buy_jewel()
+        elif self.house.food <= 50:
+            self.shopping()
+        elif dice == 1:
+            self.clean_house()
+        elif dice == 2:
+            self.eat()
+        else:
+            self.buy_jewel()
 
-    # TODO аналогично
     def eat(self):
         if super().eat():
             cprint(f"{self.name} поела.", color="yellow")
@@ -213,10 +181,9 @@ class Wife(Human):
             self.house.money = 0
             cprint(f"{self.name} сходила в магазин", color="magenta")
 
-    def relax(self):
+    def buy_jewel(self):
         self.fullness -= 10
-        # TODO на крайние деньги не берем шубу
-        if self.house.money >= 350:
+        if self.house.money >= 400:
             self.happines += 60
             self.house.jewels += 1
             self.house.money -= 350
