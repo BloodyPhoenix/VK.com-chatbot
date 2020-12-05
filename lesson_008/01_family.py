@@ -90,11 +90,6 @@ class Human:
         else:
             return True
 
-    def move_to_house(self, house):
-        self.house = house
-        self.fullness -= 10
-        cprint(f"{self.name} теперь живёт в доме.", color="magenta")
-
     def eat(self):
         if 0 < self.house.food <= 30:
             self.fullness += self.house.food
@@ -202,10 +197,8 @@ class Wife(Human):
 
 
 home = House()
-serge = Husband(name='Серёжа')
-masha = Wife(name='Маша')
-serge.move_to_house(home)
-masha.move_to_house(home)
+serge = Husband(name='Серёжа', home)
+masha = Wife(name='Маша', home)
 
 for day in range(1, 366):
     cprint(f'================== День {day} ==================', color='red')
