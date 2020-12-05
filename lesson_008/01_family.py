@@ -197,8 +197,8 @@ class Wife(Human):
 
 
 home = House()
-serge = Husband(name='Серёжа', home)
-masha = Wife(name='Маша', home)
+serge = Husband(name='Серёжа', house=home)
+masha = Wife(name='Маша', house=home)
 
 for day in range(1, 366):
     cprint(f'================== День {day} ==================', color='red')
