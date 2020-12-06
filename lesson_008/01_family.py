@@ -56,7 +56,7 @@ class House:
     def __str__(self):
         return f"Денег в доме {self.money}, еды в доме {self.food}, грязи в доме {self.dirt}."
 
-    def dirt(self):
+    def add_dirt(self):
         self.dirt += 5
 
     def year_result(self):
@@ -76,7 +76,6 @@ class Human:
     def __str__(self):
         return f"Я {self.name}. Моя сытость {self.fullness}, мой уровень счастья {self.happines}. Живём!"
 
-    # TODO этот метод используем в главном цикле
     def check_house_dirt(self):
         if self.house.dirt > 90:
             self.happines -= 10
@@ -91,7 +90,7 @@ class Human:
         else:
             return True
 
-    def eat(self):
+    def eat(self, action):
         if 0 < self.house.food <= 30:
             self.fullness += self.house.food
             self.house.food_eaten += self.house.food
@@ -101,6 +100,7 @@ class Human:
             self.fullness += 30
             self.house.food_eaten += 30
             self.house.food -= 30
+            cprint(f"{self.name} {action}.", color="yellow")
             return True
         else:
             self.fullness -= 10
@@ -115,7 +115,7 @@ class Husband(Human):
             self.eat()
         elif self.happines <= 20:
             self.play_tanks()
-        elif self.house.money <= 150:
+        elif self.house.money <= 250:
             self.work()
         elif dice == 1:
             self.work()
@@ -124,13 +124,8 @@ class Husband(Human):
         else:
             self.play_tanks()
 
-    # TODO давайте тогда доработаем метод eat родительский, там будем принимать параметр в виде строки,
-    # TODO для мужа 'поел' для жены 'поела'
-    # TODO тут его просто передаете в аргументах, а там нужно будет доработать принт подставим параметр
     def eat(self):
-        # TODO почему условие ? этот метод не должен ничего возвращать
-        if super().eat():
-            cprint(f"{self.name} поел.", color="yellow")
+        super().eat("поел")
 
     def work(self):
         self.fullness -= 10
@@ -162,10 +157,8 @@ class Wife(Human):
         else:
             self.buy_jewel()
 
-    # TODO аналогично ТУДУ выше
     def eat(self):
-        if super().eat():
-            cprint(f"{self.name} поела.", color="yellow")
+        super().eat("поела")
 
     def shopping(self):
         self.fullness -= 10
@@ -189,7 +182,7 @@ class Wife(Human):
             # Ювелирку в больших количествах как-то логичнее покупать, чем шубы...
             cprint(f"{self.name} купила ювелирное украшение. {self.name} довольна!", color="green")
         else:
-            # TODO уменьшаем счастье
+            self.happines -= 10
             cprint(f"{self.name} хотела купить новое украшение, но в доме нет денег!", color="red")
 
     def clean_house(self):
@@ -209,6 +202,9 @@ for day in range(1, 366):
     cprint(f'================== День {day} ==================', color='red')
     serge.act()
     masha.act()
+    home.add_dirt()
+    serge.check_house_dirt()
+    masha.check_house_dirt()
     print('--- в конце дня ---')
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
