@@ -76,6 +76,7 @@ class Human:
     def __str__(self):
         return f"Я {self.name}. Моя сытость {self.fullness}, мой уровень счастья {self.happines}. Живём!"
 
+    # TODO этот метод используем в главном цикле
     def check_house_dirt(self):
         if self.house.dirt > 90:
             self.happines -= 10
@@ -123,9 +124,11 @@ class Husband(Human):
         else:
             self.play_tanks()
 
-    # TODO сделаем принт более универсальный в родительском классе, и тут его не будем переопределять
-    # TODO и сделать некрасивый вывод на консоль без указания рода?  можно всё-таки оставить так?
+    # TODO давайте тогда доработаем метод eat родительский, там будем принимать параметр в виде строки,
+    # TODO для мужа 'поел' для жены 'поела'
+    # TODO тут его просто передаете в аргументах, а там нужно будет доработать принт подставим параметр
     def eat(self):
+        # TODO почему условие ? этот метод не должен ничего возвращать
         if super().eat():
             cprint(f"{self.name} поел.", color="yellow")
 
@@ -159,6 +162,7 @@ class Wife(Human):
         else:
             self.buy_jewel()
 
+    # TODO аналогично ТУДУ выше
     def eat(self):
         if super().eat():
             cprint(f"{self.name} поела.", color="yellow")
@@ -185,6 +189,7 @@ class Wife(Human):
             # Ювелирку в больших количествах как-то логичнее покупать, чем шубы...
             cprint(f"{self.name} купила ювелирное украшение. {self.name} довольна!", color="green")
         else:
+            # TODO уменьшаем счастье
             cprint(f"{self.name} хотела купить новое украшение, но в доме нет денег!", color="red")
 
     def clean_house(self):
