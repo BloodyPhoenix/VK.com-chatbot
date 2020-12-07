@@ -124,6 +124,7 @@ class Husband(Human):
         else:
             self.play_tanks()
 
+    # TODO тут пайчарм нам подсказывает что базовый метод должен принимать еще параметр
     def eat(self):
         super().eat("поел")
 
@@ -157,6 +158,7 @@ class Wife(Human):
         else:
             self.buy_jewel()
 
+    # TODO аналогично
     def eat(self):
         super().eat("поела")
 
