@@ -249,54 +249,20 @@ class Wife(Human):
 
 class Cat:
 
-    def __init__(self, name, house):
-        self.name = name
-        self.fullness = 30
-        self.house = house
-
-    def __str__(self):
-        return f"Я {self.name}. Моя сытость {self.fullness}. Живём!"
+    def __init__(self):
+        pass
 
     def act(self):
-        dice = randint(1, 6)
-        if self.fullness <= 10:
-            self.eat()
-        elif dice == 1:
-            self.eat()
-        elif dice <= 3:
-            self.soil()
-        else:
-            self.sleep()
+        pass
 
     def eat(self):
-        if self.house.food >= 20:
-            self.fullness += 20
-            self.house.food -= 20
-            cprint(f"{self.name} поел", color="green")
-        elif self.house.food > 0:
-            self.fullness += self.house.food
-            self.house.food = 0
-            cprint(f"{self.name} поел", color="green")
-        else:
-            self.fullness -= 10
-            cprint("Безобразие! коту нечего есть!", color="red")
-
+        pass
 
     def sleep(self):
-        self.fullness -= 10
-        cprint(f"{self.name} спал целый день", color="yellow")
+        pass
 
     def soil(self):
-        self.fullness -= 10
-        self.house.dirt += 5
-        cprint(f"{self.name} драл обои. {self.name} хороший кот.", color="magenta")
-
-    def check_if_alive(self):
-        if self.fullness <= 0:
-            cprint(f"{self.name} - смерть от голода", color="red")
-            return False
-        else:
-            return True
+        pass
 
 
 ######################################################## Часть вторая бис
