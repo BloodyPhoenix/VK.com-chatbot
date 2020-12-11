@@ -250,6 +250,7 @@ class Cat:
 
 class Child(Human):
 
+    # TODO эти два метода нет необходимости переопределять
     def __init__(self, name, house):
         super().__init__(name, house)
         self.fullness = 20
@@ -266,6 +267,7 @@ class Child(Human):
         else:
             self.sleep()
 
+    # TODO тут нам пайчарм о чем то подсказывает !
     def eat(self):
         if self.house.food >= 10:
             self.fullness += 10
