@@ -250,14 +250,6 @@ class Cat:
 
 class Child(Human):
 
-    # TODO эти два метода нет необходимости переопределять
-    def __init__(self, name, house):
-        super().__init__(name, house)
-        self.fullness = 20
-
-    def __str__(self):
-        return super().__str__()
-
     def act(self):
         dice = randint(1, 6)
         if self.fullness <= 10:
@@ -268,11 +260,11 @@ class Child(Human):
             self.sleep()
 
     # TODO тут нам пайчарм о чем то подсказывает !
-    def eat(self):
+    def eat(self, action="поел"):
         if self.house.food >= 10:
             self.fullness += 10
             self.house.food -= 10
-            cprint(f"{self.name} поел", color="green")
+            cprint(f"{self.name} {action}", color="green")
         else:
             cprint("Ребёнку нечего есть!", color="red")
 
