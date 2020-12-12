@@ -259,6 +259,7 @@ class Child(Human):
         else:
             self.sleep()
 
+    # TODO Незабываем удалять ТУДУ.
     # TODO тут нам пайчарм о чем то подсказывает !
     def eat(self, action="поел"):
         if self.house.food >= 10:
