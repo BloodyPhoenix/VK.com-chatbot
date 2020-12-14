@@ -48,6 +48,7 @@ class House:
     def __init__(self):
         self.money = 100
         self.food = 50
+        self.cat_food = 30
         self.dirt = 0
         self.jewels = 0
         self.food_eaten = 0
@@ -107,9 +108,24 @@ class Human:
             cprint("В доме нет еды!", color="red")
             return False
 
+    # TODO пишу и мужу, и жене возможность покупать кошачий корм, во-первых, чтобы немного снять нагрузку с жены,
+    # TODO во-вторых потому, что котики - это святое! Ради них и муж может зад с дивана поднять и сходить в магазин
+    def buy_cat_food(self, action):
+        self.fullness -= 10
+        if self.house.money >= 30:
+            self.house.cat_food += 30
+            self.house.money -= 30
+            cprint(f"{self.name} {action} кошачий корм")
+        else:
+            cprint("В доме нет денег на кошачий корм!", color="red")
+
+    def pet_the_cat(self, cat, action):
+        self.happines += 5
+        cprint(f"{self.name} {action} кота по имени {cat.name}", color="green")
+
 
 class Husband(Human):
-    def act(self):
+    def act(self, cat):
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
@@ -117,12 +133,16 @@ class Husband(Human):
             self.play_tanks()
         elif self.house.money <= 250:
             self.work()
+        elif self.house.cat_food <= 20:
+            self.buy_cat_food(action="купил")
         elif dice == 1:
             self.work()
         elif dice == 2:
             self.eat()
-        else:
+        elif dice == 3:
             self.play_tanks()
+        else:
+            self.pet_the_cat(cat=cat, action="погладил")
 
     def eat(self, action="поел"):
         super().eat(action)
@@ -142,7 +162,7 @@ class Husband(Human):
 
 class Wife(Human):
 
-    def act(self):
+    def act(self, cat):
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
@@ -150,12 +170,16 @@ class Wife(Human):
             self.buy_jewel()
         elif self.house.food <= 50:
             self.shopping()
+        elif self.house.cat_food <= 20:
+            self.buy_cat_food(action="купила")
         elif dice == 1:
             self.clean_house()
         elif dice == 2:
             self.eat()
-        else:
+        elif dice == 3:
             self.buy_jewel()
+        else:
+            self.pet_the_cat(cat=cat, action="погладила")
 
     def eat(self, action="поела"):
         super().eat(action)
@@ -194,6 +218,29 @@ class Wife(Human):
         cprint(f"{self.name} убрала дом", color="magenta")
 
 
+home = House()
+serge = Husband(name='Серёжа', house=home)
+masha = Wife(name='Маша', house=home)
+
+for day in range(1, 366):
+    cprint(f'================== День {day} ==================', color='red')
+    serge.act()
+    masha.act()
+    home.add_dirt()
+    serge.check_house_dirt()
+    masha.check_house_dirt()
+    print('--- в конце дня ---')
+    cprint(serge, color='cyan')
+    cprint(masha, color='cyan')
+    cprint(home, color='cyan')
+    if not serge.check_if_alive() or not masha.check_if_alive():
+        break
+
+home.year_result()
+
+
+# TODO можно делать вторую часть.
+
 ######################################################## Часть вторая
 #
 # После подтверждения учителем первой части надо
@@ -221,20 +268,53 @@ class Wife(Human):
 
 class Cat:
 
-    def __init__(self):
-        pass
+    def __init__(self, name, house):
+        self.name = name
+        self.fullness = 30
+        self.house = house
+
+    def __str__(self):
+        return f"Я {self.name}. Моя сытость {self.fullness}. Живём!"
 
     def act(self):
-        pass
+        dice = randint(1, 6)
+        if self.fullness <= 10:
+            self.eat()
+        elif dice == 1:
+            self.eat()
+        elif dice <= 3:
+            self.soil()
+        else:
+            self.sleep()
 
     def eat(self):
-        pass
+        if self.house.food >= 20:
+            self.fullness += 20
+            self.house.food -= 20
+            cprint(f"{self.name} поел", color="green")
+        elif self.house.food > 0:
+            self.fullness += self.house.food
+            self.house.food = 0
+            cprint(f"{self.name} поел", color="green")
+        else:
+            self.fullness -= 10
+            cprint("Безобразие! коту нечего есть!", color="red")
 
     def sleep(self):
-        pass
+        self.fullness -= 10
+        cprint(f"{self.name} спал целый день", color="yellow")
 
     def soil(self):
-        pass
+        self.fullness -= 10
+        self.house.dirt += 5
+        cprint(f"{self.name} драл обои. {self.name} хороший кот.", color="magenta")
+
+    def check_if_alive(self):
+        if self.fullness <= 0:
+            cprint(f"{self.name} - смерть от голода", color="red")
+            return False
+        else:
+            return True
 
 
 ######################################################## Часть вторая бис
@@ -259,8 +339,6 @@ class Child(Human):
         else:
             self.sleep()
 
-    # TODO Незабываем удалять ТУДУ.
-    # TODO тут нам пайчарм о чем то подсказывает !
     def eat(self, action="поел"):
         if self.house.food >= 10:
             self.fullness += 10
@@ -284,14 +362,14 @@ home = House()
 serge = Husband(name='Сережа', house=home)
 masha = Wife(name='Маша', house=home)
 kolya = Child(name='Коля', house=home)
-# murzik = Cat(name='Мурзик', house=home)
+murzik = Cat(name='Мурзик', house=home)
 #
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     serge.act()
     masha.act()
     kolya.act()
-    # murzik.act()
+    murzik.act()
     serge.check_house_dirt()
     masha.check_house_dirt()
     print('--- в конце дня ---')
