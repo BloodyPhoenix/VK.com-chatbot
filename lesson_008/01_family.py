@@ -149,6 +149,7 @@ class Husband(Human):
     def work(self):
         self.fullness -= 10
         self.happines -= 10
+        # TODO даже с зарплатой в 70 у них все нормально
         self.house.money += 150
         self.house.total_money_earned += 150
         cprint(f"{self.name} сходил на работу", color="magenta")
@@ -353,10 +354,16 @@ for day in range(1, 366):
     cprint(kolya, color="cyan")
     cprint(murzik, color="cyan")
     cprint(home, color='cyan')
+    # TODO для переноса строки страраемся не использовать символ \
+    # TODO поробуйте создать с список из жильцов и использовать функцию any()
     if not serge.check_if_alive() or not masha.check_if_alive() or not kolya.check_if_alive() or \
         not murzik.check_if_alive():
         break
 home.year_result()
+
+# TODO из 15 запусков не разу не было фейла, они живут 100% такого быть не должно
+# TODO Нужно добиться результата 70 на 30 или 80 на 20%
+# TODO Есть вероятность что показатели или логика сильно притянута.
 
 # Усложненное задание (делать по желанию)
 #
