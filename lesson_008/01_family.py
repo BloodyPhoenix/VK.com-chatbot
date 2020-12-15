@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from termcolor import cprint
-from random import randint, choice, shuffle
+from random import randint
 
 
 ######################################################## Часть первая
@@ -55,7 +55,7 @@ class House:
         self.total_money_earned = 0
 
     def __str__(self):
-        return f"Денег в доме {self.money}, еды в доме {self.food}, кошачьего корма в доме {self.cat_food}, " \
+        return f"Денег в доме {self.money}, еды в доме {self.food}, кошачьего корма в доме {self.cat_food}" \
                f"грязи в доме {self.dirt}."
 
     def add_dirt(self):
@@ -109,11 +109,11 @@ class Human:
             cprint("В доме нет еды!", color="red")
             return False
 
-    def buy_cat_food(self, action, cats):
+    def buy_cat_food(self, action):
         self.fullness -= 10
-        if self.house.money >= len(cats) * 10:
-            self.house.cat_food += len(cats) * 10
-            self.house.money -= len(cats) * 10
+        if self.house.money >= 30:
+            self.house.cat_food += 30
+            self.house.money -= 30
             cprint(f"{self.name} {action} кошачий корм")
         else:
             cprint("В доме нет денег на кошачий корм!", color="red")
@@ -124,12 +124,7 @@ class Human:
 
 
 class Husband(Human):
-
-    def __init__(self, name, house, salary):
-        super().__init__(name, house)
-        self.salary = salary
-
-    def act(self, cats):
+    def act(self, cat):
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
@@ -137,8 +132,8 @@ class Husband(Human):
             self.play_tanks()
         elif self.house.money <= 250:
             self.work()
-        elif self.house.cat_food <= len(cats) * 10:
-            self.buy_cat_food(action="купил", cats=cats)
+        elif self.house.cat_food <= 20:
+            self.buy_cat_food(action="купил")
         elif dice == 1:
             self.work()
         elif dice == 2:
@@ -146,7 +141,6 @@ class Husband(Human):
         elif dice == 3:
             self.play_tanks()
         else:
-            cat = choice(cats)
             self.pet_the_cat(cat=cat, action="погладил")
 
     def eat(self, action="поел"):
@@ -155,8 +149,8 @@ class Husband(Human):
     def work(self):
         self.fullness -= 10
         self.happines -= 10
-        self.house.money += self.salary
-        self.house.total_money_earned += self.salary
+        self.house.money += 150
+        self.house.total_money_earned += 150
         cprint(f"{self.name} сходил на работу", color="magenta")
 
     def play_tanks(self):
@@ -167,7 +161,7 @@ class Husband(Human):
 
 class Wife(Human):
 
-    def act(self, cats):
+    def act(self, cat):
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
@@ -175,10 +169,8 @@ class Wife(Human):
             self.buy_jewel()
         elif self.house.food <= 50:
             self.shopping()
-        elif self.house.cat_food <= len(cats) * 10:
-            self.buy_cat_food(action="купила", cats=cats)
-        elif self.house.dirt >= 50:
-            self.clean_house()
+        elif self.house.cat_food <= 20:
+            self.buy_cat_food(action="купила")
         elif dice == 1:
             self.clean_house()
         elif dice == 2:
@@ -186,7 +178,6 @@ class Wife(Human):
         elif dice == 3:
             self.buy_jewel()
         else:
-            cat = choice(cats)
             self.pet_the_cat(cat=cat, action="погладила")
 
     def eat(self, action="поела"):
@@ -224,7 +215,6 @@ class Wife(Human):
         else:
             self.house.dirt -= 100
         cprint(f"{self.name} убрала дом", color="magenta")
-
 
 ######################################################## Часть вторая
 #
@@ -277,7 +267,7 @@ class Cat:
             self.fullness += 20
             self.house.cat_food -= 20
             cprint(f"{self.name} поел", color="green")
-        elif self.house.food > 0:
+        elif self.house.cat_food > 0:
             self.fullness += self.house.cat_food
             self.house.cat_food = 0
             cprint(f"{self.name} поел", color="green")
@@ -343,50 +333,30 @@ class Child(Human):
 # влить в мастер все коммиты из ветки develop и разрешить все конфликты
 # отправить на проверку учителем.
 
-
-def fail(fails, house):
-    fail_name = choice(fails)
-    if fail_name == "missing_food":
-        house.food = 0
-        cprint("Произошло необъяснимое исчезновение еды!", color="red")
-    elif fail_name == "missing_cat_food":
-        house.cat_food = 0
-        cprint("Произошло необъяснимое исчезновение кошачьего корма!", color="red")
-    else:
-        house.money = 0
-        cprint("Произошло необъяснимое исчезновение денег!", color="red")
-
-
-def simulation(fails, house, cats, humans):
-    day = 1
-    for day in range(1, 366):
-        cprint('================== День {} =================='.format(day), color='red')
-        if day in fails_dates:
-            fail(fails, home)
-        for human in humans:
-            if not isinstance(human, Child):
-                human.act(cats)
-            else:
-                human.act()
-            shuffle(cats)
-        for cat in cats:
-            cat.act()
-        for human in humans:
-            if not isinstance(human, Child):
-                human.check_house_dirt()
-        print('--- в конце дня ---')
-        for human in humans:
-            cprint(human, color="cyan")
-        for cat in cats:
-            cprint(cat, color="cyan")
-        if any([not human.check_if_alive() for human in humans]) or any([not cat.check_if_alive() for cat in cats]):
-            house.year_result()
-            return day
-    house.year_result()
-    return day
-
-
-
+home = House()
+serge = Husband(name='Сережа', house=home)
+masha = Wife(name='Маша', house=home)
+kolya = Child(name='Коля', house=home)
+murzik = Cat(name='Мурзик', house=home)
+#
+for day in range(1, 366):
+    cprint('================== День {} =================='.format(day), color='red')
+    serge.act(cat=murzik)
+    masha.act(cat=murzik)
+    kolya.act()
+    murzik.act()
+    serge.check_house_dirt()
+    masha.check_house_dirt()
+    print('--- в конце дня ---')
+    cprint(serge, color='cyan')
+    cprint(masha, color='cyan')
+    cprint(kolya, color="cyan")
+    cprint(murzik, color="cyan")
+    cprint(home, color='cyan')
+    if not serge.check_if_alive() or not masha.check_if_alive() or not kolya.check_if_alive() or \
+        not murzik.check_if_alive():
+        break
+home.year_result()
 
 # Усложненное задание (делать по желанию)
 #
@@ -403,66 +373,6 @@ def simulation(fails, house, cats, humans):
 #   (N от 1 до 5, K от 1 до 5 - нужно вычислит максимумы N и K при котором семья гарантированно выживает)
 #
 # в итоге должен получится приблизительно такой код экспериментов
-
-tests_passed = []
-
-for N in range(2, 11):
-    fails = ["missing_food", "missing_cat_food", "missing_money"]
-    fails_dates = []
-    for _ in range(N):
-        day = randint(1, 366)
-        fails_dates.append(day)
-    for money in range(50, 450, 50):
-        salary = money
-        cprint(f"Тест с количеством фейлов {N}, и зарплатой мужа {salary}", color="yellow")
-        failed_tests = 0
-        for _ in range(1, 11):
-            home = House()
-            serge = Husband(name='Сережа', house=home, salary=salary)
-            masha = Wife(name='Маша', house=home)
-            kolya = Child(name='Коля', house=home)
-            humans = [serge, masha, kolya]
-            murzik = Cat(name='Мурзик', house=home)
-            vasya = Cat(name="Вася", house=home)
-            kuzia = Cat(name="Кузя", house=home)
-            cats = [murzik, vasya, kuzia]
-            days_passed = simulation(fails, home, cats, humans)
-            if days_passed < 365:
-                failed_tests += 1
-        if failed_tests >= 9:
-            cprint(f"Тест с количеством фейлов {N}, и зарплатой мужа {salary} провален", color="red")
-        else:
-            cprint(f"Тест с количеством фейлов {N}, и зарплатой мужа {salary} пройден", color="green")
-            tests_passed.append([N, salary])
-
-print()
-cprint("Пройдены тесты со следующими показателями:", color="green")
-for test in tests_passed:
-    cprint(f"Количество фейлов {test[0]}, зарплата мужа - {test[1]}", color="green")
-
-fails = set()
-for test in tests_passed:
-    fails.add(test[0])
-
-fails_and_salaries = {}
-for fails_count in range(min(fails), max(fails)+1):
-    salaries = []
-    for test in tests_passed:
-        if test[0] == fails_count:
-            salaries.append(test[1])
-    min_salary = min(salaries)
-    fails_and_salaries[fails_count] = salaries
-    cprint(f"Для количества фейлов {fails_count} минимальная зарплата мужа должна быть {min_salary}", color="yellow")
-
-min_salary_total = min(fails_and_salaries[min(fails)])
-cprint(f"Максимальное количество фейлов - {max(fails)}", color="magenta")
-cprint(f"Минимальная зарплата - {min_salary_total}", color="magenta")
-
-
-
-
-
-
 # for food_incidents in range(6):
 #   for money_incidents in range(6):
 #       life = Simulation(money_incidents, food_incidents)
