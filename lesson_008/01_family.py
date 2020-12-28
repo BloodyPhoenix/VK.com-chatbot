@@ -56,7 +56,7 @@ class House:
 
     def __str__(self):
         return f"Денег в доме {self.money}, еды в доме {self.food}, кошачьего корма в доме {self.cat_food}" \
-               f"грязи в доме {self.dirt}."
+               f", грязи в доме {self.dirt}."
 
     def add_dirt(self):
         self.dirt += 5
@@ -172,11 +172,11 @@ class Wife(Human):
             self.shopping()
         elif self.house.cat_food <= 20:
             self.buy_cat_food(action="купила")
-        elif dice == 1:
+        elif dice <= 2:
             self.clean_house()
-        elif dice == 2:
-            self.eat()
         elif dice == 3:
+            self.eat()
+        elif dice == 4:
             self.buy_jewel()
         else:
             self.pet_the_cat(cat=cat, action="погладила")
@@ -346,6 +346,7 @@ for day in range(1, 366):
     masha.act(cat=murzik)
     kolya.act()
     murzik.act()
+    home.add_dirt()
     serge.check_house_dirt()
     masha.check_house_dirt()
     print('--- в конце дня ---')
