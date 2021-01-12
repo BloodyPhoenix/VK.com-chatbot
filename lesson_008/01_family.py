@@ -2,6 +2,7 @@
 
 from termcolor import cprint
 from random import randint
+from random import shuffle
 
 
 ######################################################## Часть первая
@@ -119,7 +120,7 @@ class Human:
             cprint("В доме нет денег на кошачий корм!", color="red")
 
     def pet_the_cat(self, cat, action):
-        self.happines += 5
+        self.happines += 10
         cprint(f"{self.name} {action} кота по имени {cat.name}", color="green")
 
 
@@ -148,8 +149,6 @@ class Husband(Human):
 
     def work(self):
         self.fullness -= 10
-        self.happines -= 10
-        # TODO даже с зарплатой в 70 у них все нормально
         self.house.money += 150
         self.house.total_money_earned += 150
         cprint(f"{self.name} сходил на работу", color="magenta")
@@ -172,7 +171,7 @@ class Wife(Human):
             self.shopping()
         elif self.house.cat_food <= 20:
             self.buy_cat_food(action="купила")
-        elif dice <= 2:
+        elif dice == 2:
             self.clean_house()
         elif dice == 3:
             self.eat()
@@ -339,13 +338,20 @@ serge = Husband(name='Сережа', house=home)
 masha = Wife(name='Маша', house=home)
 kolya = Child(name='Коля', house=home)
 murzik = Cat(name='Мурзик', house=home)
+residents = [serge, masha, kolya, murzik]
 #
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
-    serge.act(cat=murzik)
-    masha.act(cat=murzik)
-    kolya.act()
-    murzik.act()
+    shuffle(residents)
+    for resident in residents:
+        if isinstance(resident, Wife) or isinstance(resident, Husband):
+            resident.act(cat=murzik)
+        else:
+            resident.act()
+    # masha.act(cat=murzik)
+    # serge.act(cat=murzik)
+    # kolya.act()
+    # murzik.act()
     home.add_dirt()
     serge.check_house_dirt()
     masha.check_house_dirt()
@@ -355,22 +361,13 @@ for day in range(1, 366):
     cprint(kolya, color="cyan")
     cprint(murzik, color="cyan")
     cprint(home, color='cyan')
-    # TODO для переноса строки страраемся не использовать символ \
-    # TODO поробуйте создать с список из жильцов и использовать функцию any()
-    if not serge.check_if_alive() or not masha.check_if_alive() or not kolya.check_if_alive() or \
-        not murzik.check_if_alive():
+    if any([not resident.check_if_alive() for resident in residents]):
         break
 home.year_result()
-
-# TODO из 15 запусков не разу не было фейла, они живут 100% такого быть не должно
-# TODO Нужно добиться результата 70 на 30 или 80 на 20%
-# TODO Есть вероятность что показатели или логика сильно притянута.
 
 # Усложненное задание (делать по желанию)
 #
 # Сделать из семьи любителей котов - пусть котов будет 3, или даже 5-10.
-# Коты должны выжить вместе с семьей!
-#
 # Определить максимальное число котов, которое может прокормить эта семья при значениях зарплаты от 50 до 400.
 # Для сглаживание случайностей моделирование за год делать 3 раза, если 2 из 3х выжили - считаем что выжили.
 #

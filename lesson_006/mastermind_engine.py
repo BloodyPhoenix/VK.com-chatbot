@@ -11,7 +11,6 @@ def guess_number():
         _secret_number = random(1000, 9999)
         _secret_number = str(_secret_number)
         if len(set(_secret_number)) == 4:
-            print(_secret_number)
             break
 
 
