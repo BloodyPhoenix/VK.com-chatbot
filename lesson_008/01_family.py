@@ -339,9 +339,16 @@ masha = Wife(name='Маша', house=home)
 kolya = Child(name='Коля', house=home)
 murzik = Cat(name='Мурзик', house=home)
 residents = [serge, masha, kolya, murzik]
+food_incident = randint(1, 365)
+money_incident = randint(1, 365)
 #
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
+    if day == food_incident:
+        print("")
+        home.food = 0
+    if day == money_incident:
+        home.money = 0
     shuffle(residents)
     for resident in residents:
         if isinstance(resident, Wife) or isinstance(resident, Husband):
