@@ -234,24 +234,33 @@ class Simulation:
     def __init__(self, food_incidents_count, money_incidents_count):
         self.food_incidents_count = food_incidents_count
         self.money_incidents_count = money_incidents_count
+        # TODO тут нужно объявить все параметры которые мы используем в классе, у вас ниже код подчеркивается
+
 
     def create_house_and_residents(self, salary, cats_count):
         self.house = House(cats_count)
+        # TODO у нас всего 3 элемента иъ можно в  ручную сразу написать а не три строки занимать ниже
         self.residents = []
         self.husband = Husband(house=self.house, salary=salary, cats_count=cats_count)
         self.wife = Wife(house=self.house, cats_count=cats_count)
         self.child = Child(house=self.house, cats_count=0)
+        # TODO тут мы должны еще обнулить список с котами и списки с инцедентами едой и деньгами
+
         self.residents.append(self.husband)
         self.residents.append(self.wife)
         self.residents.append(self.child)
 
     def add_cats(self, cats_count):
+        # TODO сделать его параметром класса
         cats = []
         for _ in range(cats_count):
+            # TODO тут можно сформировать имя котам используя цикл чтобы
             cats.append(Cat(house=self.house))
+
         self.residents += cats
 
     def generate_insidents(self):
+        # TODO обнуляем в другом месте
         self.food_incidents = []
         self.money_incidents = []
         for _ in range (self.food_incidents_count):
@@ -278,6 +287,17 @@ class Simulation:
                 return False
         return True
 
+    # TODO заводим цикл по количеству котов от 10 до 0 с шагом -1
+    # TODO объявляем переменную которая будет отвечать за верификацию
+    # TODO заводим цикл по range(3)
+    # TODO обнуляемся - пересоздаем экземпляры
+    # TODO передаем ЗП
+    # TODO создаем нужное количество котов
+    # TODO генерим инциденты
+    # TODO условие запускаем цикл, если тру то
+    # TODO увеличиваем верификацию на 1
+    # TODO вложенное условие проверяем если верификацию = 2
+    # TODO то ретурним количество котов
     def experiment(self):
         cats_count = 3
         self.generate_insidents()
@@ -310,6 +330,15 @@ class Simulation:
                            f" с деньгами можно прокормить {result[0]} котов при минимальной зарплате {result[1]}",
                            color="green")
 
+
+# TODO главный код не меняем, метод result упрознить.
+# в итоге должен получится приблизительно такой код экспериментов
+# for food_incidents in range(6):
+#   for money_incidents in range(6):
+#       life = Simulation(money_incidents, food_incidents)
+#       for salary in range(50, 401, 50):
+#           max_cats = life.experiment(salary)
+#           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
 
 for money_incidents_counter in range (1, 6):
     for food_incidents_counter in range (1, 6):
