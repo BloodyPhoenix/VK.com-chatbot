@@ -5,10 +5,10 @@ from random import shuffle
 
 class House:
 
-    def __init__(self, cats_count):
+    def __init__(self):
         self.money = 100
         self.food = 50
-        self.cat_food = cats_count * 10
+        self.cat_food = 10
         self.dirt = 0
         self.jewels = 0
         self.food_eaten = 0
@@ -31,21 +31,21 @@ class Human:
 
     def __init__(self, house, cats_count):
         self.fullness = 30
-        self.happines = 100
+        self.happiness = 100
         self.house = house
         self.cats_count = cats_count
 
     def __str__(self):
-        return f"Моя сытость {self.fullness}, мой уровень счастья {self.happines}."
+        return f"Моя сытость {self.fullness}, мой уровень счастья {self.happiness}."
 
     def check_house_dirt(self):
         if self.house.dirt > 90:
-            self.happines -= 10
+            self.happiness -= 10
 
     def check_if_alive(self):
         if self.fullness <= 0:
             return False
-        elif self.happines <= 0:
+        elif self.happiness <= 0:
             return False
         else:
             return True
@@ -75,7 +75,7 @@ class Human:
             self.house.money = 0
 
     def pet_the_cat(self):
-        self.happines += 10
+        self.happiness += 10
 
 
 class Husband(Human):
@@ -88,7 +88,7 @@ class Husband(Human):
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
-        elif self.happines <= 20:
+        elif self.happiness <= 20:
             self.play_tanks()
         elif self.house.money <= 250:
             self.work()
@@ -109,7 +109,7 @@ class Husband(Human):
         self.house.total_money_earned += 150
 
     def play_tanks(self):
-        self.happines += 50
+        self.happiness += 50
         self.fullness -= 10
 
 
@@ -119,7 +119,7 @@ class Wife(Human):
         dice = randint(1, 6)
         if self.fullness <= 10:
             self.eat()
-        elif self.happines <= 20:
+        elif self.happiness <= 20:
             self.buy_jewel()
         elif self.house.food <= 50:
             self.shopping()
@@ -148,12 +148,12 @@ class Wife(Human):
     def buy_jewel(self):
         self.fullness -= 10
         if self.house.money >= 400:
-            self.happines += 100
+            self.happiness += 100
             self.house.jewels += 1
             self.house.money -= 350
             # Ювелирку в больших количествах как-то логичнее покупать, чем шубы...
         else:
-            self.happines -= 10
+            self.happiness -= 10
 
     def clean_house(self):
         self.fullness -= 10
@@ -234,43 +234,44 @@ class Simulation:
     def __init__(self, food_incidents_count, money_incidents_count):
         self.food_incidents_count = food_incidents_count
         self.money_incidents_count = money_incidents_count
-        # TODO тут нужно объявить все параметры которые мы используем в классе, у вас ниже код подчеркивается
-
-
-    def create_house_and_residents(self, salary, cats_count):
-        self.house = House(cats_count)
-        # TODO у нас всего 3 элемента иъ можно в  ручную сразу написать а не три строки занимать ниже
         self.residents = []
-        self.husband = Husband(house=self.house, salary=salary, cats_count=cats_count)
-        self.wife = Wife(house=self.house, cats_count=cats_count)
-        self.child = Child(house=self.house, cats_count=0)
-        # TODO тут мы должны еще обнулить список с котами и списки с инцедентами едой и деньгами
+        self.food_incidents = []
+        self.money_incidents = []
+        self.house = House()
 
-        self.residents.append(self.husband)
-        self.residents.append(self.wife)
-        self.residents.append(self.child)
+    def create_house_and_residents(self, current_salary, cats_count):
+        self.house = House()
+        self.residents = [
+            Husband(house=self.house, salary=current_salary, cats_count=cats_count),
+            Wife(house=self.house, cats_count=cats_count),
+            Child(house=self.house, cats_count=0)
+        ]
+        self.money_incidents = []
+        self.food_incidents = []
+        self.generate_incidents()
 
     def add_cats(self, cats_count):
         # TODO сделать его параметром класса
+        # TODO зачем, если потом этот список вливается в список residents?
         cats = []
         for _ in range(cats_count):
             # TODO тут можно сформировать имя котам используя цикл чтобы
+            # TODO можно, но зачем?
             cats.append(Cat(house=self.house))
-
         self.residents += cats
+        self.house.cat_food = cats_count * 10
 
-    def generate_insidents(self):
-        # TODO обнуляем в другом месте
-        self.food_incidents = []
-        self.money_incidents = []
-        for _ in range (self.food_incidents_count):
+    def generate_incidents(self):
+        for _ in range(self.food_incidents_count):
             day = randint(1, 365)
             self.food_incidents.append(day)
-        for _ in range (self.money_incidents_count):
+        for _ in range(self.money_incidents_count):
             day = randint(1, 365)
             self.money_incidents.append(day)
 
-    def year_cycle(self):
+    def year_cycle(self, salary, cats_count):
+        self.create_house_and_residents(current_salary=salary, cats_count=cats_count)
+        self.add_cats(cats_count)
         for day in range(1, 366):
             if day in self.food_incidents:
                 self.house.food = 0
@@ -287,60 +288,21 @@ class Simulation:
                 return False
         return True
 
-    # TODO заводим цикл по количеству котов от 10 до 0 с шагом -1
-    # TODO объявляем переменную которая будет отвечать за верификацию
-    # TODO заводим цикл по range(3)
-    # TODO обнуляемся - пересоздаем экземпляры
-    # TODO передаем ЗП
-    # TODO создаем нужное количество котов
-    # TODO генерим инциденты
-    # TODO условие запускаем цикл, если тру то
-    # TODO увеличиваем верификацию на 1
-    # TODO вложенное условие проверяем если верификацию = 2
-    # TODO то ретурним количество котов
-    def experiment(self):
-        cats_count = 3
-        self.generate_insidents()
-        results = []
-        while cats_count < 11:
-            result = False
-            for salary in range (50, 401, 50):
-                tests_failed = 0
-                for _ in range(3):
-                    self.create_house_and_residents(salary=salary, cats_count=cats_count)
-                    self.add_cats(cats_count)
-                    if not self.year_cycle():
-                        tests_failed += 1
-                if tests_failed < 2:
-                    if not result:
-                        result = [cats_count, salary]
-                        results.append(result)
-            cats_count += 1
-        return results
-
-    def result(self):
-        results = self.experiment()
-        if all(not result for result in results):
-            cprint(f"При количестве инцидентов с едой {self.food_incidents_count} и {self.money_incidents_count}"
-                   f" с деньгами невозможно прокормить трёх и более котов", color="red")
-        else:
-            for result in results:
-                if result:
-                    cprint(f"При количестве инцидентов с едой {self.food_incidents_count} и {self.money_incidents_count}"
-                           f" с деньгами можно прокормить {result[0]} котов при минимальной зарплате {result[1]}",
-                           color="green")
+    def experiment(self, salary):
+        for cats_count in range(10, 0, -1):
+            tests_passed = 0
+            for _ in range(3):
+                if self.year_cycle(salary, cats_count):
+                    tests_passed += 1
+            if tests_passed == 2:
+                return cats_count
+        return False
 
 
-# TODO главный код не меняем, метод result упрознить.
-# в итоге должен получится приблизительно такой код экспериментов
-# for food_incidents in range(6):
-#   for money_incidents in range(6):
-#       life = Simulation(money_incidents, food_incidents)
-#       for salary in range(50, 401, 50):
-#           max_cats = life.experiment(salary)
-#           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
-
-for money_incidents_counter in range (1, 6):
-    for food_incidents_counter in range (1, 6):
-        life = Simulation(money_incidents_count=money_incidents_counter, food_incidents_count=food_incidents_counter)
-        life.result()
+for food_incidents in range(6):
+    for money_incidents in range(6):
+        life = Simulation(money_incidents, food_incidents)
+        for salary in range(50, 401, 50):
+            max_cats = life.experiment(salary)
+            if max_cats:
+                print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
