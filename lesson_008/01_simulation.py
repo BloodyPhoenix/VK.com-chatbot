@@ -248,15 +248,14 @@ class Simulation:
         ]
         self.money_incidents = []
         self.food_incidents = []
+        # TODO это тоже лучше запускать в экспиремент
         self.generate_incidents()
 
     def add_cats(self, cats_count):
-        # TODO сделать его параметром класса
-        # TODO зачем, если потом этот список вливается в список residents?
+        # упростить немного конструкцию
         cats = []
         for _ in range(cats_count):
-            # TODO тут можно сформировать имя котам используя цикл чтобы
-            # TODO можно, но зачем?
+            # для дебага по имени проще найти
             cats.append(Cat(house=self.house))
         self.residents += cats
         self.house.cat_food = cats_count * 10
@@ -269,13 +268,17 @@ class Simulation:
             day = randint(1, 365)
             self.money_incidents.append(day)
 
+    # TODO тут только оставляем цикл
     def year_cycle(self, salary, cats_count):
+        # TODO эти два метода в эксперимент
         self.create_house_and_residents(current_salary=salary, cats_count=cats_count)
         self.add_cats(cats_count)
         for day in range(1, 366):
             if day in self.food_incidents:
+                # TODO мы должны половину убирать а не равнять 0
                 self.house.food = 0
             if day in self.money_incidents:
+                # TODO мы должны половину убирать а не равнять 0
                 self.house.money = 0
             shuffle(self.residents)
             for resident in self.residents:
@@ -291,11 +294,14 @@ class Simulation:
     def experiment(self, salary):
         for cats_count in range(10, 0, -1):
             tests_passed = 0
+            # TODO еще раз посмотрите алгоритм который я писал ранее
             for _ in range(3):
                 if self.year_cycle(salary, cats_count):
                     tests_passed += 1
-            if tests_passed == 2:
-                return cats_count
+                    # Это сюда
+                    if tests_passed == 2:
+                        return cats_count
+        # TODO ретурним 0
         return False
 
 
