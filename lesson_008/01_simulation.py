@@ -1,6 +1,6 @@
 from termcolor import cprint
 from random import randint
-from random import shuffle
+from random import shuffle, choice
 
 
 class House:
@@ -125,8 +125,6 @@ class Wife(Human):
             self.shopping()
         elif self.house.cat_food <= int(self.cats_count) * 10 + 20:
             self.buy_cat_food()
-        elif self.house.dirt >= 100:
-            self.clean_house()
         elif dice == 2:
             self.clean_house()
         elif dice == 3:
@@ -165,7 +163,9 @@ class Wife(Human):
 
 class Cat:
 
-    def __init__(self, house):
+    cats_names = ["Маркиз", "Пушок", "Мурзик", "Граф", "Борис", "Феликс", "Облако", "Персик", "Марсик", "Плюша"]
+
+    def __init__(self, house, name):
         self.fullness = 30
         self.house = house
 
@@ -248,16 +248,16 @@ class Simulation:
         ]
         self.money_incidents = []
         self.food_incidents = []
-        # TODO это тоже лучше запускать в экспиремент
-        self.generate_incidents()
 
     def add_cats(self, cats_count):
-        # упростить немного конструкцию
-        cats = []
+        used_names = []
         for _ in range(cats_count):
-            # для дебага по имени проще найти
-            cats.append(Cat(house=self.house))
-        self.residents += cats
+            name = choice(Cat.cats_names)
+            if name in used_names:
+                continue
+            cat = Cat(house=self.house, name=name)
+            self.residents.append(cat)
+            used_names.append(name)
         self.house.cat_food = cats_count * 10
 
     def generate_incidents(self):
@@ -268,17 +268,12 @@ class Simulation:
             day = randint(1, 365)
             self.money_incidents.append(day)
 
-    # TODO тут только оставляем цикл
-    def year_cycle(self, salary, cats_count):
-        # TODO эти два метода в эксперимент
-        self.create_house_and_residents(current_salary=salary, cats_count=cats_count)
-        self.add_cats(cats_count)
+    def year_cycle(self):
         for day in range(1, 366):
             if day in self.food_incidents:
-                # TODO мы должны половину убирать а не равнять 0
-                self.house.food = 0
+                self.house.food = self.house.food//2
             if day in self.money_incidents:
-                # TODO мы должны половину убирать а не равнять 0
+                self.house.money = self.house.money//2
                 self.house.money = 0
             shuffle(self.residents)
             for resident in self.residents:
@@ -294,15 +289,15 @@ class Simulation:
     def experiment(self, salary):
         for cats_count in range(10, 0, -1):
             tests_passed = 0
-            # TODO еще раз посмотрите алгоритм который я писал ранее
             for _ in range(3):
-                if self.year_cycle(salary, cats_count):
+                self.create_house_and_residents(current_salary=salary, cats_count=cats_count)
+                self.add_cats(cats_count)
+                self.generate_incidents()
+                if self.year_cycle():
                     tests_passed += 1
-                    # Это сюда
                     if tests_passed == 2:
                         return cats_count
-        # TODO ретурним 0
-        return False
+        return 0
 
 
 for food_incidents in range(6):
@@ -310,5 +305,8 @@ for food_incidents in range(6):
         life = Simulation(money_incidents, food_incidents)
         for salary in range(50, 401, 50):
             max_cats = life.experiment(salary)
-            if max_cats:
-                print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
+            if max_cats == 1:
+                cats_output = "кота"
+            else:
+                cats_output = "котов"
+            print(f'При зарплате {salary} максимально можно прокормить {max_cats} {cats_output}')
