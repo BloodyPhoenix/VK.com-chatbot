@@ -310,3 +310,6 @@ for food_incidents in range(6):
             else:
                 cats_output = "котов"
             print(f'При зарплате {salary} максимально можно прокормить {max_cats} {cats_output}')
+
+
+# зачет!
