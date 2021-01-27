@@ -34,69 +34,83 @@ import zipfile
 
 class InOutBlock:
 
-    # TODO нужно написать __init__ и завести там все нужные параметры экземпляра
-    # TODO нам понадобиться имя файла, словарь для сбора статистики, общее количество для начала
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.statistics = {}
+        self.letters_total = 0
+    # TODO Честно говоря, всё равно не поняла, зачем тут обязательно нужен класс, если можно обойтись без него
+    # TODO Но, возможно, дело в том, что я просто больше люблю функциональный стиль программирования и чего-то
+    # TODO не понимаю. Не вижу, как в данном случае наличие класса упрощает жизнь, и всё тут.
 
     # TODO для чего нам эти два класса ?
+    # TODO В лекции преподаватель говорил, что без них ничего работать не будет, так как они означают вход
+    # TODO в блок кода и выход из него
     def __enter__(self):
         return self
 
     def __exit__(self):
         return
 
-    # TODO попрошу вас построчно описать что в этом методе происходит
     # Да, это обязательный метод, потому что без смены рабочей директории под Убунтой ничего не работает
     @staticmethod
     def find_file_directory(file_name):
+        # получаем текущую рабочую директорию
         path = os.getcwd()
+        # получаем список директорий и поддиректорий в ней
         dirs = os.walk(path)
+        # заводим цикл для проверки всех путей в исходной папке
         for directory in dirs:
+            # первый элемент в списке-элементе, возвращённом os.path - это путь до папки
             normpath = os.path.normpath(directory[0])
+            # переключаемся на директорию из списка.Без явого перключения Ubuntu ичего не делает.
             os.chdir(normpath)
+            # если среди файлов в директории есть запрошенный нами файл - прерываем цикл, так как мы уже в нужной
+            # директории
             if file_name in directory[2]:
                 break
             else:
+                # если нет, проверяем, нет ли в папке архивов
                 for file in directory[2]:
+                    # если архив есть, открываем его на чтение и проверяем содержимое
                     if zipfile.is_zipfile(file):
                         archive = zipfile.ZipFile(file, "r")
                         content = archive.namelist()
+                        # если файл есть в архиве, то раззиповываем его и прерываем цикл обхода папок
                         if file_name in content:
                             archive.extract(file_name)
                             break
 
-    @staticmethod
-    def count_letters(file_name):
-        InOutBlock.find_file_directory(file_name)
-        letters_counter = {"total": 0}
-        with open(file_name, "r", encoding="cp1251") as file:
+    def count_letters(self):
+        InOutBlock.find_file_directory(self.file_name)
+        with open(self.file_name, "r", encoding="cp1251") as file:
             for line in file:
-                # TODO сильно большая вложенность это в отдельный метод выносим
-                for char in line:
-                    if char.isalpha():
-                        if char in letters_counter:
-                            letters_counter[char] = letters_counter[char]+1
-                            letters_counter["total"] = letters_counter["total"]+1
-                        else:
-                            letters_counter[char] = 1
-        InOutBlock.print_result(letters_counter)
+                self.check_symbols(line)
+        sorted(self.statistics)
+        self.print_result()
 
-    @staticmethod
-    def print_result(result):
+    def check_symbols(self, line):
+        for char in line:
+            if char.isalpha():
+                if char in self.statistics:
+                    self.statistics[char] = self.statistics[char] + 1
+                else:
+                    self.statistics[char] = 1
+                self.letters_total += 1
+
+    def print_result(self):
         print("""+---------+----------+
 |  буква  | частота  |
 +---------+----------+""")
-        for key in result:
-            if len(key) < 2:
-                value = result[key]
-                print("|{:^9}|{:^10}|".format(key, value))
+        for key in self.statistics:
+            value = self.statistics[key]
+            print("|{:^9}|{:^10}|".format(key, value))
         print("+---------+----------+")
-        value = result["total"]
-        print("|{:^9}|{:^10}|".format("Итого", value))
+        print("|{:^9}|{:^10}|".format("Итого", self.letters_total))
         print("+---------+----------+")
 
 
-test = InOutBlock()
-test.count_letters(file_name="voyna-i-mir.txt")
+test = InOutBlock(file_name="voyna-i-mir.txt")
+test.count_letters()
 
 
 # После зачета первого этапа нужно сделать упорядочивание статистики

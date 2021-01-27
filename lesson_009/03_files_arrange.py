@@ -124,7 +124,6 @@ class SortFiles:
                 os.chdir(normpath)
 
 
-os.chdir('..')
 sort = SortFiles()
 sort.sort_files("icons", "icons_by_year")
 
