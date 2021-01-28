@@ -28,8 +28,8 @@ import zipfile
 #   см https://refactoring.guru/ru/design-patterns/template-method
 #   и https://gitlab.skillbox.ru/vadim_shandrinov/python_base_snippets/snippets/4
 
-# TODO как вы написали все эти "заморочки" для расширения кода, без лишнего переписывания
-# TODO и удобного обращения к атрибутам в нутри одного объекта
+
+# TODO далее с этого модуля будем практиковать ООП думаю вы его точно поймете
 
 
 class InOutBlock:
@@ -38,20 +38,28 @@ class InOutBlock:
         self.file_name = file_name
         self.statistics = {}
         self.letters_total = 0
-    # TODO Честно говоря, всё равно не поняла, зачем тут обязательно нужен класс, если можно обойтись без него
-    # TODO Но, возможно, дело в том, что я просто больше люблю функциональный стиль программирования и чего-то
-    # TODO не понимаю. Не вижу, как в данном случае наличие класса упрощает жизнь, и всё тут.
+        # TODO заведем параметр self.base_path который будет равнять полному папки от куда был запущен скрипт
+        # TODO используя os.path.dirname(__file__)
+        # TODO далее мы сформируем путь до директории где лежит файл с помощью os.path.join
+        # TODO следующей строкой осталось только подставить self.file_name то же можно с помощью join
+        # TODO на выходу у вас полный путь до файла в 3-4 строки
 
-    # TODO для чего нам эти два класса ?
-    # TODO В лекции преподаватель говорил, что без них ничего работать не будет, так как они означают вход
-    # TODO в блок кода и выход из него
+
+    # TODO в основном эти два мейджик метода нужны для того чтобы создать совой кастомный контестный метод
+    # TODO https://python-scripts.com/contextlib
+    # TODO в данном случае нам они не нужны тут
     def __enter__(self):
         return self
 
     def __exit__(self):
         return
 
-    # Да, это обязательный метод, потому что без смены рабочей директории под Убунтой ничего не работает
+    # TODO мы знаем что файл лежит в python_snippets так давай его от туда возьмем без этих танцев с бубнами
+    # TODO сразу при инициализации зададим нужный путь до него
+
+    # TODO тут пишем метод который распаковывает архив
+    # TODO и переопределяет self.file_name
+
     @staticmethod
     def find_file_directory(file_name):
         # получаем текущую рабочую директорию
@@ -81,12 +89,18 @@ class InOutBlock:
                             break
 
     def count_letters(self):
+        # TODO тут пишем условие если self.file_name имеет окончание .zip
+        # TODO то вызываем метод self.unzip() - который распаковывает его
+        # TODO к методам класса обращаемся через self
         InOutBlock.find_file_directory(self.file_name)
         with open(self.file_name, "r", encoding="cp1251") as file:
             for line in file:
                 self.check_symbols(line)
         sorted(self.statistics)
         self.print_result()
+
+    # TODO также часть кода нужно выделить в отдельный метод который отвечает за сортировку словаря
+    # TODO это нужно для дальнейшей доработки
 
     def check_symbols(self, line):
         for char in line:
