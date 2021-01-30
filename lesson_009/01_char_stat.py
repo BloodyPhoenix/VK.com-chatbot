@@ -31,6 +31,10 @@ import zipfile
 
 # TODO далее с этого модуля будем практиковать ООП думаю вы его точно поймете
 
+# TODO Я понимаю концепцию и её пользу, но я не понимаю, зачем пихать её туда, где можно обойтись другим стилем
+# TODO Если бы мне так нравилась эта концепция, я бы пошла учить C# или Java
+# TODO Тут задача, которая элементарно решается без применения классов.
+
 
 class InOutBlock:
 
@@ -38,30 +42,26 @@ class InOutBlock:
         self.file_name = file_name
         self.statistics = {}
         self.letters_total = 0
-        # TODO заведем параметр self.base_path который будет равнять полному папки от куда был запущен скрипт
-        # TODO используя os.path.dirname(__file__)
-        # TODO далее мы сформируем путь до директории где лежит файл с помощью os.path.join
-        # TODO следующей строкой осталось только подставить self.file_name то же можно с помощью join
-        # TODO на выходу у вас полный путь до файла в 3-4 строки
 
 
-    # TODO в основном эти два мейджик метода нужны для того чтобы создать совой кастомный контестный метод
-    # TODO https://python-scripts.com/contextlib
-    # TODO в данном случае нам они не нужны тут
-    def __enter__(self):
-        return self
-
-    def __exit__(self):
-        return
 
     # TODO мы знаем что файл лежит в python_snippets так давай его от туда возьмем без этих танцев с бубнами
     # TODO сразу при инициализации зададим нужный путь до него
 
+    # TODO А потом нам понадобится применить этот скрипт к файлу, который лежит в другой папке
+    # TODO и совершенно ВНЕЗАПНО ничего не сработает.
+    # TODO Сейчас скрипт хотя бы обрабатывает хотя бы все вложенные папки от директории запуска
+    # TODO А если мы привязываемся к "безусловной" папке python_snippets, то можно сделать проще.
+    # TODO os.chdir("python_snippets")
+    # TODO Нам же не нужно даже подобие универсальности скрипта...
+
     # TODO тут пишем метод который распаковывает архив
     # TODO и переопределяет self.file_name
 
-    @staticmethod
-    def find_file_directory(file_name):
+    # TODO Что-то у меня опять сомнения, что это повысит способность скрипта обрабатывать файлы помимо заданных условием
+    # TODO Наверное, потому, что оно отработает только с конкретным архивом с конкретным содержимым.
+
+    def find_file_directory(self):
         # получаем текущую рабочую директорию
         path = os.getcwd()
         # получаем список директорий и поддиректорий в ней
@@ -70,11 +70,11 @@ class InOutBlock:
         for directory in dirs:
             # первый элемент в списке-элементе, возвращённом os.path - это путь до папки
             normpath = os.path.normpath(directory[0])
-            # переключаемся на директорию из списка.Без явого перключения Ubuntu ичего не делает.
+            # переключаемся на директорию из списка. Без явого перключения Ubuntu ичего не делает.
             os.chdir(normpath)
             # если среди файлов в директории есть запрошенный нами файл - прерываем цикл, так как мы уже в нужной
             # директории
-            if file_name in directory[2]:
+            if self.file_name in directory[2]:
                 break
             else:
                 # если нет, проверяем, нет ли в папке архивов
@@ -84,23 +84,26 @@ class InOutBlock:
                         archive = zipfile.ZipFile(file, "r")
                         content = archive.namelist()
                         # если файл есть в архиве, то раззиповываем его и прерываем цикл обхода папок
-                        if file_name in content:
-                            archive.extract(file_name)
+                        if self.file_name in content:
+                            archive.extract(self.file_name)
                             break
+        print("Запрашиваемый файл не найден в данной директории или вложенных.")
 
     def count_letters(self):
         # TODO тут пишем условие если self.file_name имеет окончание .zip
-        # TODO то вызываем метод self.unzip() - который распаковывает его
-        # TODO к методам класса обращаемся через self
-        InOutBlock.find_file_directory(self.file_name)
-        with open(self.file_name, "r", encoding="cp1251") as file:
-            for line in file:
-                self.check_symbols(line)
-        sorted(self.statistics)
-        self.print_result()
 
-    # TODO также часть кода нужно выделить в отдельный метод который отвечает за сортировку словаря
-    # TODO это нужно для дальнейшей доработки
+        # TODO А если мы его уже после предыдущего теста раззиповали?..
+        # TODO Почему не работать сразу с именем конечного файла, который нам нужен?
+        if str(self.file_name).endswith(".txt"):
+            self.find_file_directory()
+            with open(self.file_name, "r", encoding="cp1251") as file:
+                for line in file:
+                    self.check_symbols(line)
+            self.sort_statistics()
+            self.print_result()
+
+    def sort_statistics(self):
+        sorted(self.statistics)
 
     def check_symbols(self, line):
         for char in line:
