@@ -35,28 +35,20 @@ class InOutBlock:
         self.file_name = file_name
         self.statistics = {}
         self.letters_total = 0
-        # TODO Добавим необязательный аргумент в виде пути до папки, откуда будем искать
+
         if path:
-            self.path = os.path.normpath(file_path)
-        # TODO Если там ничего нет - ищем от директории, где запустили скрипт
+            self.path = os.path.normpath(file_name)
         else:
             self.path = os.getcwd()
 
     def find_file_directory(self):
-        # получаем список директорий и поддиректорий в ней
-        # тут мы получаем не dirs а dirpath, dirnames, filenames сразу три параметра
-        # незабываем что переменные пишутся в стиле snake_case
-        # TODO тут мы три параметра получить не можем, так как os.walk возвращает итерируемый объект типа generator
-        # TODO который содержит свежения о текущей папке и всех вложенных
-        # TODO из него перебором в цикле можно вытащить путь до каждой папки (первый элемент в элементе генератора),
-        # TODO список вложенных папок (второй элемент) и список файлов (третий)
-        # TODO кстати, первый элемент в генераторе - это корень, откуда запущен скрипт, так что его мы тоже проверяем
         dirs = os.walk(self.path)
         # заводим цикл для проверки всех путей в исходной папке
-        for directory in dirs:
+        # TODO нужно было записать вот так
+        for dirpath, _, filenames in dirs:
             # первый элемент в списке-элементе, возвращённом os.path - это путь до папки
-            normpath = os.path.normpath(directory[0])
-            for file in directory[2]:
+            normpath = os.path.normpath(dirpath)
+            for file in filenames:
                 if self.check_file_name(file):
                     os.chdir(normpath)
                     return True
@@ -74,13 +66,8 @@ class InOutBlock:
                 return True
 
     def count_letters(self):
-        # TODO тут пишем условие если self.file_name имеет окончание .zip
-        # TODO Зачем, если мы при поиске файла в директории его уже раззиповали?
-        # TODO self.file_name и так строка зачем ее еще раз преобразовывать
-        # TODO потому что иначе ПайЧарм ругается
+        # TODO self.file_name у нас и так строка
         if str(self.file_name).endswith(".txt"):
-            # TODO зачем запускать файл если он может лежать в корне! Нужно делать проверку
-            #TODO Проверка с помощью os.walk идёт от корня. См. комментарии выше.
             if self.find_file_directory():
                 with open(self.file_name, "r", encoding="cp1251") as file:
                     for line in file:
@@ -115,6 +102,8 @@ class InOutBlock:
 test = InOutBlock(file_name="voyna-i-mir.txt")
 test.count_letters()
 
+
+# TODO делаем вторую часть этого задания
 
 # После зачета первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию
