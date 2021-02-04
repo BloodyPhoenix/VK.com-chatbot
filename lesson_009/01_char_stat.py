@@ -3,6 +3,7 @@
 import os.path
 import zipfile
 
+
 # Подсчитать статистику по буквам в романе Война и Мир.
 # Входные параметры: файл для сканирования
 # Статистику считать только для букв алфавита (см функцию .isalpha() для строк)
@@ -35,6 +36,8 @@ class InOutBlock:
         self.file_name = file_name
         self.statistics = {}
         self.letters_total = 0
+        self.sort_keys = []
+        self.sort_by_alphabet = True
 
         if path:
             self.path = os.path.normpath(file_name)
@@ -74,7 +77,10 @@ class InOutBlock:
                 self.print_result()
 
     def sort_statistics(self):
-        sorted(self.statistics)
+        for letter in self.statistics:
+            self.sort_keys.append(self.statistics[letter])
+        self.sort_keys.sort(reverse=True)
+        self.sort_by_alphabet = False
 
     def check_symbols(self, line):
         for char in line:
@@ -89,9 +95,15 @@ class InOutBlock:
         print("""+---------+----------+
 |  буква  | частота  |
 +---------+----------+""")
-        for key in self.statistics:
-            value = self.statistics[key]
-            print("|{:^9}|{:^10}|".format(key, value))
+        if self.sort_by_alphabet:
+            for sort_key in self.sort_keys:
+                value = self.statistics[sort_key]
+                print("|{:^9}|{:^10}|".format(sort_key, value))
+        else:
+            for sort_key in self.sort_keys:
+                for key, value in self.statistics.items():
+                    if sort_key == value:
+                        print("|{:^9}|{:^10}|".format(key, value))
         print("+---------+----------+")
         print("|{:^9}|{:^10}|".format("Итого", self.letters_total))
         print("+---------+----------+")
@@ -100,8 +112,53 @@ class InOutBlock:
 test = InOutBlock(file_name="voyna-i-mir.txt")
 test.count_letters()
 
-
 # После зачета первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию
 #  - по алфавиту по возрастанию
 #  - по алфавиту по убыванию
+
+
+class AscFrequencySort(InOutBlock):
+
+    def __init__(self, file_name, path=None):
+        super().__init__(file_name, path)
+
+    def sort_statistics(self):
+        for letter in self.statistics:
+            self.sort_keys.append(self.statistics[letter])
+        self.sort_keys.sort()
+        self.sort_by_alphabet = False
+
+
+class AscAlphabetSort(InOutBlock):
+
+    def __init__(self, file_name, path=None):
+        super().__init__(file_name, path)
+
+    def sort_statistics(self):
+        for letter in self.statistics:
+            self.sort_keys.append(letter)
+        self.sort_keys.sort(reverse=True)
+        self.sort_by_alphabet = True
+
+
+class DescAlphabetSort(InOutBlock):
+
+    def __init__(self, file_name, path=None):
+        super().__init__(file_name, path)
+
+    def sort_statistics(self):
+        for letter in self.statistics:
+            self.sort_keys.append(letter)
+        self.sort_keys.sort()
+        self.sort_by_alphabet = True
+
+
+test = AscFrequencySort(file_name="voyna-i-mir.txt")
+test.count_letters()
+test = AscAlphabetSort(file_name="voyna-i-mir.txt")
+test.count_letters()
+test = DescAlphabetSort(file_name="voyna-i-mir.txt")
+test.count_letters()
+
+

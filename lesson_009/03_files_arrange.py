@@ -64,7 +64,7 @@ class SortFiles:
                 # до неё, он потребуется потом
                 self.start_path = normpath
                 return True
-        print("В указанной директории запрашиваемая поддиректория не найдена")
+        print("В указанной директории запрашиваемая поддиректория не найдена.")
         return False
 
     def get_date(self):
