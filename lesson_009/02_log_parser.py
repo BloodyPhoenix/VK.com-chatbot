@@ -28,68 +28,67 @@ import zipfile
 
 class EventsCounter:
 
-    def __enter__(self):
-        return
+    def __init__(self, file_name, path=None):
+        self.file_name = file_name
+        self.event_log = []
+        self.nok_events = {}
+        if path:
+            self.path = os.path.normpath(file_name)
+        else:
+            self.path = os.getcwd()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        return
+    def find_file_directory(self):
+        dirs = os.walk(self.path)
+        # заводим цикл для проверки всех путей в исходной папке
+        for dirpath, _, filenames in dirs:
+            # первый элемент в списке-элементе, возвращённом os.path - это путь до папки
+            normpath = os.path.normpath(dirpath)
+            for file in filenames:
+                if self.check_file_name(file):
+                    os.chdir(normpath)
+                    return True
+        print("Запрашиваемый файл не найден в данной директории или вложенных.")
+        return False
 
-    @staticmethod
-    def switch_directory(file_name):
-        path = os.getcwd()
-        dirs = os.walk(path)
-        for directory in dirs:
-            normpath = os.path.normpath(directory[0])
-            os.chdir(normpath)
-            if file_name in directory[2]:
-                break
-            else:
-                for file in directory[2]:
-                    if zipfile.is_zipfile(file):
-                        archive = zipfile.ZipFile(file, "r")
-                        content = archive.namelist()
-                        if file_name in content:
-                            archive.extract(file_name)
-                            break
+    def check_file_name(self, file):
+        if self.file_name == file:
+            return True
+        elif zipfile.is_zipfile(file):
+            archive = zipfile.ZipFile(file, "r")
+            content = archive.namelist()
+            if self.file_name in content:
+                archive.extract(self.file_name)
+                return True
 
-    @staticmethod
-    def prepare_file(file_name):
-        event_log = []
-        with open(file_name, "r", encoding="cp1251") as file:
+    def prepare_file(self):
+        with open(self.file_name, "r", encoding="cp1251") as file:
             for line in file:
                 prepare_log = line.split()
                 log_date = prepare_log[0].strip("[")
                 log_time = prepare_log[1].strip("]")
                 log_status = prepare_log[2]
                 log = (log_date, log_time, log_status)
-                event_log.append(log)
-        return event_log
+                self.event_log.append(log)
 
-    @staticmethod
-    def count_noks(file_name):
-        EventsCounter.switch_directory(file_name=file_name)
-        event_log = EventsCounter.prepare_file(file_name)
-        nok_events = {}
-        for event in event_log:
+    def count_noks(self):
+        self.find_file_directory()
+        self.prepare_file()
+        for event in self.event_log:
             if event[-1] == "NOK":
                 nok_event_date = event[0]
                 nok_event_time = event[1][:5]
                 nok_event = str("["+nok_event_date+" "+nok_event_time+"]")
-                if nok_event in nok_events:
-                    nok_events[nok_event] = nok_events[nok_event]+1
+                if nok_event in self.nok_events:
+                    self.nok_events[nok_event] = self.nok_events[nok_event]+1
                 else:
-                    nok_events[nok_event] = 1
-        EventsCounter.save_results(nok_events)
+                    self.nok_events[nok_event] = 1
+        self.save_results()
 
-    @staticmethod
-    def save_results(result):
+    def save_results(self):
         with open("NOK count.txt", "a+", encoding="cp1251") as file:
-            for key in result:
-                value = str(result[key])
+            for key in self.nok_events:
+                value = str(self.nok_events[key])
                 file.write(key+" "+value)
-
-
-EventsCounter.count_noks("events.txt")
 
 
 # После зачета первого этапа нужно сделать группировку событий

@@ -44,7 +44,6 @@ class InOutBlock:
     def find_file_directory(self):
         dirs = os.walk(self.path)
         # заводим цикл для проверки всех путей в исходной папке
-        # TODO нужно было записать вот так
         for dirpath, _, filenames in dirs:
             # первый элемент в списке-элементе, возвращённом os.path - это путь до папки
             normpath = os.path.normpath(dirpath)
@@ -66,8 +65,7 @@ class InOutBlock:
                 return True
 
     def count_letters(self):
-        # TODO self.file_name у нас и так строка
-        if str(self.file_name).endswith(".txt"):
+        if self.file_name.endswith(".txt"):
             if self.find_file_directory():
                 with open(self.file_name, "r", encoding="cp1251") as file:
                     for line in file:
@@ -102,8 +100,6 @@ class InOutBlock:
 test = InOutBlock(file_name="voyna-i-mir.txt")
 test.count_letters()
 
-
-# TODO делаем вторую часть этого задания
 
 # После зачета первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию
