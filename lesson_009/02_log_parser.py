@@ -71,6 +71,7 @@ class EventsCounter:
                 self.event_log.append(log)
 
     def count_noks(self):
+        # TODO тут наверное должно быть условие раз find_file_directory() возвращает False
         self.find_file_directory()
         self.prepare_file()
         for event in self.event_log:
@@ -90,6 +91,8 @@ class EventsCounter:
                 value = str(self.nok_events[key])
                 file.write(key+" "+value)
 
+
+# TODO забыли написать запуск
 
 # После зачета первого этапа нужно сделать группировку событий
 #  - по часам
