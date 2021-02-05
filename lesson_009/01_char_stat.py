@@ -120,6 +120,7 @@ test.count_letters()
 
 class AscFrequencySort(InOutBlock):
 
+    # TODO метод инит писать не обязательно мы в нем ничего не переопределяем!
     def __init__(self, file_name, path=None):
         super().__init__(file_name, path)
 
