@@ -120,10 +120,6 @@ test.count_letters()
 
 class AscFrequencySort(InOutBlock):
 
-    # TODO метод инит писать не обязательно мы в нем ничего не переопределяем!
-    def __init__(self, file_name, path=None):
-        super().__init__(file_name, path)
-
     def sort_statistics(self):
         for letter in self.statistics:
             self.sort_keys.append(self.statistics[letter])
@@ -133,9 +129,6 @@ class AscFrequencySort(InOutBlock):
 
 class AscAlphabetSort(InOutBlock):
 
-    def __init__(self, file_name, path=None):
-        super().__init__(file_name, path)
-
     def sort_statistics(self):
         for letter in self.statistics:
             self.sort_keys.append(letter)
@@ -144,9 +137,6 @@ class AscAlphabetSort(InOutBlock):
 
 
 class DescAlphabetSort(InOutBlock):
-
-    def __init__(self, file_name, path=None):
-        super().__init__(file_name, path)
 
     def sort_statistics(self):
         for letter in self.statistics:

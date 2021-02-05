@@ -26,6 +26,7 @@
 import os.path
 import zipfile
 
+
 class EventsCounter:
 
     def __init__(self, file_name, path=None):
@@ -33,20 +34,26 @@ class EventsCounter:
         self.event_log = []
         self.nok_events = {}
         if path:
-            self.path = os.path.normpath(file_name)
+            self.path = os.path.normpath(path)
         else:
             self.path = os.getcwd()
 
+    def check_file_format(self):
+        if self.file_name.endswith(".txt"):
+            return True
+        else:
+            print("Работа с файлами, отличными от формата txt, не поддерживается")
+            return False
+
     def find_file_directory(self):
-        dirs = os.walk(self.path)
-        # заводим цикл для проверки всех путей в исходной папке
-        for dirpath, _, filenames in dirs:
-            # первый элемент в списке-элементе, возвращённом os.path - это путь до папки
-            normpath = os.path.normpath(dirpath)
-            for file in filenames:
-                if self.check_file_name(file):
-                    os.chdir(normpath)
-                    return True
+        if self.check_file_format():
+            dirs = os.walk(self.path)
+            for dir_path, _, files in dirs:
+                for file in files:
+                    if self.check_file_name(file):
+                        normpath = os.path.normpath(dir_path)
+                        os.chdir(normpath)
+                        return True
         print("Запрашиваемый файл не найден в данной директории или вложенных.")
         return False
 
@@ -60,7 +67,7 @@ class EventsCounter:
                 archive.extract(self.file_name)
                 return True
 
-    def prepare_file(self):
+    def prepare_logs(self):
         with open(self.file_name, "r", encoding="cp1251") as file:
             for line in file:
                 prepare_log = line.split()
@@ -71,28 +78,28 @@ class EventsCounter:
                 self.event_log.append(log)
 
     def count_noks(self):
-        # TODO тут наверное должно быть условие раз find_file_directory() возвращает False
-        self.find_file_directory()
-        self.prepare_file()
-        for event in self.event_log:
-            if event[-1] == "NOK":
-                nok_event_date = event[0]
-                nok_event_time = event[1][:5]
-                nok_event = str("["+nok_event_date+" "+nok_event_time+"]")
-                if nok_event in self.nok_events:
-                    self.nok_events[nok_event] = self.nok_events[nok_event]+1
-                else:
-                    self.nok_events[nok_event] = 1
-        self.save_results()
+        if self.find_file_directory():
+            self.prepare_logs()
+            for event in self.event_log:
+                if event[-1] == "NOK":
+                    nok_event_date = event[0]
+                    nok_event_time = event[1][:5]
+                    nok_event = str("[" + nok_event_date + " " + nok_event_time + "]")
+                    if nok_event in self.nok_events:
+                        self.nok_events[nok_event] = self.nok_events[nok_event] + 1
+                    else:
+                        self.nok_events[nok_event] = 1
+            self.save_results()
 
     def save_results(self):
         with open("NOK count.txt", "a+", encoding="cp1251") as file:
             for key in self.nok_events:
                 value = str(self.nok_events[key])
-                file.write(key+" "+value)
+                file.write(key + " " + value)
 
 
-# TODO забыли написать запуск
+test = EventsCounter("events.txt")
+test.count_noks()
 
 # После зачета первого этапа нужно сделать группировку событий
 #  - по часам

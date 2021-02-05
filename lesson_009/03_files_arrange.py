@@ -43,124 +43,78 @@ import shutil
 
 class SortFiles:
 
-    def __init__(self, start_dir, target_dir, path):
+    def __init__(self, start_dir, target_dir, path=None):
         self.start_dir = start_dir
         self.target_dir = target_dir
+        self.root_dir = None
         self.files_time = []
         self.folder_names = {}
-        self.start_path = None
+        self.current_file = None
+        self.current_path = None
+        self.target_path = None
+        self.file_year = ""
+        self.file_month = ""
+
         if path:
-            self.path = os.path.normpath(path)
+            self.start_path = os.path.normpath(path)
         else:
-            self.path = os.getcwd()
+            self.start_path = os.getcwd()
 
     def change_dir(self):
-        dirs = os.walk(self.path)
-        for directory in dirs:
-            normpath = os.path.normpath(directory[0])
+        dirs = os.walk(self.start_path)
+        for dir_path, *_, in dirs:
             # Мне кажется, тут нужна получше защита от возмножных совпадений имён папок, но я не могу придумать
-            if directory[0].endswith(self.start_dir):
+            if dir_path.endswith(self.start_dir):
                 # Тут мы переходим от корня конкретно в директорию, с которой будем работать, и сохраняем точный путь
                 # до неё, он потребуется потом
-                self.start_path = normpath
+                self.start_path = dir_path
+                os.chdir(self.start_path)
                 return True
         print("В указанной директории запрашиваемая поддиректория не найдена.")
         return False
 
-    def get_date(self):
+    def create_target_dir(self):
         if self.change_dir():
-            dirs = os.walk(self.start_path)
-            for _, _, files in dirs:
-                self.get_files_date(files)
-        self.files_time.sort()
+            os.chdir("..")
+            self.root_dir = os.getcwd()
+            if not os.path.exists(self.target_dir):
+                os.mkdir(self.target_dir)
 
-    def get_files_date(self, files):
-        for file_name in files:
-            file_path = os.path.abspath(file_name)
-            file_time = os.path.getmtime(file_path)
-            file_time = time.gmtime(file_time)
-            self.files_time.append(file_time)
-
-    def set_folder_names(self):
-        self.get_date()
-        for date in self.files_time:
-            year = str(date[0])
-            month = str(date[1])
-            if year not in self.folder_names:
-                self.folder_names[year] = []
-            if month not in self.folder_names[year]:
-                self.folder_names[year].append(month)
-
-    def make_folders(self):
-        # Т.к. на предыдущем этапе, перебирая файлы, мы могли уйти неизвестно куда в глубинах исходной папки
-        # тут возвращаемся в неё, а потом на уровень выше, чтобы там создать целевую папку
-        os.chdir(self.start_path)
-        os.chdir('..')
-        if not os.path.exists(self.target_dir):
-            os.mkdir(self.target_dir)
-        os.chdir(self.target_dir)
-        for year in self.folder_names:
-            # Тут уже идёт большая вложенность, но не знаю, следует ли что-то с этим делать, так как по логике это
-            # всё операция создания папок
-            if not os.path.exists(year):
-                os.mkdir(year)
-                os.chdir(year)
-                for month in self.folder_names[year]:
-                    if not os.path.exists(month):
-                        os.mkdir(month)
-                os.chdir('..')
-
-    def move_files(self, files, path):
-        for file_name in files:
-            file_path = os.path.abspath(file_name)
-            file_time = os.path.getmtime(file_path)
-            file_time = time.gmtime(file_time)
-            file_year = str(file_time[0])
-            file_month = str(file_time[1])
-            target_pass = os.path.join(self.target_dir, file_year, file_month)
-            # Переключения директорий тут очень важны!
-            # Если не выйдем в общую - ничего не сработает
-            os.chdir(self.start_path)
-            os.chdir('..')
-            shutil.copy2(file_path, target_pass)
-            # А тут надо обязательно вернуться в изначальную директорию, где у нас лежат файлы, которые перебираем
-            os.chdir(path)
-
-    def sort_files(self):
-        self.change_dir()
-        self.set_folder_names()
-        self.make_folders()
+    def move_all_files(self):
+        self.create_target_dir()
         os.chdir(self.start_path)
         dirs = os.walk(self.start_path)
         for dir_path, _, files in dirs:
-            normpath = os.path.normpath(dir_path)
-            # Вот тут переключение обязательно, так как мы работаем с этими файлами, а не просто их просматриваем
-            os.chdir(normpath)
-            self.move_files(files, path=normpath)
+            for file in files:
+                self.current_file = file
+                self.current_path = os.path.join(dir_path, file)
+                self.move_file()
+
+    def move_file(self):
+        self.get_target_path()
+        os.chdir(self.root_dir)
+        os.chdir(self.target_dir)
+        # TODO Без этих проверок и переключений у меня скрипт не работает...
+        if not os.path.exists(self.file_year):
+            os.mkdir(self.file_year)
+        os.chdir(self.file_year)
+        if not os.path.exists(self.file_month):
+            os.mkdir(self.file_month)
+        os.chdir(self.root_dir)
+        shutil.copy2(self.current_path, self.target_path)
+
+    def get_target_path(self):
+        file_time = os.path.getmtime(self.current_path)
+        file_time = time.gmtime(file_time)
+        self.file_year = str(file_time[0])
+        self.file_month = str(file_time[1])
+        self.target_path = os.path.join(self.target_dir, self.file_year, self.file_month)
 
 
-# TODO нехватает параметра
-sort = SortFiles("icons", "icons_by_year")
-sort.sort_files()
+test = SortFiles("icons", "icons_by_year")
+test.move_all_files()
 
-# TODO циклом проходимся по списку имен файлов
 
-# TODO напишу тут алгоритм!
-# TODO получаем полный путь к файлу используя os.path.join
-# TODO получаем данные о времени файла, используя getmtime gmtime, можно разными строками
-# TODO получаем месяц и год из ранее полученного объекта данных
-# TODO получаем получаем конечный путь кода куда будем писать файл
-# TODO тут мы используем join(directory_path папку_куда_пишем год месяц) - 4 аргумента
-# TODO далее проверяем есть ли данная папка если нет то создаем
-# TODO и в конце используем shutil.copy2 с нужными параметрами (куда копируем и что копируем)
-
-# TODO ориентировочно 9-10 строк
-
-# TODO да можно добавить дополнительный метод на проверку, или создание директории
-
-# TODO код выше нужно сокращать, очень много циклов повторяющихся
-
-# TODO for dirpath, _, filenames in os.walk(self.start_path) - должет быть один
 
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
