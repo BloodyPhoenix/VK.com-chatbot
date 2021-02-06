@@ -94,7 +94,6 @@ class SortFiles:
         self.get_target_path()
         os.chdir(self.root_dir)
         os.chdir(self.target_dir)
-        # TODO Без этих проверок и переключений у меня скрипт не работает...
         if not os.path.exists(self.file_year):
             os.mkdir(self.file_year)
         os.chdir(self.file_year)
@@ -115,6 +114,8 @@ test = SortFiles("icons", "icons_by_year")
 test.move_all_files()
 
 
+# TODO хорошо делаем вторую часть, незабываем что нужно сделать так что бы дата изменения была та которая
+# TODO хранится в мета данных в зип архиве
 
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
