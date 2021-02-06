@@ -101,6 +101,8 @@ class EventsCounter:
 test = EventsCounter("events.txt")
 test.count_noks()
 
+# TODO делаем вторую часть
+
 # После зачета первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
