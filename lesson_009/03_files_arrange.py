@@ -3,6 +3,7 @@
 import os.path
 import time
 import shutil
+import zipfile
 
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
@@ -47,11 +48,10 @@ class SortFiles:
         self.start_dir = start_dir
         self.target_dir = target_dir
         self.root_dir = None
-        self.files_time = []
-        self.folder_names = {}
-        self.current_file = None
         self.current_path = None
         self.target_path = None
+        self.current_file = None
+        self.file_name = None
         self.file_year = ""
         self.file_month = ""
 
@@ -86,7 +86,7 @@ class SortFiles:
         dirs = os.walk(self.start_path)
         for dir_path, _, files in dirs:
             for file in files:
-                self.current_file = file
+                self.file_name = os.path.basename(file)
                 self.current_path = os.path.join(dir_path, file)
                 self.move_file()
 
@@ -94,31 +94,76 @@ class SortFiles:
         self.get_target_path()
         os.chdir(self.root_dir)
         os.chdir(self.target_dir)
-        if not os.path.exists(self.file_year):
-            os.mkdir(self.file_year)
-        os.chdir(self.file_year)
-        if not os.path.exists(self.file_month):
-            os.mkdir(self.file_month)
-        os.chdir(self.root_dir)
+        full_path = os.path.join(self.target_path, self.file_name)
+        if not os.path.exists(full_path):
+            if not os.path.exists(self.file_year):
+                os.mkdir(self.file_year)
+            os.chdir(self.file_year)
+            if not os.path.exists(self.file_month):
+                os.mkdir(self.file_month)
+            os.chdir(self.root_dir)
+            self.copy_file()
+
+    def copy_file(self):
         shutil.copy2(self.current_path, self.target_path)
 
-    def get_target_path(self):
+    def get_time(self):
         file_time = os.path.getmtime(self.current_path)
         file_time = time.gmtime(file_time)
+        return file_time
+
+    def get_target_path(self):
+        file_time = self.get_time()
         self.file_year = str(file_time[0])
         self.file_month = str(file_time[1])
         self.target_path = os.path.join(self.target_dir, self.file_year, self.file_month)
 
-
-test = SortFiles("icons", "icons_by_year")
-test.move_all_files()
-
-
-# TODO хорошо делаем вторую часть, незабываем что нужно сделать так что бы дата изменения была та которая
-# TODO хранится в мета данных в зип архиве
 
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Это относится только к чтению файлов в архиве. В случае паттерна "Шаблонный метод" изменяется способ
 # получения данных (читаем os.walk() или zip.namelist и т.д.)
 # Документация по zipfile: API https://docs.python.org/3/library/zipfile.html
+
+
+class SortZipFiles(SortFiles):
+
+    def change_dir(self):
+        dirs = os.walk(self.start_path)
+        for dir_path, _, files in dirs:
+            if self.start_dir in files:
+                self.root_dir = dir_path
+                os.chdir(self.root_dir)
+                if not os.path.exists(self.target_dir):
+                    os.mkdir(self.target_dir)
+                return True
+        print("В указанной директории запрашиваемый архив не найден.")
+        return False
+
+    def move_all_files(self):
+        self.change_dir()
+        path = os.path.join(self.root_dir, str(self.start_dir))
+        with zipfile.ZipFile(path, "r") as self.start_dir:
+            content = self.start_dir.namelist()
+            for item in content:
+                self.current_path = self.start_dir.getinfo(item)
+                if not self.current_path.is_dir():
+                    self.file_name = os.path.basename(self.current_path.filename)
+                    self.current_file = item
+                    self.move_file()
+
+    def get_time(self):
+        return self.current_path.date_time
+
+    def copy_file(self):
+        source = self.start_dir.open(self.current_file)
+        target = open(os.path.join(self.target_path, self.file_name), "wb")
+        with source, target:
+            shutil.copyfileobj(source, target)
+
+
+test = SortZipFiles("icons.zip", "icons_by_year")
+test.move_all_files()
+
+
+
