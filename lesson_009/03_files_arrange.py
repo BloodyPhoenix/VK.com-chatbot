@@ -162,6 +162,7 @@ class SortZipFiles(SortFiles):
             shutil.copyfileobj(source, target)
 
 
+# TODO переносим и мета данные тоже, дата изменения и последний доступ должны быть те которые были в архиве у файла
 test = SortZipFiles("icons.zip", "icons_by_year")
 test.move_all_files()
 
