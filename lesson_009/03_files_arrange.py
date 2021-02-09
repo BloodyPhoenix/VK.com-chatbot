@@ -157,6 +157,7 @@ class SortZipFiles(SortFiles):
 
     def copy_file(self):
         source = self.start_dir.open(self.current_file)
+        # TODO файл должен быть закрыт
         target = open(os.path.join(self.target_path, self.file_name), "wb")
         with source, target:
             shutil.copyfileobj(source, target)
