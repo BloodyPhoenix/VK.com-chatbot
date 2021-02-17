@@ -82,6 +82,8 @@ class EventsCounter:
             self.prepare_logs()
             for event in self.event_log:
                 if event[-1] == "NOK":
+                    # TODO эти строки строки у вас отвечают за группировку их нужно вынести в отдельный метод
+                    # TODO и его потом только переопределять в дочерних классах
                     nok_event_date = event[0]
                     nok_event_time = event[1][:5]
                     nok_event = str("[" + nok_event_date + " " + nok_event_time + "]")
