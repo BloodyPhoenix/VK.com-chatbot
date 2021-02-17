@@ -101,11 +101,81 @@ class EventsCounter:
 test = EventsCounter("events.txt")
 test.count_noks()
 
-# TODO вывод лучше делаем в колонку
-
-
 # После зачета первого этапа нужно сделать группировку событий
-# TODO вот такие группировки
-#  - по часам - [2018-05-14 19]
-#  - по месяцу - [2018-05]
-#  - по году - [2018]
+
+
+class EventsCounterHours(EventsCounter):
+
+    def count_noks(self):
+        if self.find_file_directory():
+            self.prepare_logs()
+            for event in self.event_log:
+                if event[-1] == "NOK":
+                    nok_event_date = event[0]
+                    nok_event_time = event[1][:2]
+                    nok_event = str("[" + nok_event_date + " " + nok_event_time + "]")
+                    if nok_event in self.nok_events:
+                        self.nok_events[nok_event] = self.nok_events[nok_event] + 1
+                    else:
+                        self.nok_events[nok_event] = 1
+                self.save_results()
+
+    def save_results(self):
+        with open("NOK count hour.txt", "a+", encoding="cp1251") as file:
+            for key in self.nok_events:
+                value = str(self.nok_events[key])
+                file.write(key + " " + value)
+
+
+class EventsCounterMonth(EventsCounter):
+
+    def count_noks(self):
+        if self.find_file_directory():
+            self.prepare_logs()
+            for event in self.event_log:
+                if event[-1] == "NOK":
+                    nok_event_date = event[0][:7]
+                    nok_event = str("[" + nok_event_date +"]")
+                    if nok_event in self.nok_events:
+                        self.nok_events[nok_event] = self.nok_events[nok_event] + 1
+                    else:
+                        self.nok_events[nok_event] = 1
+                self.save_results()
+
+    def save_results(self):
+        with open("NOK count month.txt", "a+", encoding="cp1251") as file:
+            for key in self.nok_events:
+                value = str(self.nok_events[key])
+                file.write(key + " " + value)
+
+
+class EventsCounterYear(EventsCounter):
+
+    def count_noks(self):
+        if self.find_file_directory():
+            self.prepare_logs()
+            for event in self.event_log:
+                if event[-1] == "NOK":
+                    nok_event_date = event[0][:4]
+                    nok_event = str("[" + nok_event_date +"]")
+                    if nok_event in self.nok_events:
+                        self.nok_events[nok_event] = self.nok_events[nok_event] + 1
+                    else:
+                        self.nok_events[nok_event] = 1
+                self.save_results()
+
+    def save_results(self):
+        with open("NOK count year.txt", "a+", encoding="cp1251") as file:
+            for key in self.nok_events:
+                value = str(self.nok_events[key])
+                file.write(key + " " + value)
+
+
+test = EventsCounterHours("events.txt")
+test.count_noks()
+
+test = EventsCounterMonth("events.txt")
+test.count_noks()
+
+test = EventsCounterYear("events.txt")
+test.count_noks()

@@ -156,14 +156,12 @@ class SortZipFiles(SortFiles):
         return self.current_path.date_time
 
     def copy_file(self):
-        source = self.start_dir.open(self.current_file)
-        # TODO файл должен быть закрыт
-        target = open(os.path.join(self.target_path, self.file_name), "wb")
-        with source, target:
-            shutil.copyfileobj(source, target)
+        pass
+    # TODO Я не знаю, как это сделать, не извлекая всю структуру папок из архива.
+    # TODO Все найденные методы предполагают создание нового файла в целевой папке,но тогда не копируются метаданные
+    # TODO Можно сперва создать дерево, извлечь файл, скопировать его и удалить лишние папки
+    # TODO Но это кажется мне очень глупым
 
-
-# TODO переносим и мета данные тоже, дата изменения и последний доступ должны быть те которые были в архиве у файла
 test = SortZipFiles("icons.zip", "icons_by_year")
 test.move_all_files()
 
