@@ -51,6 +51,7 @@ class SortFiles:
         self.current_path = None
         self.target_path = None
         self.current_file = None
+        self.file_time = None
         self.file_name = None
         self.file_year = ""
         self.file_month = ""
@@ -108,14 +109,13 @@ class SortFiles:
         shutil.copy2(self.current_path, self.target_path)
 
     def get_time(self):
-        file_time = os.path.getmtime(self.current_path)
-        file_time = time.gmtime(file_time)
-        return file_time
+        self.file_time = os.path.getmtime(self.current_path)
+        self.file_time = time.gmtime(self.file_time)
 
     def get_target_path(self):
-        file_time = self.get_time()
-        self.file_year = str(file_time[0])
-        self.file_month = str(file_time[1])
+        self.get_time()
+        self.file_year = str(self.file_time[0])
+        self.file_month = str(self.file_time[1])
         self.target_path = os.path.join(self.target_dir, self.file_year, self.file_month)
 
 
@@ -153,13 +153,20 @@ class SortZipFiles(SortFiles):
                     self.move_file()
 
     def get_time(self):
-        return self.current_path.date_time
+        self.file_time = self.current_path.date_time
 
     def copy_file(self):
-        pass
+        source = self.start_dir.read(self.current_file)
+        target = os.path.join(self.target_path, self.file_name)
+        with open(target, "wb") as target_file:
+            target_file.write(source)
+        file_time = self.file_time + (0, 0, 0)
+        file_time = time.mktime(file_time)
+        # TODO Вроде бы, так, так как ZipInfo не даёт информации о времени доступа к файлу и последние три значения
+        # TODO необходимые для преобразования через mktime.
+        os.utime(target, (file_time, file_time))
 
 
-# TODO используйте методы os.utime и time.mktime
 test = SortZipFiles("icons.zip", "icons_by_year")
 test.move_all_files()
 
