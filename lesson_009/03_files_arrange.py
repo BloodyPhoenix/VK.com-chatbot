@@ -162,13 +162,10 @@ class SortZipFiles(SortFiles):
             target_file.write(source)
         file_time = self.file_time + (0, 0, 0)
         file_time = time.mktime(file_time)
-        # TODO Вроде бы, так, так как ZipInfo не даёт информации о времени доступа к файлу и последние три значения
-        # TODO необходимые для преобразования через mktime.
         os.utime(target, (file_time, file_time))
 
 
 test = SortZipFiles("icons.zip", "icons_by_year")
 test.move_all_files()
 
-
-
+# зачет!
