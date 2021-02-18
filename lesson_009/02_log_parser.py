@@ -167,3 +167,5 @@ test.count_noks()
 
 test = EventsCounterYear("events.txt")
 test.count_noks()
+
+# зачет!
