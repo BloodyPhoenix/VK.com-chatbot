@@ -81,6 +81,7 @@ class CheckRegistrations:
                     except NotEmailError as exc:
                         self.bad_log(exc, line_number)
 
+    # TODO в этом методе try except не пишем, только рейзим ошибки подумать как это сделать
     def check_line(self):
         try:
             name, email, age = self.line.split()
@@ -90,6 +91,7 @@ class CheckRegistrations:
             age = int(age)
         except ValueError:
             raise ValueError("Возраст не является числом")
+        # TODO объединить в одно условие
         if 10 >= age:
             raise ValueError("Слишком маленький возраст")
         if 100 <= age:
@@ -101,6 +103,7 @@ class CheckRegistrations:
         if "." not in email:
             raise NotEmailError("Некорректный емейл: не хватает точки")
 
+    # TODO пишем одну функцию записи из двух но принимаемыми параметрами будим оперировать что и куда писать
     def bad_log(self, exc, line_number):
         message = f"Ошибка: {exc} в строке {line_number}\n"
         with open("registrations_bad.log", "a") as bad_log:
