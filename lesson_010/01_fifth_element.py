@@ -9,6 +9,7 @@ try:
     leeloo = int(input_data[4])
     result = BRUCE_WILLIS * leeloo
     print(f'- Leeloo Dallas! Multi-pass № {result}!')
+# TODO в этих двух исключениях тоже принтуем ошибку через as exp
 except ValueError:
     print("Пятый элемент не является числом")
 except IndexError:
