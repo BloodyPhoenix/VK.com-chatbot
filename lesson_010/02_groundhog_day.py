@@ -61,14 +61,25 @@ class SuicideError(CarmaError):
         super().__init__(mistake)
 
 
+# TODO слово list не используем достаточно дописать букву S
 EXCEPTION_LIST = (IamGodError, DrunkError, CarCrashError, GluttonyError, DepressionError, SuicideError)
+
+# TODO функция one_day() должна возвращать карму от 1 до 7 или рейзит ошибку из расчета 1 к 13
+# TODO мы можем объявить 2 переменные это карма равная рендинт от 1 до 7 и
+# TODO сам еррор который тоже равен рендинт от 1 до 13
+# TODO далее условие если еррор равен 13 то мы choice выбираем случайное исключение из списка
+# TODO и его рейзим как объект используя ()
+# TODO если условие не сработало то мы ретурним карму
 
 
 def one_day():
     carma = 0
     tries = 0
+    # TODO сделать это оригинальнее через методы os.path вне функции
     log = open("groundhog day.log", "w")
     log.close()
+    # TODO сам цикл у нас будет внешним в нем мы будем принимать результат работы one_day() в переменную carma
+    # TODO а если прилетело исключение то ловить его и записывать в файл
     while carma < ENLIGHTENMENT_CARMA_LEVEL:
         tries += 1
         mistake_chance = randint(1, 13)
