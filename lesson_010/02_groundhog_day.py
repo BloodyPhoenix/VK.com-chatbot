@@ -17,8 +17,76 @@
 # При создании собственных исключений максимально использовать функциональность
 # базовых встроенных исключений.
 
+from random import choice, randint
+
 ENLIGHTENMENT_CARMA_LEVEL = 777
 
-# TODO здесь ваш код
+
+class CarmaError(Exception):
+
+    def __init__(self, mistake):
+        self.mistake = mistake
+
+    def __str__(self):
+        return self.mistake
+
+
+class IamGodError(CarmaError):
+    def __init__(self, mistake="Возомнил себя богом"):
+        super().__init__(mistake)
+
+
+class DrunkError(CarmaError):
+    def __init__(self, mistake="Надрался как свинья"):
+        super().__init__(mistake)
+
+
+class CarCrashError(CarmaError):
+    def __init__(self, mistake="Разбился на машине"):
+        super().__init__(mistake)
+
+
+class GluttonyError(CarmaError):
+    def __init__(self, mistake="Обожрался как свинья"):
+        super().__init__(mistake)
+
+
+class DepressionError(CarmaError):
+    def __init__(self, mistake="Впал в уныние"):
+        super().__init__(mistake)
+
+
+class SuicideError(CarmaError):
+    def __init__(self, mistake="Суициднулся"):
+        super().__init__(mistake)
+
+
+EXCEPTION_LIST = (IamGodError, DrunkError, CarCrashError, GluttonyError, DepressionError, SuicideError)
+
+
+def one_day():
+    carma = 0
+    tries = 0
+    log = open("groundhog day.log", "w")
+    log.close()
+    while carma < ENLIGHTENMENT_CARMA_LEVEL:
+        tries += 1
+        mistake_chance = randint(1, 13)
+        if mistake_chance == 13:
+            try:
+                raise choice(EXCEPTION_LIST)
+            except CarmaError as exc:
+                write_log(exception=exc, tries=tries)
+        else:
+            carma += randint(1, 7)
+
+
+def write_log(exception, tries):
+    log_message = f"Произошла ошибка класса {exception} на попытке номер {tries} \n"
+    with open("groundhog day.log", "a") as log:
+        log.write(log_message)
+
+
+one_day()
 
 # https://goo.gl/JnsDqu

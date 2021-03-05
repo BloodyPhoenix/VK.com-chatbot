@@ -5,9 +5,16 @@
 BRUCE_WILLIS = 42
 
 input_data = input('Если хочешь что-нибудь сделать, сделай это сам: ')
-leeloo = int(input_data[4])
-result = BRUCE_WILLIS * leeloo
-print(f'- Leeloo Dallas! Multi-pass № {result}!')
+try:
+    leeloo = int(input_data[4])
+    result = BRUCE_WILLIS * leeloo
+    print(f'- Leeloo Dallas! Multi-pass № {result}!')
+except ValueError:
+    print("Пятый элемент не является числом")
+except IndexError:
+    print("Отсутствует пятый элемент")
+except Exception as ex:
+    print(f"Что-то пошло не так. Исключение {ex} с параметрами {ex.args}")
 
 # Ообернуть код и обработать исключительные ситуации для произвольных входных параметров
 # - ValueError - невозможно преобразовать к числу
