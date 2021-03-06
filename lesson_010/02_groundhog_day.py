@@ -18,6 +18,7 @@
 # базовых встроенных исключений.
 
 from random import choice, randint
+import os.path
 
 ENLIGHTENMENT_CARMA_LEVEL = 777
 
@@ -69,15 +70,9 @@ def one_day():
     tries += 1
     mistake_chance = randint(1, 13)
     if mistake_chance == 13:
-        # TODO тут трай эксепт убираем
-        try:
-            exc = choice(EXCEPTIONS)
-            raise exc()
-        except CarmaError as exc:
-            raise exc
-    # TODO можно без else написать строку ниже
-    else:
-        return randint(1, 7)
+        exc = choice(EXCEPTIONS)
+        raise exc()
+    return randint(1, 7)
 
 
 def write_log(exception, tries):
@@ -86,10 +81,8 @@ def write_log(exception, tries):
         log.write(log_message)
 
 
-# TODO сделать это оригинальнее через методы os.path вне функции
-# TODO Операция закрытия открытия очень затратные, лучше сделать это проверкой если файл есть прост удалить его
-log = open("groundhog day.log", "w")
-log.close()
+if os.path.exists("groundhog day.log"):
+    os.remove("groundhog day.log")
 carma = 0
 tries = 0
 while carma < ENLIGHTENMENT_CARMA_LEVEL:

@@ -93,25 +93,21 @@ class CheckRegistrations:
             raise ValueError("Некореектный возраст")
         if not name.isalpha():
             raise NotNameError("Некорректное поле имени")
-        # TODO эти два условия тоже в одну строку объединить
-        if "@" not in email:
-            raise NotEmailError("Некорректный емейл: не хватает знака\"@\"")
-        if "." not in email:
-            raise NotEmailError("Некорректный емейл: не хватает точки")
+        if "@" not in email or "." not in email:
+            raise NotEmailError("Некорректный емейл")
 
     def bad_log(self, exc, line_number):
         message = f"Ошибка: {exc} в строке {line_number}\n"
         self.line = message
 
-    # TODO у вас будет один with open
-    # TODO на вход функция должна принимать имя файла в который нужно писать
+    # TODO Не совсем так, как вы говорили, но так можно?
     def write_log(self):
         if "Ошибка" in self.line:
-            with open("registrations_bad.log", "a") as bad_log:
-                bad_log.write(self.line)
+            file_name = "registrations_bad.log"
         else:
-            with open("registrations_good.log", "a") as good_log:
-                good_log.write(self.line)
+            file_name = "registrations_good.log"
+        with open(file_name, "a") as log:
+            log.write(self.line)
 
 
 check = CheckRegistrations("registrations.txt")
