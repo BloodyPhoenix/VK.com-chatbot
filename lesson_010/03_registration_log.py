@@ -100,7 +100,6 @@ class CheckRegistrations:
         message = f"Ошибка: {exc} в строке {line_number}\n"
         self.line = message
 
-    # TODO Не совсем так, как вы говорили, но так можно?
     def write_log(self):
         if "Ошибка" in self.line:
             file_name = "registrations_bad.log"
@@ -112,3 +111,5 @@ class CheckRegistrations:
 
 check = CheckRegistrations("registrations.txt")
 check.check_registrations()
+
+# зачет!
