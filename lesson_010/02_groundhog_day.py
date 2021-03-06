@@ -69,11 +69,13 @@ def one_day():
     tries += 1
     mistake_chance = randint(1, 13)
     if mistake_chance == 13:
+        # TODO тут трай эксепт убираем
         try:
             exc = choice(EXCEPTIONS)
             raise exc()
         except CarmaError as exc:
             raise exc
+    # TODO можно без else написать строку ниже
     else:
         return randint(1, 7)
 
@@ -85,7 +87,7 @@ def write_log(exception, tries):
 
 
 # TODO сделать это оригинальнее через методы os.path вне функции
-# TODO А зачем?
+# TODO Операция закрытия открытия очень затратные, лучше сделать это проверкой если файл есть прост удалить его
 log = open("groundhog day.log", "w")
 log.close()
 carma = 0
