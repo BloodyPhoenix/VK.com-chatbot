@@ -73,29 +73,24 @@ class CheckRegistrations:
                     self.line = line
                     try:
                         self.check_line()
-                        self.good_log()
                     except ValueError as exc:
                         self.bad_log(exc, line_number)
                     except NotNameError as exc:
                         self.bad_log(exc, line_number)
                     except NotEmailError as exc:
                         self.bad_log(exc, line_number)
+                    finally:
+                        self.write_log()
 
-    # TODO в этом методе try except не пишем, только рейзим ошибки подумать как это сделать
     def check_line(self):
-        try:
-            name, email, age = self.line.split()
-        except ValueError:
+        line_data = self.line.split()
+        if len(line_data) != 3:
             raise ValueError("Присутствуют не все поля")
-        try:
-            age = int(age)
-        except ValueError:
+        name, email, age = line_data
+        if age.isalpha():
             raise ValueError("Возраст не является числом")
-        # TODO объединить в одно условие
-        if 10 >= age:
-            raise ValueError("Слишком маленький возраст")
-        if 100 <= age:
-            raise ValueError("Слишком большой возраст")
+        if 10 >= int(age) >= 100:
+            raise ValueError("Некореектный возраст")
         if not name.isalpha():
             raise NotNameError("Некорректное поле имени")
         if "@" not in email:
@@ -103,15 +98,17 @@ class CheckRegistrations:
         if "." not in email:
             raise NotEmailError("Некорректный емейл: не хватает точки")
 
-    # TODO пишем одну функцию записи из двух но принимаемыми параметрами будим оперировать что и куда писать
     def bad_log(self, exc, line_number):
         message = f"Ошибка: {exc} в строке {line_number}\n"
-        with open("registrations_bad.log", "a") as bad_log:
-            bad_log.write(message)
+        self.line = message
 
-    def good_log(self):
-        with open("registrations_good.log", "a") as good_log:
-            good_log.write(self.line)
+    def write_log(self):
+        if "Ошибка" in self.line:
+            with open("registrations_bad.log", "a") as bad_log:
+                bad_log.write(self.line)
+        else:
+            with open("registrations_good.log", "a") as good_log:
+                good_log.write(self.line)
 
 
 check = CheckRegistrations("registrations.txt")

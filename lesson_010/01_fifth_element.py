@@ -9,11 +9,10 @@ try:
     leeloo = int(input_data[4])
     result = BRUCE_WILLIS * leeloo
     print(f'- Leeloo Dallas! Multi-pass № {result}!')
-# TODO в этих двух исключениях тоже принтуем ошибку через as exp
-except ValueError:
-    print("Пятый элемент не является числом")
-except IndexError:
-    print("Отсутствует пятый элемент")
+except ValueError as ex:
+    print(f"Ошибка {ex}. Пятый элемент не является числом")
+except IndexError as ex:
+    print(f"Ошибка {ex}. Отсутствует пятый элемент")
 except Exception as ex:
     print(f"Что-то пошло не так. Исключение {ex} с параметрами {ex.args}")
 
