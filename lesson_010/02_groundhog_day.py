@@ -92,3 +92,5 @@ while carma < ENLIGHTENMENT_CARMA_LEVEL:
         write_log(exc, tries)
 
 # https://goo.gl/JnsDqu
+
+# зачет!
