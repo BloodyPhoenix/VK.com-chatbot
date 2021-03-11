@@ -9,8 +9,17 @@
 
 
 def log_errors(func):
-    pass
-    # TODO здесь ваш код
+
+    def decorated_func(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except BaseException as exc:
+            with open("function_errors.log", "a") as log_file:
+                message = f"{func}, {args}, {kwargs}, {type(exc)}, {exc.args}"
+                log_file.write(message)
+            raise exc
+
+    return decorated_func
 
 
 # Проверить работу на следующих функциях
@@ -43,6 +52,7 @@ for line in lines:
         check_line(line)
     except Exception as exc:
         print(f'Invalid format: {exc}')
+
 perky(param=42)
 
 
