@@ -12,7 +12,10 @@ def log_errors(func):
 
     def decorated_func(*args, **kwargs):
         try:
+            # TODO записываем результат в переменную
             func(*args, **kwargs)
+            # TODO ниже ее ретурним результат
+        # TODO ловить базовые исключения плохой стиль ловим ValueError или хотябы Exception
         except BaseException as exc:
             with open("function_errors.log", "a") as log_file:
                 message = f"{func}, {args}, {kwargs}, {type(exc)}, {exc.args}"
@@ -55,7 +58,7 @@ for line in lines:
 
 perky(param=42)
 
-
+# TODO напишите еще один декоратор
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
 #
