@@ -80,10 +80,11 @@ class MinutesEventCounter:
             self.nok_events[log_datetime] += 1
 
 
+# TODO если выше у вас генератор то это должна быть функция 23-27 строк примерно но не более 30 точно
+# TODO если выше у вас итератор то он не должен содержать yield
 count_noks = MinutesEventCounter("events.txt")
 for time, value in count_noks():
     print(time, value)
-
 
 
 
