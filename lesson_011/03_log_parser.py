@@ -35,6 +35,7 @@ class MinutesEventCounter:
             self.prepare_logs(file)
         self.nok_events = list(self.nok_events.items())
         self.nok_events.sort(key=lambda x: x)
+        self.iteration_counter = 0
 
     def check_file_format(self):
         if not self.file_name.endswith(".txt"):
@@ -60,9 +61,13 @@ class MinutesEventCounter:
                 archive.extract(self.file_name)
                 return True
 
-    def __call__(self):
-        for time, value in self.nok_events:
-            yield time, value
+    def __iter__(self):
+        self.iteration_counter = -1
+        return self
+
+    def __next__(self):
+        self.iteration_counter += 1
+        return self.nok_events[self.iteration_counter]
 
     def prepare_logs(self, file):
         for line in file:
@@ -80,10 +85,8 @@ class MinutesEventCounter:
             self.nok_events[log_datetime] += 1
 
 
-# TODO если выше у вас генератор то это должна быть функция 23-27 строк примерно но не более 30 точно
-# TODO если выше у вас итератор то он не должен содержать yield
 count_noks = MinutesEventCounter("events.txt")
-for time, value in count_noks():
+for time, value in count_noks:
     print(time, value)
 
 

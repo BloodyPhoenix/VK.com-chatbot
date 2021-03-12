@@ -30,7 +30,7 @@ def get_polygon(n):
     return draw_shape
 
 
-draw_triangle = get_polygon(n=6)
+draw_triangle = get_polygon(n=18)
 draw_triangle(point=sd.get_point(200, 200), angle=13, length=100)
 
 

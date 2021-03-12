@@ -8,21 +8,23 @@
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
 
 
-def log_errors(func):
+def file_name(file_name="function_errors.log"):
 
-    def decorated_func(*args, **kwargs):
-        try:
-            # TODO записываем результат в переменную
-            func(*args, **kwargs)
-            # TODO ниже ее ретурним результат
-        # TODO ловить базовые исключения плохой стиль ловим ValueError или хотябы Exception
-        except BaseException as exc:
-            with open("function_errors.log", "a") as log_file:
-                message = f"{func}, {args}, {kwargs}, {type(exc)}, {exc.args}"
-                log_file.write(message)
-            raise exc
+    def log_errors(func):
 
-    return decorated_func
+        def decorated_func(*args, **kwargs):
+            try:
+                result = func(*args, **kwargs)
+                return result
+            except Exception as exc:
+                with open(file_name, "a") as log_file:
+                    message = f"{func}, {args}, {kwargs}, {type(exc)}, {exc.args}"
+                    log_file.write(message)
+                raise exc
+
+        return decorated_func
+
+    return log_errors
 
 
 # Проверить работу на следующих функциях
@@ -58,10 +60,12 @@ for line in lines:
 
 perky(param=42)
 
-# TODO напишите еще один декоратор
+
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
 #
 # @log_errors('function_errors.log')
 # def func():
 #     pass
+
+
