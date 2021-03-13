@@ -90,4 +90,6 @@ for time, value in count_noks:
     print(time, value)
 
 
+# TODO забыли поставить raise StopIteration()
 
+# TODO в качестве дополнительного задания предлагаю написать ниже закоментировав верхний код функцию генератор
