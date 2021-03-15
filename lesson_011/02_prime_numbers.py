@@ -14,6 +14,7 @@ def get_prime_numbers(n):
             prime_numbers.append(number)
     return prime_numbers
 
+
 # Часть 1
 # На основе алгоритма get_prime_numbers создать класс итерируемых обьектов,
 # который выдает последовательность простых чисел до n
@@ -49,6 +50,7 @@ class PrimeNumbers:
         self.prime_numbers.append(self.iteration_index)
         return True
 
+
 #
 # prime_number_iterator = PrimeNumbers(n=10000)
 # for number in prime_number_iterator:
@@ -70,11 +72,9 @@ def prime_numbers_generator(n):
             yield number
 
 
-for number in prime_numbers_generator(n=10000):
-    print(number)
+# for number in prime_numbers_generator(n=10000):
+#     print(number)
 
-
-# TODO отлично, делаем далее
 
 # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:
@@ -91,3 +91,50 @@ for number in prime_numbers_generator(n=10000):
 # простых счастливых палиндромных чисел и так далее. Придумать не менее 2х способов.
 #
 # Подсказка: возможно, нужно будет добавить параметр в итератор/генератор.
+
+def happy_number(number):
+    number = str(number)
+    counter = len(number) // 2
+    first_part = 0
+    second_part = 0
+    for index in range(counter):
+        first_part += int(number[index])
+        second_part += int(number[-index - 1])
+    if first_part != second_part:
+        return False
+    return True
+
+
+def palindrome(number):
+    number = str(number)
+    if number != number[::-1]:
+        return False
+    return True
+
+
+def automorphic(number):
+    square = str(number ** 2)
+    number = str(number)
+    if square[-len(number):] == number:
+        return True
+    else:
+        return False
+
+
+simple_palindromes = filter(palindrome, prime_numbers_generator(1000))
+# for number in simple_palindromes:
+#     print(number)
+
+simple_automorphic_palindromes = filter(automorphic, filter(palindrome, prime_numbers_generator(10000)))
+for number in simple_automorphic_palindromes:
+    print(number)
+
+spisok = []
+for x in range(1000):
+    spisok.append(x)
+
+automorphic_happy = filter(automorphic, filter(happy_number, spisok))
+for number in automorphic_happy:
+    print(number)
+
+# А палиндромы, вообще-то, явояются счастливыми по определению
