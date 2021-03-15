@@ -120,3 +120,5 @@ noks_generator = count_noks_generator("events.txt")
 for nok_counter in noks_generator:
     print(*nok_counter)
 
+
+# зачет!
