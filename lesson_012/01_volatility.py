@@ -73,4 +73,62 @@
 #     def run(self):
 #         <обработка данных>
 
-# TODO написать код в однопоточном/однопроцессорном стиле
+import os
+from collections import defaultdict
+
+
+class VolatileCounter:
+
+    def __init__(self, path):
+        self.files = os.listdir(path)
+        os.chdir(path)
+        self.current_file = None
+        self.most_volatility = None
+        self.min_volatility = None
+        self.volatilities = []
+        self.zero_volatilities = []
+
+    def run(self):
+        for file in self.files:
+            self.current_file = file
+            self.count_volatility()
+        self.volatilities = sorted(self.volatilities, key=lambda x: x[1])
+        self.min_volatility = self.volatilities[0:3]
+        self.most_volatility = self.volatilities[-3:]
+        self.most_volatility.sort(reverse=True)
+        self.min_volatility.sort(reverse=True)
+        self.print_result()
+
+    def print_result(self):
+        print("Максимальная волатильность:")
+        for ticker in self.most_volatility:
+            print(f"{ticker[0]}, {ticker[1]}")
+        print("Минимальная волатильность:")
+        for ticker in self.min_volatility:
+            print(f"{ticker[0]}, {ticker[1]}")
+        print("Нулевая волатильность:")
+        for ticker in self.zero_volatilities:
+            print(f"{ticker[0]}", end=", ")
+
+    def count_volatility(self):
+        prices = set()
+        with open(self.current_file, "r", encoding="utf-8") as ticker_data:
+            for line in ticker_data:
+                name, _, price, _ = line.split(",")
+                if name == "SECID":
+                    continue
+                prices.add(float(price))
+        prices = list(sorted(prices))
+        max_price = prices[-1]
+        min_price = prices[0]
+        half_summ = (max_price + min_price) / 2
+        volatility = ((max_price - min_price) / half_summ) * 100
+        if volatility == 0:
+            self.zero_volatilities.append((name, volatility))
+        else:
+            self.volatilities.append((name, volatility))
+
+
+counter = VolatileCounter("trades")
+counter.run()
+
