@@ -74,57 +74,26 @@
 #         <обработка данных>
 
 import os
-from collections import defaultdict
+import utilities
 
 
 # TODO Давай те сделаем код более читаемым и подготовим его к потокам, разобьем на функции и вынесем в отдельный модуль
 # TODO все сопутствующие инструменты.
 # TODO Создадим модуль утилиты и перенесем в него все дополнительные функции
-# TODO создадим там декоратор из сниппетов наших уроков. Будем чекать время.
+
+
 class VolatileCounter:
 
     def __init__(self, path):
-        # TODO ВАЖНО главная задача добиться чтобы класс обрабатывал только один билет на валатильность.
-        # TODO на вход получаем путь до файла который будем обрабатывать.
 
-        # TODO из параметров у нас будет полный путь до файла.
-        # TODO И еще два параметра это имя билета self.name_ticket = ''
-        # TODO и сама волатильность self.volatility = 0
-        # TODO остальное у нас будет локальными переменными в методах
-
-        self.files = os.listdir(path)
-        os.chdir(path)
-        self.current_file = None
-        self.most_volatility = None
-        self.min_volatility = None
-        self.volatilities = []
-        self.zero_volatilities = []
+        self.current_file = path
+        self.volatility = None
 
     # TODO по заданию в методе run который будет запускать нужные нам внутренние методы.
     # TODO метод который открывает файл и читает его возвращая список данных для обработки. Также запоминая имя билета.
     # TODO метод который обрабатывает данные и получает валатильность.
     def run(self):
-        for file in self.files:
-            self.current_file = file
-            self.count_volatility()
-        self.volatilities = sorted(self.volatilities, key=lambda x: x[1])
-        self.min_volatility = self.volatilities[0:3]
-        self.most_volatility = self.volatilities[-3:]
-        self.most_volatility.sort(reverse=True)
-        self.min_volatility.sort(reverse=True)
-        self.print_result()
-
-    # TODO это в утилиты
-    def print_result(self):
-        print("Максимальная волатильность:")
-        for ticker in self.most_volatility:
-            print(f"{ticker[0]}, {ticker[1]}")
-        print("Минимальная волатильность:")
-        for ticker in self.min_volatility:
-            print(f"{ticker[0]}, {ticker[1]}")
-        print("Нулевая волатильность:")
-        for ticker in self.zero_volatilities:
-            print(f"{ticker[0]}", end=", ")
+        pass
 
     def count_volatility(self):
         prices = set()
@@ -138,12 +107,15 @@ class VolatileCounter:
         max_price = prices[-1]
         min_price = prices[0]
         half_summ = (max_price + min_price) / 2
-        volatility = ((max_price - min_price) / half_summ) * 100
-        # TODO это у нас будет в главном внешнем цикле
-        if volatility == 0:
-            self.zero_volatilities.append((name, volatility))
-        else:
-            self.volatilities.append((name, volatility))
+        self.volatility = ((max_price - min_price) / half_summ) * 100
+
+
+def main():
+    files = utilities.get_files("trades")
+    print(files)
+
+
+main()
 
 # TODO тут мы напишем функцию main() и обернем ее декоратором time_track
 # TODO в функции main()
@@ -156,9 +128,6 @@ class VolatileCounter:
 # TODO Как только они выполнятся мы будем, так же циклом пройдемся по билетам и
 # TODO и будем чекать валатильность, и заносить ее в нужный словарь.
 # TODO В конце кода вызовем функцию которая сформирует нам результат и напечатает на экран нужные данные.
-
-counter = VolatileCounter("trades")
-counter.run()
 
 # TODO тут напишем if __name__ == '__main__':
 # TODO и вы вызовем функции main() в которой у нас будет все логика работы программы.
