@@ -73,13 +73,7 @@
 #     def run(self):
 #         <обработка данных>
 
-import os
 import utilities
-
-
-# TODO Давай те сделаем код более читаемым и подготовим его к потокам, разобьем на функции и вынесем в отдельный модуль
-# TODO все сопутствующие инструменты.
-# TODO Создадим модуль утилиты и перенесем в него все дополнительные функции
 
 
 class VolatileCounter:
@@ -88,14 +82,13 @@ class VolatileCounter:
 
         self.current_file = path
         self.volatility = None
+        self.ticket_name = None
 
-    # TODO по заданию в методе run который будет запускать нужные нам внутренние методы.
-    # TODO метод который открывает файл и читает его возвращая список данных для обработки. Также запоминая имя билета.
-    # TODO метод который обрабатывает данные и получает валатильность.
     def run(self):
-        pass
+        prices = self.get_prices()
+        self.get_volatility(prices)
 
-    def count_volatility(self):
+    def get_prices(self):
         prices = set()
         with open(self.current_file, "r", encoding="utf-8") as ticker_data:
             for line in ticker_data:
@@ -103,41 +96,44 @@ class VolatileCounter:
                 if name == "SECID":
                     continue
                 prices.add(float(price))
-        prices = list(sorted(prices))
-        max_price = prices[-1]
-        min_price = prices[0]
+        prices = list(sorted(prices, reverse=True))
+        self.ticket_name = name
+        return prices
+
+    def get_volatility(self, prices):
+        max_price = prices[0]
+        min_price = prices[-1]
         half_summ = (max_price + min_price) / 2
         self.volatility = ((max_price - min_price) / half_summ) * 100
 
 
+@utilities.time_track
 def main():
     files = utilities.get_files("trades")
-    print(files)
+    counters = []
+    volatilities = []
+    zero_volailities = []
+    for file in files:
+        counters.append(VolatileCounter(file))
+    for counter in counters:
+        counter.run()
+    for counter in counters:
+        name = counter.ticket_name
+        volatility = counter.volatility
+        if volatility == 0:
+            zero_volailities.append(name)
+        else:
+            volatilities.append((name, volatility))
+    volatilities = sorted(volatilities, key=lambda x: x[1], reverse=True)
+    max_volatilities = volatilities[:3]
+    min_volatilities = volatilities[-3:]
+    print("Максимлальная волатильность:")
+    utilities.print_result(max_volatilities)
+    print("Минимальная волатильность:")
+    utilities.print_result(min_volatilities)
+    print("Нулевая волатильность:")
+    utilities.print_result(zero_volailities)
 
 
-main()
-
-# TODO тут мы напишем функцию main() и обернем ее декоратором time_track
-# TODO в функции main()
-# TODO мы объявим нужные нам словари\списки для работы
-# TODO создадим нужную нам последовательность как раз используя генератор который каждый раз будет
-# TODO возвращать файл который мы будем передавать в экземпляр класса.
-# TODO Создадим список экземпляров класса которым на вход будем передавать каждый раз отдельный новый билет.
-# TODO Циклом пройдемся по Экземплярам из списка который мы создали ранее и запустим метод run()
-# TODO отдельным циклом. Это важно, для дальнейших улучшений.
-# TODO Как только они выполнятся мы будем, так же циклом пройдемся по билетам и
-# TODO и будем чекать валатильность, и заносить ее в нужный словарь.
-# TODO В конце кода вызовем функцию которая сформирует нам результат и напечатает на экран нужные данные.
-
-# TODO тут напишем if __name__ == '__main__':
-# TODO и вы вызовем функции main() в которой у нас будет все логика работы программы.
-
-# TODO Создадим модуль утилиты, в него вынесем все дополнительные функции, такие как принты в консоль,
-# TODO обработку путей до файлов.
-#  Также добавим в утилиты декоратор time_track из прошлых заданий.
-
-# TODO в функции main() должно быть три цикла, в первом вы записываете в словарь экземпляры класса
-# TODO во Втором, проходясь по списку с экземплярами класса, запускаете метод .run()
-# TODO в Третьем, вы проходясь по списку с экземплярами класса, получаете параметр volatility и обрабатываете его.
-
-# TODO Функция обработки у вас должна быть реализована в утилитах.
+if __name__ == "__main__":
+    main()
