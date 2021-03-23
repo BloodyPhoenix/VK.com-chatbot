@@ -124,6 +124,9 @@ def main():
             zero_volailities.append(name)
         else:
             volatilities.append((name, volatility))
+    # TODO тут просто вызвать одну функцию
+
+    # TODO эту часть делим на две функции и убираем в утилиты.
     volatilities = sorted(volatilities, key=lambda x: x[1], reverse=True)
     max_volatilities = volatilities[:3]
     min_volatilities = volatilities[-3:]
@@ -135,5 +138,8 @@ def main():
     utilities.print_result(zero_volailities)
 
 
+# TODO напишите ваши спеки сколько ядер их герцовка и время работы
 if __name__ == "__main__":
     main()
+
+# TODO вычисления округлить до 2х знаков после зяпятой.

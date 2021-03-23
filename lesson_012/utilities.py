@@ -11,7 +11,7 @@ def get_files(path):
         files[index] = file
     return files
 
-
+# TODO доработать декоратор
 def time_track(func, *args, **kwargs):
     started_at = time.time()
 
