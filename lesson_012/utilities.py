@@ -14,16 +14,16 @@ def get_files(path):
 
 # вот так будет правильнее с параметрами
 def time_track(func):
-    started_at = time.time()
 
     def decorated_func(*args, **kwargs):
+        started_at = time.time()
         result = func(*args, **kwargs)
+        ended_at = time.time()
+        elapsed = round(ended_at - started_at, 2)
+        print()
+        print(f'Функция работала {elapsed} секунд(ы)')
         return result
 
-    # TODO функция у вас не выдает время работы
-    ended_at = time.time()
-    elapsed = round(ended_at - started_at, 2)
-    print(f'Функция работала {elapsed} секунд(ы)')
     return decorated_func
 
 
