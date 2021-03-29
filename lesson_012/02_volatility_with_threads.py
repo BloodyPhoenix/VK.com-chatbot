@@ -23,17 +23,13 @@ from threading import Thread
 
 
 class VolatileCounter(Thread):
-    # TODO принимаем еще арги и кварки
-    def __init__(self, path):
-        # TODO тут аналогично запускаем super с ними
-        super().__init__()
+    def __init__(self, path, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.current_file = path
         self.volatility = None
         self.ticket_name = None
 
     def run(self):
-        # TODO это тормозит выполнение, убрать
-        sleep(0.01)
         prices = self.get_prices()
         self.get_volatility(prices)
 
@@ -66,9 +62,9 @@ def main():
     for file in files:
         counters.append(VolatileCounter(file))
     for counter in counters:
-        counter.run()
-
-    # TODO нужно запустить еще один цикл с join()
+        counter.start()
+    for counter in counters:
+        counter.join()
     for counter in counters:
         name = counter.ticket_name
         volatility = counter.volatility
@@ -79,6 +75,6 @@ def main():
     utilities.check_volatility(volatilities, zero_volailities)
 
 
-# TODO добавить время выполнения в первой и во второй части задания
+# TODO время выполнения 3,37-2.01 секунд
 if __name__ == "__main__":
     main()

@@ -128,8 +128,8 @@ def main():
     utilities.check_volatility(volatilities, zero_volailities)
 
 
-# Четыре ядра по 2,3 ГГц # TODO время работы, добавляем в каждой части
+# Четыре ядра по 2,3 ГГц
+# TODO время работы 2,58 сек
 if __name__ == "__main__":
     main()
 
-# TODO не забываем про порядок выполнения заданий.
