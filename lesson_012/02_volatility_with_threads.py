@@ -61,10 +61,13 @@ def main():
     zero_volailities = []
     for file in files:
         counters.append(VolatileCounter(file))
+
     for counter in counters:
         counter.start()
+
     for counter in counters:
         counter.join()
+
     for counter in counters:
         name = counter.ticket_name
         volatility = counter.volatility
@@ -75,6 +78,8 @@ def main():
     utilities.check_volatility(volatilities, zero_volailities)
 
 
-# TODO время выполнения 3,37-2.01 секунд
+# время выполнения 3,37-2.01 секунд
 if __name__ == "__main__":
     main()
+
+# зачет!
