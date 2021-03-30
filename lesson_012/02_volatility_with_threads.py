@@ -18,7 +18,6 @@
 # Волатильности указывать в порядке убывания. Тикеры с нулевой волатильностью упорядочить по имени.
 #
 import utilities
-from time import sleep
 from threading import Thread
 
 
