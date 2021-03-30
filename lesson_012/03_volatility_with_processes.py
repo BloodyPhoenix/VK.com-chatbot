@@ -33,7 +33,7 @@ class VolatileCounter(multiprocessing.Process):
     def run(self):
         prices = self.get_prices()
         self.get_volatility(prices)
-        self.collector.put((self.name, self.volatility))
+        self.collector.put((self.ticket_name, self.volatility))
 
     def get_prices(self):
         prices = set()
