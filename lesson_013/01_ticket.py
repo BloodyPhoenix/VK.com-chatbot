@@ -8,9 +8,25 @@
 # Пример заполнения lesson_013/images/ticket_sample.png
 # Подходящий шрифт искать на сайте ofont.ru
 
+from PIL import Image, ImageDraw, ImageFont, ImageColor
+import os
+
+
 def make_ticket(fio, from_, to, date):
-    # TODO здесь ваш код
-    pass
+    ticket = os.path.normpath("images/ticket_template.png")
+    ticket = Image.open(ticket)
+    font = ImageFont.truetype("ofont.ru_Romul.ttf", size=14)
+    draw = ImageDraw.Draw(ticket)
+    draw.text((45, 130), text=fio, font=font, fill=ImageColor.colormap["black"])
+    draw.text((45, 200), text=from_, font=font, fill=ImageColor.colormap["black"])
+    draw.text((45, 265), text=to, font=font, fill=ImageColor.colormap["black"])
+    draw.text((280, 265), text=str(date), font=font, fill=ImageColor.colormap["black"])
+    filename = "ticket for "+str(fio)+".png"
+    save_path = os.path.join("images", filename)
+    ticket.save(save_path)
+
+
+make_ticket("Ыыы", "Марс", "Плутон", "22.05.2035")
 
 # Усложненное задание (делать по желанию).
 # Написать консольный скрипт c помощью встроенного python-модуля argparse.
