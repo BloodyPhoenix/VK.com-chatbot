@@ -21,12 +21,16 @@ def make_ticket(fio, from_, to, date):
     draw.text((45, 200), text=from_, font=font, fill=ImageColor.colormap["black"])
     draw.text((45, 265), text=to, font=font, fill=ImageColor.colormap["black"])
     draw.text((280, 265), text=str(date), font=font, fill=ImageColor.colormap["black"])
+    # TODO пробелы в имени не желательно писать
     filename = "ticket for "+str(fio)+".png"
     save_path = os.path.join("images", filename)
     ticket.save(save_path)
 
 
 make_ticket("Ыыы", "Марс", "Плутон", "22.05.2035")
+
+# TODO Делайте вторую часть
+# TODO укажите полное ФИО
 
 # Усложненное задание (делать по желанию).
 # Написать консольный скрипт c помощью встроенного python-модуля argparse.
@@ -37,3 +41,5 @@ make_ticket("Ыыы", "Марс", "Плутон", "22.05.2035")
 #   --date - обязательный, когда летим.
 #   --save_to - необязательный, путь для сохранения заполненнего билета.
 # и заполнять билет.
+
+# TODO добавить файл requirements в корень этого модуля.
