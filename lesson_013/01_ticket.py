@@ -23,18 +23,6 @@ import argparse
 #   --save_to - необязательный, путь для сохранения заполненнего билета.
 # и заполнять билет.
 
-parser = argparse.ArgumentParser(description="A ticket maker")
-parser.add_argument("ticket_name", default=None, type=str, help="Name of a ticket owner")
-parser.add_argument("ticket_from", default=None, type=str, help="Departure point")
-parser.add_argument("ticket_to", default=None, type=str, help="Destination")
-parser.add_argument("ticket_date",  default=None, type=str, help="A date of departure")
-parser.add_argument("--save_to", default=None, type=str, help="A directory for a new ticket")
-args = parser.parse_args()
-fio = args.ticket_name
-from_ = args.ticket_from
-to = args.ticket_to
-date = args.ticket_date
-path = args.save_to
 
 def make_ticket(fio, from_, to, date, path=None):
     ticket = os.path.normpath("images/ticket_template.png")
@@ -46,14 +34,25 @@ def make_ticket(fio, from_, to, date, path=None):
     draw.text((45, 265), text=to, font=font, fill=ImageColor.colormap["black"])
     draw.text((280, 265), text=str(date), font=font, fill=ImageColor.colormap["black"])
     filename = "ticket for "+str(fio)+".png"
-    print(type(ticket))
     if path:
         save_path = os.path.join(path, filename)
     else:
         save_path = os.path.join("images", filename)
     ticket.save(save_path)
 
-if __name__ == "main":
-    make_ticket(fio=fio, from_=from_, to=to, date=date)
 
-# TODO добавить файл requirements в корень этого модуля.
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A ticket maker")
+    parser.add_argument("ticket_name", default=None, type=str, help="Name of a ticket owner")
+    parser.add_argument("ticket_from", default=None, type=str, help="Departure point")
+    parser.add_argument("ticket_to", default=None, type=str, help="Destination")
+    parser.add_argument("ticket_date", default=None, type=str, help="A date of departure")
+    parser.add_argument("-s", "--save_to", default=None, type=str, help="A directory for a new ticket")
+    args = parser.parse_args()
+    fio = args.ticket_name
+    from_ = args.ticket_from
+    to = args.ticket_to
+    date = args.ticket_date
+    path = args.save_to
+    make_ticket(fio=fio, from_=from_, to=to, date=date, path=path)
+
