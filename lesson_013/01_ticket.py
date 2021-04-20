@@ -23,7 +23,6 @@ import argparse
 #   --save_to - необязательный, путь для сохранения заполненнего билета.
 # и заполнять билет.
 
-# TODO параметры по неймингу не должны пересекаться с глобальными переменными
 def make_ticket(fio, from_, to, date, path=None):
     ticket = os.path.normpath("images/ticket_template.png")
     ticket = Image.open(ticket)
@@ -33,13 +32,16 @@ def make_ticket(fio, from_, to, date, path=None):
     draw.text((45, 200), text=from_, font=font, fill=ImageColor.colormap["black"])
     draw.text((45, 265), text=to, font=font, fill=ImageColor.colormap["black"])
     draw.text((280, 265), text=str(date), font=font, fill=ImageColor.colormap["black"])
-    # TODO пробелы исключить
-    filename = "ticket for "+str(fio)+".png"
+    new_fio = str(fio).replace(" ", "_")
+    filename = "ticket_for_"+new_fio+".png"
     if path:
-        save_path = os.path.join(path, filename)
+        save_path = str(path)
     else:
-        save_path = os.path.join("images", filename)
-    ticket.save(save_path)
+        save_path = "images"
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
+        os.chdir(save_path)
+    ticket.save(filename)
 
 
 if __name__ == "__main__":
@@ -50,19 +52,9 @@ if __name__ == "__main__":
     parser.add_argument("ticket_date", default=None, type=str, help="A date of departure")
     parser.add_argument("-s", "--save_to", default=None, type=str, help="A directory for a new ticket")
     args = parser.parse_args()
-    fio = args.ticket_name
-    from_ = args.ticket_from
-    to = args.ticket_to
-    date = args.ticket_date
-    path = args.save_to
-    make_ticket(fio=fio, from_=from_, to=to, date=date, path=path)
-
-# TODO код падает
-# Traceback (most recent call last):
-#   File "01_ticket.py", line 57, in <module>
-#     make_ticket(fio=fio, from_=from_, to=to, date=date, path=path)
-#   File "01_ticket.py", line 41, in make_ticket
-#     ticket.save(save_path)
-#   File "C:\Python\Python38\lib\site-packages\PIL\Image.py", line 2099, in save
-#     fp = builtins.open(filename, "w+b")
-# FileNotFoundError: [Errno 2] No such file or directory: 'result\\ticket for admin.png'
+    name = args.ticket_name
+    depart = args.ticket_from
+    destination = args.ticket_to
+    day = args.ticket_date
+    directory = args.save_to
+    make_ticket(fio=name, from_=depart, to=destination, date=day, path=directory)
