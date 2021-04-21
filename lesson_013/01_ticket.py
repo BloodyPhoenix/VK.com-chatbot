@@ -58,3 +58,5 @@ if __name__ == "__main__":
     day = args.ticket_date
     directory = args.save_to
     make_ticket(fio=name, from_=depart, to=destination, date=day, path=directory)
+
+# зачет!
