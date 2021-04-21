@@ -25,8 +25,9 @@ class Chatbot:
     def event_handler(self, event):
         if event.type == bot_longpoll.VkBotEventType.MESSAGE_NEW:
             print(event.object.message["text"])
+            response = "Вы сказали \""+event.object.message["text"]+"\"?"
             self.api.messages.send(
-                message=event.object.message["text"],
+                message=response,
                 random_id=randint(0, 2 ** 20),
                 peer_id=event.object.message["peer_id"]
             )
