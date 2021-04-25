@@ -6,6 +6,7 @@ import vk_api
 from vk_api import bot_longpoll
 
 
+# TODO нейминг имени пишем в стиле CamelCase
 class Chatbot:
 
     def __init__(self, group_id, token):
