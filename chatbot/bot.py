@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from random import randint
-import group_info
+import settings
 import vk_api
 from vk_api import bot_longpoll
 
@@ -34,5 +34,5 @@ class Chatbot:
 
 
 if __name__ == "__main__":
-    bot = Chatbot(group_info.group_id, group_info.token)
+    bot = Chatbot(settings.group_id, settings.token)
     bot.run()
