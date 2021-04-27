@@ -6,7 +6,7 @@ import vk_api
 from vk_api import bot_longpoll
 
 
-class Chatbot:
+class ChatBot:
 
     def __init__(self, group_id, token):
         self.group_id = group_id
