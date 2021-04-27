@@ -34,5 +34,8 @@ class ChatBot:
 
 
 if __name__ == "__main__":
+    # TODO ошибка
     bot = Chatbot(settings.group_id, settings.token)
     bot.run()
+
+# TODO gitgnore пустой
