@@ -37,4 +37,4 @@ if __name__ == "__main__":
     bot = ChatBot(settings.group_id, settings.token)
     bot.run()
 
-# TODO gitgnore пустой
+
