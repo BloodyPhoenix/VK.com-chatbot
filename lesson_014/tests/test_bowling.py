@@ -11,6 +11,7 @@ class ScoreCounterTest(unittest.TestCase):
         result = 121
         self.assertEqual(result, score_counter.count_score())
 
+    # TODO Эти он почему-то наоборот через assertRaise обрабатывать не хочет
     def test_length_short(self):
         score_counter = bowling.ScoreCounter("34577")
         error = ValueError("Некорректная длина значения")
@@ -35,23 +36,15 @@ class ScoreCounterTest(unittest.TestCase):
         except ValueError as test_error:
             self.assertEqual(error, test_error)
 
-    # TODO ошибки нужно ловить через with self.assertRaises(ValueError):
     def test_zero(self):
         score_counter = bowling.ScoreCounter("X9098-/66789/")
-        error = ValueError("Есть 0. Вместо него необходимо использовать \"-\"")
-        try:
+        with self.assertRaises(ValueError):
             score_counter._check_result()
-        except ValueError as test_error:
-            self.assertEqual(error, test_error)
 
-    # TODO С этим то же самое
     def test_double_slash(self):
         score_counter = bowling.ScoreCounter("X9198-//6789/")
-        error = ValueError("Два символа \"/\" подряд")
-        try:
+        with self.assertRaises(ValueError):
             score_counter._check_result()
-        except ValueError as test_error:
-            self.assertEqual(error, test_error)
 
     def test_pairs(self):
         score_counter = bowling.ScoreCounter("X91-/X44X725")
@@ -62,14 +55,10 @@ class ScoreCounterTest(unittest.TestCase):
         except ValueError as test_error:
             self.assertEqual(error, test_error)
 
-    # TODO И здесь тоже. Полагаю, что дело в символах -/, так как именно тесты с ними падают. От кавычек это не зависит
     def test_more_that_eight(self):
         score_counter = bowling.ScoreCounter("X55-74/44X-927-4X")
-        error = ValueError("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
-        try:
+        with self.assertRaises(ValueError):
             score_counter.count_score()
-        except ValueError as test_error:
-            self.assertEqual(error, test_error)
 
 
 if __name__ == "__main__":

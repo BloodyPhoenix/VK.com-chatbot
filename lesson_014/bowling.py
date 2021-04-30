@@ -6,7 +6,6 @@ def get_score(game_result):
     counter = ScoreCounter(game_result)
     return counter.count_score()
 
-
 class ScoreCounter:
     def __init__(self, value):
         self.result = str(value)
