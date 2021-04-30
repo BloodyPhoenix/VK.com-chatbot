@@ -35,7 +35,7 @@ class ScoreCounterTest(unittest.TestCase):
         except ValueError as test_error:
             self.assertEqual(error, test_error)
 
-    # TODO Почему-то этот тест падает при том, что текст сообщения скопирован из основного модуля
+    # TODO ошибки нужно ловить через with self.assertRaises(ValueError):
     def test_zero(self):
         score_counter = bowling.ScoreCounter("X9098-/66789/")
         error = ValueError("Есть 0. Вместо него необходимо использовать \"-\"")
