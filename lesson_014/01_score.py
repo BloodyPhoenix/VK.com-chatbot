@@ -36,11 +36,15 @@ import bowling
 import argparse
 
 
+# TODO создайте функцию main все ниже переместите в нее
+
 if __name__ == "__main__":
+    # TODO тут только запуск функции майн
     parser = argparse.ArgumentParser(description="A score counter")
     parser.add_argument("--result", default=None, type=str, help="Game result")
     args = parser.parse_args()
     result = args.result
+    # TODO ошибки можно половитить только вот тут, из остальных файлов убрать конструкцию try except
     score = bowling.get_score(result)
     print(f"Количество очков для результатов {result} - {score}")
 

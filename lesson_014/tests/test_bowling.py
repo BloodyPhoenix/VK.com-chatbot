@@ -11,7 +11,7 @@ class ScoreCounterTest(unittest.TestCase):
         result = 121
         self.assertEqual(result, score_counter.count_score())
 
-    # TODO Эти он почему-то наоборот через assertRaise обрабатывать не хочет
+    # TODO ошибки ловим только в 01_score
     def test_length_short(self):
         score_counter = bowling.ScoreCounter("34577")
         error = ValueError("Некорректная длина значения")
