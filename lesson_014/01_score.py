@@ -44,7 +44,8 @@ def main():
     try:
         score = bowling.get_score(result)
         print(f"Количество очков для результатов {result} - {score}")
-    except ValueError as exception:
+    # TODO тут ловим все ошибки ставим Exception
+    except Exception as exception:
         print(f"Ошибка входных данных: {exception}, {exception.args}")
 
 
