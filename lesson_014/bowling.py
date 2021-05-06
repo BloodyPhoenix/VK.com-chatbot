@@ -27,6 +27,9 @@ class ScoreCounter:
             else:
                 pair_result = int(pair[0])+int(pair[1])
                 if pair_result > 9:
+                    # TODO тобы каждый раз у вам не ловить одну и туже ошибку нужно их костамихировать
+                    # TODO и отнаследоваться от ValueError
+                    # TODO так по названию класса можно будет определить что за ошибка сейчас сработала
                     raise ValueError("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
                 self.score += pair_result
         return self.score

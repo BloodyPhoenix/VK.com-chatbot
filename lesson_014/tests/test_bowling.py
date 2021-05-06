@@ -43,4 +43,18 @@ class ScoreCounterTest(unittest.TestCase):
 if __name__ == "__main__":
     tests = ScoreCounterTest()
 
-
+# TODO дописать тесты на переполнение, на недополнение, на ноль. + такие тесты как к примеру:
+# TODO 'X4/341412X513/1-X'
+# TODO 'X4/-41-12X5-3/1--9'
+# TODO '99999999999999999999'
+# TODO 'X4/-41-79X5-3/1--9'
+# TODO '--------------------'
+# TODO '-/-/-/-/-/-/-/-/-/-/'
+# TODO 'XXXXXXXXXX'
+# TODO '2/4/6/8/1/3/5/7/9/1/'
+# TODO '/2/4/6/8/1/3/5/7/9/1'
+# TODO 'qwerasdfzxcvtyghbnui'
+# TODO '2/4/6/8/1/3/5/7/9/1/X'
+# TODO '2/4/6/8/1/3/5/7/9/1'
+# TODO ''
+# TODO чем больше тестов тем лучше
