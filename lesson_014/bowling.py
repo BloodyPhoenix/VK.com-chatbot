@@ -1,5 +1,32 @@
 # -*- coding: utf-8 -*-
-import re
+
+
+class LengthError(ValueError):
+    pass
+
+
+class IncorrectSymbols(ValueError):
+    pass
+
+
+class ContainsZeroError(ValueError):
+    pass
+
+
+class DoubleSlash(ValueError):
+    pass
+
+
+class UnpairedScore(ValueError):
+    pass
+
+
+class IncorrectPair(ValueError):
+    pass
+
+
+class TooManyRounds(ValueError):
+    pass
 
 
 def get_score(game_result):
@@ -20,32 +47,33 @@ class ScoreCounter:
         self._count_strikes()
         self._check_pairs()
         self._make_pairs()
+        self._check_rounds()
         self.score += self.strikes*20
         for pair in self.pairs:
             if "/" in pair:
                 self.score += 15
             else:
-                pair_result = int(pair[0])+int(pair[1])
+                try:
+                    pair_result = int(pair[0])+int(pair[1])
+                except ValueError:
+                    raise IncorrectSymbols("Содержатся некорректные символы")
                 if pair_result > 9:
-                    # TODO тобы каждый раз у вам не ловить одну и туже ошибку нужно их костамихировать
-                    # TODO и отнаследоваться от ValueError
-                    # TODO так по названию класса можно будет определить что за ошибка сейчас сработала
-                    raise ValueError("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
+                    raise IncorrectPair("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
                 self.score += pair_result
         return self.score
 
     def _check_result(self):
-        if 10 >= len(self.result) >= 20:
-            raise ValueError("Некорректная длина значения")
-        if re.match(r"[^1-9X\-/]+", self.result):
-            raise ValueError("Содержатся некорректные символы")
+        if 10 >= len(self.result):
+            raise LengthError("Некорректная длина значения: слишком мало символов")
+        if 20 <= len(self.result):
+            raise LengthError("Некорректная длина значения: слишком много символов")
         if "0" in self.result:
-            raise ValueError("Есть 0. Вместо него необходимо использовать \"-\"")
+            raise ContainsZeroError("Есть 0. Вместо него необходимо использовать \"-\"")
         if "/" in self.result:
             for index, symbol in enumerate(self.result):
                 if symbol == "/":
                     if self.result[index-1] == "/":
-                        raise ValueError("Два символа \"/\" подряд")
+                        raise DoubleSlash("Два символа \"/\" подряд")
 
     def _count_strikes(self):
         for symbol in self.result:
@@ -54,7 +82,7 @@ class ScoreCounter:
 
     def _check_pairs(self):
         if (len(self.result)-self.strikes)%2 != 0:
-            raise ValueError("Есть непарные значения")
+            raise UnpairedScore("Есть непарные значения")
 
     def _make_pairs(self):
         current_index = 0
@@ -67,3 +95,7 @@ class ScoreCounter:
                     symbol = "0"
                 self.pairs.append((symbol, self.result[current_index+1]))
                 current_index += 2
+
+    def _check_rounds(self):
+        if len(self.pairs) + self.strikes > 10:
+            raise TooManyRounds("Некорректное значение: введены данные для более чем 10 раундов")
