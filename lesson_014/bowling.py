@@ -63,10 +63,10 @@ class ScoreCounter:
         return self.score
 
     def _check_result(self):
-        if 10 >= len(self.result):
-            raise LengthError("Некорректная длина значения: слишком мало символов")
-        if 20 <= len(self.result):
-            raise LengthError("Некорректная длина значения: слишком много символов")
+        if 10 > len(self.result):
+            raise LengthError(f"Некорректная длина значения: слишком мало символов: {len(self.result)}")
+        if 20 < len(self.result):
+            raise LengthError(f"Некорректная длина значения: слишком много символов: {len(self.result)}")
         if "0" in self.result:
             raise ContainsZeroError("Есть 0. Вместо него необходимо использовать \"-\"")
         if "/" in self.result:
@@ -91,11 +91,17 @@ class ScoreCounter:
             if symbol == "X":
                 current_index += 1
             else:
+                next_symbol = self.result[current_index+1]
                 if symbol == "-":
                     symbol = "0"
-                self.pairs.append((symbol, self.result[current_index+1]))
+                if next_symbol == "-":
+                    next_symbol = "0"
+                self.pairs.append((symbol, next_symbol))
                 current_index += 2
 
     def _check_rounds(self):
         if len(self.pairs) + self.strikes > 10:
             raise TooManyRounds("Некорректное значение: введены данные для более чем 10 раундов")
+
+
+get_score("X4/-41-12X5-3/1--9")

@@ -6,11 +6,46 @@ from lesson_014 import bowling
 
 class ScoreCounterTest(unittest.TestCase):
 
-    def test_normal(self):
-        "Tests normal input"
+    def test_normal_0(self):
+        """Tests normal input"""
         score = bowling.get_score("X45-74/44X-927-4X")
         result = 121
         self.assertEqual(result, score)
+
+    def test_normal_1(self):
+        """Tests normal input"""
+        score = bowling.get_score("1245-74/44X-92--4X")
+        result = 97
+        self.assertEqual(result, score)
+
+    def test_normal_2(self):
+        """Tests normal input"""
+        score = bowling.get_score("1245-74/4425-92--432")
+        result = 69
+        self.assertEqual(result, score)
+
+    def test_normal_no_strikes(self):
+        """Tests normal input without strikes"""
+        score = bowling.get_score("1245-74/4435-92--471")
+        result = 73
+        self.assertEqual(result, score)
+
+    def test_normal_numbers_only(self):
+        """Tests normal input if there are no misses, spares or strikes"""
+        score = bowling.get_score("12451744443518211471")
+        result = 69
+        self.assertEqual(result, score)
+
+    def test_normal_full_strike(self):
+        """Tests if there are only strikes"""
+        score = bowling.get_score("XXXXXXXXXX")
+        result = 200
+        self.assertEqual(result, score)
+
+    def test_normal_miss_only(self):
+        """Tests if there are only misses"""
+        score = bowling.get_score("--------------------")
+        self.assertEqual(0, score)
 
     def test_length_short(self):
         "Tests if lengnth is less than 10"
