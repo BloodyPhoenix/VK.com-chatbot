@@ -87,6 +87,11 @@ class ScoreCounterTest(unittest.TestCase):
         with self.assertRaises(bowling.TooManyRounds):
             bowling.get_score("XXX-74/44X-927-4X")
 
+    def test_first_roll_slash(self):
+        """Tests if there is a slash in a first roll"""
+        with self.assertRaises(bowling.FirstSlashError):
+            bowling.get_score("Х45-7/444X-927-4X")
+
 
 if __name__ == "__main__":
     tests = ScoreCounterTest()
