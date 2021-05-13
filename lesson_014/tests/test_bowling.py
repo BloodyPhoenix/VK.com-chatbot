@@ -8,7 +8,7 @@ class ScoreCounterTest(unittest.TestCase):
 
     def test_normal_0(self):
         """Tests normal input"""
-        score = bowling.get_score("X45-74/44X-927-4X")
+        score = bowling.get_score("Х45-74/44X-927-4X")
         result = 121
         self.assertEqual(result, score)
 
@@ -75,7 +75,7 @@ class ScoreCounterTest(unittest.TestCase):
     def test_pairs(self):
         "Tests if there unpaired meanings"
         with self.assertRaises(bowling.UnpairedScore):
-            bowling.get_score("X5-74/44X-927-4X")
+            bowling.get_score("X5-144/44X-927-43")
 
     def test_more_that_eight(self):
         """Tests if there a pair with sum 10 or more"""
