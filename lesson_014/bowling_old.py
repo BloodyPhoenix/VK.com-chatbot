@@ -13,10 +13,6 @@ class ContainsZeroError(ValueError):
     pass
 
 
-class DoubleSlash(ValueError):
-    pass
-
-
 class UnpairedScore(ValueError):
     pass
 
@@ -33,6 +29,10 @@ class FirstSlashError(ValueError):
     pass
 
 
+class SecondStrikeError(ValueError):
+    pass
+
+
 def get_score(game_result):
     counter = ScoreCounter(game_result)
     return counter.count_score()
@@ -41,31 +41,20 @@ def get_score(game_result):
 class ScoreCounter:
     def __init__(self, value):
         self.result = str(value)
-        self.strikes = 0
-        self.pairs = []
         self.score = 0
 
     def count_score(self):
         self.result = self.result.replace("Х", "X")
         self._check_result()
-        self._count_strikes()
-        self._check_pairs()
-        self._make_pairs()
-        self._check_rounds()
-        self.score += self.strikes*20
-        for pair in self.pairs:
-            if "/" in pair:
-                if "/" in pair[0]:
-                    raise FirstSlashError("Результат первого броска - \"/\"")
-                self.score += 15
+        pair_maker = PairMaker(self.result)
+        pairs = pair_maker.make_pairs()
+        for pair in pairs:
+            if isinstance(pair, tuple):
+                if sum(pair) > 9:
+                    raise IncorrectPair("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
+                self.score += sum(pair)
             else:
-                try:
-                    pair_result = int(pair[0])+int(pair[1])
-                except ValueError:
-                    raise IncorrectSymbols("Содержатся некорректные символы")
-                if pair_result > 9:
-                    raise
-                self.score += pair_result
+                self.score += pair
         return self.score
 
     def _check_result(self):
@@ -75,36 +64,50 @@ class ScoreCounter:
             raise LengthError(f"Некорректная длина значения: слишком много символов: {len(self.result)}")
         if "0" in self.result:
             raise ContainsZeroError("Есть 0. Вместо него необходимо использовать \"-\"")
-        if "/" in self.result:
-            for index, symbol in enumerate(self.result):
+
+
+class PairMaker:
+    def __init__(self, value):
+        self.value = str(value).replace("-", "0")
+        self.pairs = []
+        self.pair_score = 0
+        self.current_pair = []
+
+    def make_pairs(self):
+        for symbol in self.value:
+            self.pair_score += 1
+            if symbol == "X":
+                if self.pair_score > 1:
+                    raise SecondStrikeError("Второе значение в паре - Х")
+                self.current_pair = 20
+                self._append_pair()
+                continue
+            self.current_pair.append(symbol)
+            if self.pair_score == 2:
                 if symbol == "/":
-                    if self.result[index-1] == "/":
-                        raise DoubleSlash("Два символа \"/\" подряд")
-
-    def _count_strikes(self):
-        for symbol in self.result:
-            if symbol == "X":
-                self.strikes += 1
-
-    def _check_pairs(self):
-        if (len(self.result)-self.strikes)%2 != 0:
-            raise UnpairedScore("Есть непарные значения")
-
-    def _make_pairs(self):
-        current_index = 0
-        while current_index < len(self.result):
-            symbol = self.result[current_index]
-            if symbol == "X":
-                current_index += 1
+                    self.current_pair = 15
+                self._append_pair()
             else:
-                next_symbol = self.result[current_index+1]
-                if symbol == "-":
-                    symbol = "0"
-                if next_symbol == "-":
-                    next_symbol = "0"
-                self.pairs.append((symbol, next_symbol))
-                current_index += 2
+                if symbol == "/":
+                    raise FirstSlashError("Результат первого броска - \"/\"")
+        if self.pair_score > 0:
+            raise UnpairedScore("Есть непарные значения")
+        self._check_rounds()
+        return self.pairs
+
+    def _append_pair(self):
+        if isinstance(self.current_pair, list):
+            for index in range(len(self.current_pair)):
+                try:
+                    self.current_pair[index] = int(self.current_pair[index])
+                except ValueError:
+                    raise IncorrectSymbols("Содержатся некорректные символы")
+            self.pairs.append(tuple(self.current_pair))
+        else:
+            self.pairs.append(self.current_pair)
+        self.pair_score = 0
+        self.current_pair = []
 
     def _check_rounds(self):
-        if len(self.pairs) + self.strikes > 10:
+        if len(self.pairs) > 10:
             raise TooManyRounds("Некорректное значение: введены данные для более чем 10 раундов")

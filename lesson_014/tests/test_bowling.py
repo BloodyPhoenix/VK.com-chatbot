@@ -67,15 +67,10 @@ class ScoreCounterTest(unittest.TestCase):
         with self.assertRaises(bowling.ContainsZeroError):
             bowling.get_score("X45074/44X-927-4X")
 
-    def test_double_slash(self):
-        "Tests if there are double slashes"
-        with self.assertRaises(bowling.DoubleSlash):
-            bowling.get_score("X45-74//4X-927-4X")
-
     def test_pairs(self):
         "Tests if there unpaired meanings"
         with self.assertRaises(bowling.UnpairedScore):
-            bowling.get_score("X5-144/44X-927-43")
+            bowling.get_score("Х45-74/44X-927-48")
 
     def test_more_that_eight(self):
         """Tests if there a pair with sum 10 or more"""
@@ -91,6 +86,11 @@ class ScoreCounterTest(unittest.TestCase):
         """Tests if there is a slash in a first roll"""
         with self.assertRaises(bowling.FirstSlashError):
             bowling.get_score("Х45-7/444X-927-4X")
+
+    def test_second_strike(self):
+        """Tests if there is a strike as a second symbol in pair"""
+        with self.assertRaises(bowling.SecondStrikeError):
+            bowling.get_score("Х4X-74/44X-927-4X")
 
 
 if __name__ == "__main__":

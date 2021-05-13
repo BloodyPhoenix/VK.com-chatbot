@@ -13,10 +13,6 @@ class ContainsZeroError(ValueError):
     pass
 
 
-class DoubleSlash(ValueError):
-    pass
-
-
 class UnpairedScore(ValueError):
     pass
 
@@ -72,6 +68,8 @@ class ScoreCounter:
             state_object = self.second_roll()
         roll_result = state_object.count_roll()
         if roll_result == 20 or roll_result == 15:
+            # TODO Переключение состояния на 1, если выбито 15 или 20, со сбросом всех значений для
+            # TODO перого броска
             self.state = 1
             self.current_pair = 0
             self.current_pair_score = 0
@@ -86,6 +84,7 @@ class ScoreCounter:
             self.current_pair = 0
             self.score += self.current_pair_score
             self.current_pair_score = 0
+            # TODO Переключение на состояние первого броска, если мы обсчитали второй бросок
             self.state = 1
             return
 
@@ -93,10 +92,12 @@ class ScoreCounter:
         self.pair_counter += 1
         if self.pair_counter > 10:
             raise TooManyRounds("Некорректное значение: введены данные для более чем 10 раундов")
+        # TODO Переключаемся на состояние второго броска, если был создан обработчик для первого
         self.state = 2
         return FirstRoll(self.current_symbol)
 
     def second_roll(self):
+        # TODO Сначала переключение на состояние первого броска было и здесь, но тогда код не работал
         return SecondRoll(self.current_symbol)
 
     def _check_result(self):
@@ -106,11 +107,6 @@ class ScoreCounter:
             raise LengthError(f"Некорректная длина значения: слишком много символов: {len(self.result)}")
         if "0" in self.result:
             raise ContainsZeroError("Есть 0. Вместо него необходимо использовать \"-\"")
-        if "/" in self.result:
-            for index, symbol in enumerate(self.result):
-                if symbol == "/":
-                    if self.result[index-1] == "/":
-                        raise DoubleSlash("Два символа \"/\" подряд")
 
 
 class CountRoll:
