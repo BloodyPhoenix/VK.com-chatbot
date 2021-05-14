@@ -26,7 +26,22 @@
 # Из текущего файла сделать консольный скрипт для формирования файла с результатами турнира.
 # Параметры скрипта: --input <файл протокола турнира> и --output <файл результатов турнира>
 
-# TODO тут ваш код
+import bowling_tournament
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="A score counter")
+    parser.add_argument("--input", default=None, type=str, help="Tournaments result file")
+    args = parser.parse_args()
+    result = args.input
+    try:
+        bowling_tournament.count_tournament_result(result)
+    except ValueError as error:
+        print(f"Ошибка входных данных: {error}, {error.args}")
+
+
+if __name__ == "__main__":
+    main()
 
 # Усложненное задание (делать по желанию)
 #
