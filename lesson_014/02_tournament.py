@@ -29,6 +29,7 @@
 import bowling_tournament
 import argparse
 
+
 def main():
     parser = argparse.ArgumentParser(description="A score counter")
     parser.add_argument("--input", default=None, type=str, help="Tournaments result file")
@@ -39,6 +40,12 @@ def main():
     except ValueError as error:
         print(f"Ошибка входных данных: {error}, {error.args}")
 
+
+# TODO код не запускается
+# home\PycharmProjects\students\chashchina_mariia\lesson_014>python 02_tournament.py --input tournament.txt
+
+# Некорректная пара: сбиты все кегли, должен быть знак "/" ('Некорректная пара: сбиты все кегли, должен быть знак "/"',)
+# Ошибка входных данных: too many values to unpack (expected 2), ('too many values to unpack (expected 2)',)
 
 if __name__ == "__main__":
     main()
