@@ -33,15 +33,12 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="A score counter")
     parser.add_argument("--input", default=None, type=str, help="Tournaments result file")
+    parser.add_argument("-0", "--output_path", default=None, type=str, help="Path to save output file")
     args = parser.parse_args()
     result = args.input
-    try:
-        bowling_tournament.count_tournament_result(result)
-    except ValueError as error:
-        print(f"Ошибка входных данных: {error}, {error.args}")
+    bowling_tournament.count_tournament_result(result)
 
 
-# TODO код не запускается
 # home\PycharmProjects\students\chashchina_mariia\lesson_014>python 02_tournament.py --input tournament.txt
 
 # Некорректная пара: сбиты все кегли, должен быть знак "/" ('Некорректная пара: сбиты все кегли, должен быть знак "/"',)
