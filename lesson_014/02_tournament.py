@@ -33,13 +33,9 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="A score counter")
     parser.add_argument("--input", default=None, type=str, help="Tournaments result file")
-    # TODO тут должен быть не путь а просто имя файла, он его в корне с проектом создаст
-    parser.add_argument("-0", "--output_path", default=None, type=str, help="Path to save output file")
+    parser.add_argument("-0", "--output", default=None, type=str, help="Path to save output file")
     args = parser.parse_args()
     result = args.input
-    # TODO дело в кодировки нужно указать по умолчанию везде где открываются\записываются файлы что
-    # TODO encoding='utf8' в контекстном менеджере.
-    # TODO да на линуксе запускается, там с этим проблем нет
 
     bowling_tournament.count_tournament_result(result)
 
