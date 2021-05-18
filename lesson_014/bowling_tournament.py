@@ -48,6 +48,7 @@ class TournamentCounter:
         self.current_results = []
 
     def _count_tournament(self):
+        # TODO поправить кодировку
         with open(self.result, "r") as incoming_data:
             for line in incoming_data:
                 if line.startswith("###"):
