@@ -36,9 +36,8 @@ def main():
     parser.add_argument("-0", "--output", default=None, type=str, help="Path to save output file")
     args = parser.parse_args()
     result = args.input
-
-    # TODO второй аргумент не передали
-    bowling_tournament.count_tournament_result(result)
+    file_name = args.output
+    bowling_tournament.count_tournament_result(result, file_name)
 
 
 # home\PycharmProjects\students\chashchina_mariia\lesson_014>python 02_tournament.py --input tournament.txt
@@ -46,12 +45,10 @@ def main():
 # Некорректная пара: сбиты все кегли, должен быть знак "/" ('Некорректная пара: сбиты все кегли, должен быть знак "/"',)
 # Ошибка входных данных: too many values to unpack (expected 2), ('too many values to unpack (expected 2)',)
 
-
-# TODO данные первого турнира должны быть такими.
-
 ### Tour 1
 # Антон	1/6/1/--327-18812382 # TODO ошибка потому что 8+2
 # Елена	3532X332/3/62--62X # TODO 104
+# TODO Результат Елены по раундам: 8 + 5 + 20 + 6 + 15 + 14+ 8 + 0 + 8 + 20 = 105
 # Роман	725518X--8/--543152 # TODO ошибка потому что 5+5
 # Татьяна	8/--35-47/371/518-4/ # TODO ошибка потому что 7+3
 # Ринат	4-3/7/3/8/X711627-5 # TODO 113

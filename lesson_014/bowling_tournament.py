@@ -49,7 +49,7 @@ class TournamentCounter:
 
     def _count_tournament(self):
         # TODO поправить кодировку
-        with open(self.result, "r") as incoming_data:
+        with open(self.result, "r", encoding="utf-8") as incoming_data:
             for line in incoming_data:
                 if line.startswith("###"):
                     self.current_tour = line
@@ -62,7 +62,7 @@ class TournamentCounter:
                     try:
                         self._count_player_result(line)
                     except ValueError as error:
-                        with open("tournament_errors.log", "a", encoding="utf8'") as log:
+                        with open("tournament_errors.log", "a", encoding="utf8") as log:
                             error_message = self.current_tour + " " + self.current_player + ": " \
                                             + str(error) + "\n" + "\n"
                             log.write(error_message)
@@ -71,7 +71,7 @@ class TournamentCounter:
         try:
             max_score = max(self.current_results)
         except ValueError:
-            with open("tournament_errors.log", "a", encoding="utf8'") as log:
+            with open("tournament_errors.log", "a", encoding="utf8") as log:
                 error_message = self.current_tour + "All results of this tour are invalid!"
                 log.write(error_message)
             self.current_winner = "Unable to define winner due to incorrect input"
