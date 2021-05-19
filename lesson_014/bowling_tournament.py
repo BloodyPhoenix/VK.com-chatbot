@@ -2,6 +2,7 @@
 
 
 import bowling
+from collections import defaultdict
 
 
 class NotATxtFileError(ValueError):
@@ -23,6 +24,9 @@ class TournamentCounter:
         self.current_tournament = []
         self.current_results = []
         self.current_player = None
+        self.player_statistics = defaultdict(int)
+        self.total_wins = defaultdict(int)
+        self.total_statistics = []
         if output_name:
             self.output_file = output_name
         else:
@@ -30,12 +34,33 @@ class TournamentCounter:
 
     def make_result(self):
         self._count_tournament()
+        self._count_total_wins()
+        self._print_result()
+
+    def _count_total_wins(self):
+        self.total_statistics = []
+        for player in sorted(self.player_statistics):
+            tours = self.player_statistics[player]
+            if player in self.total_wins:
+                self.total_statistics.append((player, tours, self.total_wins[player]))
+            else:
+                self.total_statistics.append((player, tours, "0"))
+
+    def _print_result(self):
+        division = "+----------+------------------+--------------+"
+        print(division)
+        print("| Игрок    |  сыграно матчей  |  всего побед |")
+        for player in sorted(self.total_statistics, reverse=True, key=lambda x: x[2]):
+            print(division)
+            output = "| {:<9}|{:^18}|{:^14}|".format(player[0], player[1], player[2])
+            print(output)
+        print(division)
 
     def _write_result(self):
         with open(self.output_file, "a", encoding="utf8") as t_result:
             t_result.write(self.current_tour)
             for player in self.current_tournament:
-                output = "{:<10} {:^20}, {:<3}\n".format(player[0], player[1], player[2])
+                output = "{:<10} {:^20} {:<3}\n".format(player[0], player[1], player[2])
                 t_result.write(output)
             t_result.write(self.current_winner)
             t_result.write("\n\n")
@@ -48,7 +73,6 @@ class TournamentCounter:
         self.current_results = []
 
     def _count_tournament(self):
-        # TODO поправить кодировку
         with open(self.result, "r", encoding="utf-8") as incoming_data:
             for line in incoming_data:
                 if line.startswith("###"):
@@ -85,13 +109,16 @@ class TournamentCounter:
         elif len(winner) > 1:
             result = "draw:"
             for player in winner:
-                result = " " + player
+                result += " " + player
+                self.total_wins[player] += 1
         else:
             result = "winner is " + winner[0]
+            self.total_wins[winner[0]] += 1
         self.current_winner = result
 
     def _count_player_result(self, player_result):
         self.current_player, result = player_result.split()
+        self.player_statistics[self.current_player] += 1
         score = bowling.get_score(result)
         updated_result = (self.current_player, result, score)
         self.current_tournament.append(updated_result)
