@@ -118,9 +118,9 @@ class TournamentCounter:
 
     def _count_player_result(self, player_result):
         self.current_player, result = player_result.split()
-        self.player_statistics[self.current_player] += 1
         score = bowling.get_score(result)
         updated_result = (self.current_player, result, score)
+        self.player_statistics[self.current_player] += 1
         self.current_tournament.append(updated_result)
         self.current_results.append(score)
 
