@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 
 class LengthError(ValueError):
     pass
@@ -33,68 +35,33 @@ class SecondStrikeError(ValueError):
     pass
 
 
-def get_score(game_result):
-    counter = ScoreCounter(game_result)
+def get_score(game_result, mode="internal"):
+    counter = ScoreCounter(game_result, mode)
     return counter.count_score()
 
 
 class ScoreCounter:
-    def __init__(self, value):
+    def __init__(self, value, mode):
         self.result = str(value)
-        self.state = 1
-        self.pairs = 0
         self.score = 0
-        self.pair_counter = 0
-        self.current_pair_score = 0
-        self.current_pair = 0
-        self.current_symbol = None
+        self.mode = mode
 
     def count_score(self):
         self.result = self.result.replace("Х", "X")
         self._check_result()
-        for symbol in self.result:
-            self.current_symbol = symbol
-            if self.current_symbol == "-":
-                self.current_symbol = 0
-            self.check_state()
-        if self.current_pair > 0:
-            raise UnpairedScore("Есть непарные значения")
-        return self.score
-
-    def check_state(self):
-        if self.state == 1:
-            state_object = self.first_roll()
+        if self.mode == "internal":
+            pair_maker = PairMaker(self.result)
         else:
-            state_object = self.second_roll()
-        roll_result = state_object.count_roll()
-        if roll_result == 20 or roll_result == 15:
-
-            self.state = 1
-            self.current_pair = 0
-            self.current_pair_score = 0
-            self.score += roll_result
-            return
-        if self.current_pair < 2:
-            self.current_pair_score += roll_result
-            self.current_pair += 1
-            if self.current_pair_score > 9:
-                raise IncorrectPair("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
-        if self.current_pair == 2:
-            self.current_pair = 0
-            self.score += self.current_pair_score
-            self.current_pair_score = 0
-            self.state = 1
-            return
-
-    def first_roll(self):
-        self.pair_counter += 1
-        if self.pair_counter > 10:
-            raise TooManyRounds("Некорректное значение: введены данные для более чем 10 раундов")
-        self.state = 2
-        return FirstRoll(self.current_symbol)
-
-    def second_roll(self):
-        return SecondRoll(self.current_symbol)
+            pair_maker = PairMakerExternal(self.result)
+        pairs = pair_maker.make_pairs()
+        for pair in pairs:
+            if isinstance(pair, tuple):
+                if sum(pair) > 9:
+                    raise IncorrectPair("Некорректная пара: сбиты все кегли, должен быть знак \"/\"")
+                self.score += sum(pair)
+            else:
+                self.score += pair
+        return self.score
 
     def _check_result(self):
         if 10 > len(self.result):
@@ -103,47 +70,98 @@ class ScoreCounter:
             raise LengthError(f"Некорректная длина значения: слишком много символов: {len(self.result)}")
         if "0" in self.result:
             raise ContainsZeroError("Есть 0. Вместо него необходимо использовать \"-\"")
-
-
-class CountRoll:
-    def __init__(self, roll):
-        self.roll = roll
-
-    def count_roll(self):
-        pass
-
-
-class FirstRoll(CountRoll):
-
-    def count_roll(self):
-        self._check_symbol()
-        if self.roll == "X":
-            return 20
-        else:
-            try:
-                result = int(self.roll)
-                return result
-            except ValueError:
+        for symbol in self.result:
+            if not re.match(r"[1-9X/\-]+", symbol):
                 raise IncorrectSymbols("Содержатся некорректные символы")
 
-    def _check_symbol(self):
-        if self.roll == "/":
-            raise FirstSlashError("Результат первого броска - \"/\"")
 
+class PairMaker:
+    def __init__(self, value):
+        self.value = str(value).replace("-", "0")
+        self.pairs = []
+        self.pair_score = 0
+        self.current_pair = []
 
-class SecondRoll(CountRoll):
+    def make_pairs(self):
+        for symbol in self.value:
+            self.pair_score += 1
+            if symbol == "X":
+                if self.pair_score > 1:
+                    raise SecondStrikeError("Второе значение в паре - Х")
+                self.current_pair = 20
+                self._append_pair()
+                continue
+            self.current_pair.append(symbol)
+            if self.pair_score == 2:
+                if symbol == "/":
+                    self.current_pair = 15
+                self._append_pair()
+            else:
+                if symbol == "/":
+                    raise FirstSlashError("Результат первого броска - \"/\"")
+        if self.pair_score > 0:
+            raise UnpairedScore("Есть непарные значения")
+        self._check_rounds()
+        return self.pairs
 
-    def count_roll(self):
-        self._check_symbol()
-        if self.roll == "/":
-            return 15
+    def _append_pair(self):
+        if isinstance(self.current_pair, list):
+            for index in range(len(self.current_pair)):
+                self.current_pair[index] = int(self.current_pair[index])
+            self.pairs.append(tuple(self.current_pair))
         else:
-            try:
-                result = int(self.roll)
-                return result
-            except ValueError:
-                raise IncorrectSymbols("Содержатся некорректные символы")
+            self.pairs.append(self.current_pair)
+        self.pair_score = 0
+        self.current_pair = []
 
-    def _check_symbol(self):
-        if self.roll == "X":
-            raise SecondStrikeError("Результат второго броска - \"Х\"")
+    def _check_rounds(self):
+        if len(self.pairs) > 10:
+            raise TooManyRounds("Некорректное значение: введены данные для более чем 10 раундов")
+
+
+class PairMakerExternal(PairMaker):
+
+    def make_pairs(self):
+        for index, symbol in enumerate(self.value):
+            self.pair_score += 1
+            if symbol == "X":
+                if self.pair_score > 1:
+                    raise SecondStrikeError("Второе значение в паре - Х")
+                self.current_pair = 10
+                if index < len(self.value)-2:
+                    next_pair = (self.value[index+1], self.value[index+2])
+                    if "/" in next_pair:
+                        self.current_pair += 10
+                    else:
+                        for roll in next_pair:
+                            if "X" == roll:
+                                self.current_pair += 10
+                            else:
+                                self.current_pair += int(roll)
+                elif index < len(self.value)-1:
+                    next_roll = (self.value[index + 1])
+                    if "X" == next_roll:
+                        self.current_pair += 10
+                    else:
+                        self.current_pair += int(next_roll)
+                self._append_pair()
+                continue
+            self.current_pair.append(symbol)
+            if self.pair_score == 2:
+                if symbol == "/":
+                    self.current_pair = 10
+                    if index < len(self.value)-1:
+                        next_roll = self.value[index+1]
+                        if "X" == next_roll:
+                            next_roll = 10
+                        else:
+                            next_roll = int(next_roll)
+                        self.current_pair += next_roll
+                self._append_pair()
+            else:
+                if symbol == "/":
+                    raise FirstSlashError("Результат первого броска - \"/\"")
+        if self.pair_score > 0:
+            raise UnpairedScore("Есть непарные значения")
+        self._check_rounds()
+        return self.pairs
