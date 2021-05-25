@@ -25,8 +25,18 @@
 
 # "И да, старые правила должны остаться! для внутреннего рынка..." - уточнил менеджер напоследок.
 
-# TODO код запуска пишем тут
+import bowling_tournament
+import argparse
 
-# TODO нужно добавить методы подсчета в созданный класс
 
-# TODO добавить логику смены подсчета результатов
+def main():
+    parser = argparse.ArgumentParser(description="A score counter")
+    parser.add_argument("--input", default=None, type=str, help="Tournaments result file")
+    parser.add_argument("-o", "--output", default=None, type=str, help="Name of the output file")
+    parser.add_argument("-m", "--mode", default="external", type=str,
+                        help="External or internal mode. External is default")
+    args = parser.parse_args()
+    result = args.input
+    file_name = args.output
+    mode = args.mode
+    bowling_tournament.count_tournament_result(result, mode, file_name)

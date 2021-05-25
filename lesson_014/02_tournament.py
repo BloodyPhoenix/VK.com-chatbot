@@ -33,7 +33,7 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="A score counter")
     parser.add_argument("--input", default=None, type=str, help="Tournaments result file")
-    parser.add_argument("-0", "--output", default=None, type=str, help="Path to save output file")
+    parser.add_argument("-o", "--output", default=None, type=str, help="Name of the output file")
     args = parser.parse_args()
     result = args.input
     file_name = args.output

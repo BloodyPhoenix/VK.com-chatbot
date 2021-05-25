@@ -9,16 +9,17 @@ class NotATxtFileError(ValueError):
     pass
 
 
-def count_tournament_result(result, output_name=None):
+def count_tournament_result(result, mode="internal", output_name=None):
     if not str(result).endswith(".txt"):
         raise NotATxtFileError("Неверный формат файла. Поддерживаются только файлы в формате .txt")
-    counter = TournamentCounter(result, output_name)
+    counter = TournamentCounter(result, mode, output_name)
     counter.make_result()
 
 
 class TournamentCounter:
-    def __init__(self, result, output_name):
+    def __init__(self, result, mode, output_name):
         self.result = result
+        self.mode = mode
         self.current_tour = None
         self.current_winner = None
         self.current_tournament = []
@@ -118,7 +119,7 @@ class TournamentCounter:
 
     def _count_player_result(self, player_result):
         self.current_player, result = player_result.split()
-        score = bowling.get_score(result)
+        score = bowling.get_score(result, self.mode)
         updated_result = (self.current_player, result, score)
         self.player_statistics[self.current_player] += 1
         self.current_tournament.append(updated_result)
