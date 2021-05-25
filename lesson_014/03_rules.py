@@ -40,3 +40,6 @@ def main():
     file_name = args.output
     mode = args.mode
     bowling_tournament.count_tournament_result(result, mode, file_name)
+
+if __name__ == "__main__":
+    main()
