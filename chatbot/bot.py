@@ -8,6 +8,7 @@ import vk_api
 from vk_api import bot_longpoll
 
 
+# TODO параметр не должен быть подчеркнут
 def configure_logging(logger):
     logger.setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()
@@ -28,7 +29,7 @@ def configure_logging(logger):
     logger.addHandler(file_debug_handler)
 
     logging_info_path = os.path.join(logging_path, "chatbot_info_log.log")
-    file_info_handler  = logging.FileHandler(logging_info_path, "a", encoding="utf-8", delay=True)
+    file_info_handler = logging.FileHandler(logging_info_path, "a", encoding="utf-8", delay=True)
     file_info_handler.setLevel(logging.INFO)
     file_info_handler.setFormatter(file_formatter)
     logger.addHandler(file_info_handler)
@@ -61,7 +62,8 @@ class ChatBot:
                 peer_id=event.object.message["peer_id"]
             )
         else:
-            #TODO Не генерятся события типа MESSAGE_REPLY
+            # TODO а где вы его ловите ? используем конструкцию if elif else
+            # Не генерятся события типа MESSAGE_REPLY
             logger.info("Мы пока не умеем обрабатывать событие такого типа: %s", event.type)
             raise ValueError("Не то событие")
 
