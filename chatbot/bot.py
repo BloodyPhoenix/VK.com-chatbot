@@ -59,9 +59,6 @@ class ChatBot:
     def run(self):
         """Runs echobot"""
         for event in self.long_poller.listen():
-            #  Здесь проверяется тип поступившего на вход события, и поэтому я вижу в логах,
-            #  что события типа MESSAGE_RESPONSE не приходят
-            #  хотя в остальном всё работает нормально
             logger.debug("Получено событие класса %s", event.type)
             try:
                 self.event_handler(event)
@@ -72,24 +69,14 @@ class ChatBot:
         """Processing kv bot event"""
         if event.type == bot_longpoll.VkBotEventType.MESSAGE_NEW:
             # TODO если останетесь на 5.100 о тектовое сообщение получается из event.object.text
-            response = "Вы сказали \""+event.object.message["text"]+"\"?"
+            response = "Вы сказали \""+event.object.text+"\"?"
             logger.debug("Отправляем сообщение \"%s\"", response)
             self.api.messages.send(
                 message=response,
                 random_id=randint(0, 2 ** 20),
-                # TODO user_id = event.object.peer_id
-                peer_id=event.object.message["peer_id"]
+                user_id = event.object.peer_id
             )
         else:
-            # TODO написал какую версию использовать в ЛМС
-            # а где вы его ловите ? используем конструкцию if elif else
-            #  Все события, которые не MESSAGE_NEW, должны прилетать в эту ветку кода.
-            #  Но распечатка типа приходящих в event_handler событий во время теста показывает
-            #  Что типа MESSAGE_REPLY там нет, хотя бот исправно отвечает
-            #  Возможно,это какая-то особенность работы более новой версии билиотеки vk_api
-            #  Хотя событие такого типа в ней всё ещё есть.
-            #  Но на событиях с другим типом, например, MESSAGE_EDIT, всё работает нормально
-            # Не генерятся события типа MESSAGE_REPLY
             logger.info("Мы пока не умеем обрабатывать событие такого типа: %s", event.type)
             raise ValueError("Не то событие")
 
