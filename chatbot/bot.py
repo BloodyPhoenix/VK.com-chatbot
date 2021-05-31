@@ -71,11 +71,13 @@ class ChatBot:
     def event_handler(self, event: bot_longpoll.VkBotEvent):
         """Processing kv bot event"""
         if event.type == bot_longpoll.VkBotEventType.MESSAGE_NEW:
+            # TODO если останетесь на 5.100 о тектовое сообщение получается из event.object.text
             response = "Вы сказали \""+event.object.message["text"]+"\"?"
             logger.debug("Отправляем сообщение \"%s\"", response)
             self.api.messages.send(
                 message=response,
                 random_id=randint(0, 2 ** 20),
+                # TODO user_id = event.object.peer_id
                 peer_id=event.object.message["peer_id"]
             )
         else:
