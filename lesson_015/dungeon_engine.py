@@ -1,4 +1,5 @@
 import json
+import decimal
 import re
 
 
@@ -28,9 +29,10 @@ class Location:
 
 class Gameplay:
 
-    def __init__(self):
-        self.remaining_time = remaining_time
+    def __init__(self, time):
+        self.remaining_time = decimal.Decimal(time)
         self.time_passed = 0
+        self.exp = 0
         self.location_name = "Location_0_tm0"
         self.location_data = load_dungeon("rpg.json")
         self.current_location = Location(self.location_data, self.location_name)
@@ -48,11 +50,34 @@ class Gameplay:
                     self.choose_action()
 
     def choose_action(self):
+        print(f"Прошло времени: {self.time_passed}")
+        print(f"Времени осталось: {self.remaining_time}")
+        print(f"Ваш опыт: {self.exp}")
+        print()
         print(f"Вы находитесь в локации {self.location_name}")
         self.current_location.print_description()
+        if len(self.current_location.mobs) > 0:
+            self._room_with_mobs_action()
+        else:
+            self._room_without_mobs_action()
+
+    def _check_time(self, action_time):
+        self.time_passed += action_time
+        self.remaining_time -= action_time
+        if self.remaining_time < 0:
+            print("""О нет, наводнение!
+Пещеру затопило, и вы потеряли сознание.
+Но почему-то вы вновь очнулись перед её входом.
+Да что ж это за место такое?!
+
+Попробуете ещё раз?""")
+            self._game_over()
+        else:
+            return
+
+    def _room_with_mobs_action(self):
         while True:
             print()
-            # TODO Уменьшить количество действий, если в локации нет монстров
             print("""Выберите действие:
 1: Атаковать монстра
 2: Перейти в другую локацию
@@ -69,6 +94,26 @@ class Gameplay:
         if "1" == player_choice:
             self._fight()
         elif "2" == player_choice:
+            self._move()
+        else:
+            self._exit()
+
+    def _room_without_mobs_action(self):
+        while True:
+            print()
+            print("""Выберите действие:
+2: Перейти в другую локацию
+3: Сдаться и выйти из игры""")
+            print()
+            player_choice = input()
+            if len(player_choice) > 1:
+                print("Команда не распознана. Повторите ввод")
+                continue
+            if not re.match(r"[2-3]", player_choice):
+                print("Команда не распознана. Повторите ввод")
+                continue
+            break
+        if "2" == player_choice:
             self._move()
         else:
             self._exit()
@@ -133,11 +178,14 @@ class Gameplay:
                         break
                 else:
                     print("Команда не распознана. Повторите ввод")
-
-        # TODO тратим время, получаем экспу
         print()
         mob_index = player_choice -1
         chosen_mob = self.current_location.mobs[mob_index]
+        mob_params = chosen_mob.split("_")
+        mob_exp = decimal.Decimal(mob_params[1][3:])
+        mob_time = decimal.Decimal(mob_params[2][2:])
+        self.exp += mob_exp
+        self._check_time(mob_time)
         self.current_location.mobs.remove(chosen_mob)
         self.choose_action()
 
@@ -158,11 +206,23 @@ class Gameplay:
                         break
                 else:
                     print("Команда не распознана. Повторите ввод")
-
-        # TODO Тратим время, переходим в другую локацию
         print()
         exit_index = player_choice - 1
         chosen_exit = self.current_location.exits[exit_index]
+        if "Hatch" in chosen_exit:
+            action_time = decimal.Decimal("159.098765432")
+            if action_time <= self.remaining_time:
+                print("""Поздравляем! Вы нашли выход!
+Сыграть ещё раз?
+""")
+                self._game_over()
+            else:
+                print("""О, нет! Вам не хватило времени, чтобы выбраться наружу!
+Вас затопило!
+Хотите попробовать ещё раз?""")
+                self._game_over()
+        location_time = decimal.Decimal(chosen_exit.split("_")[2][2:])
+        self._check_time(location_time)
         self._change_location(chosen_exit)
 
 
@@ -173,5 +233,5 @@ def load_dungeon(name="rpg.json"):
 
 
 def start_game():
-    game = Gameplay()
+    game = Gameplay(time=remaining_time)
     game.choose_action()

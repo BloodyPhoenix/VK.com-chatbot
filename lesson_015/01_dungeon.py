@@ -99,8 +99,11 @@ remaining_time = '123456.0987654321'
 # если изначально не писать число в виде строки - теряется точность!
 field_names = ['current_location', 'current_experience', 'current_date']
 
-dungeon_engine.start_game()
+
+def play_game():
+    dungeon_engine.start_game()
 
 
-
+if __name__ == "__main__":
+    play_game()
 # Учитывая время и опыт, не забывайте о точности вычислений!
