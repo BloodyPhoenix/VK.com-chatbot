@@ -27,7 +27,7 @@ class TestLocation(unittest.TestCase):
         location = dungeon_engine.Location(
             self.game.location_data["Location_0_tm0"][1], "Location_1_tm1040"
         )
-        self.game.change_location("Location_1_tm1040")
+        self.game._change_location("Location_1_tm1040")
         self.assertEqual(self.game.location_name, "Location_1_tm1040")
         location_data = None
         for obj in self.dungeon["Location_0_tm0"]:

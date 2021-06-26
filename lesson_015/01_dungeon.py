@@ -93,13 +93,13 @@
 # и так далее...
 
 
-import json
-
+import dungeon_engine
 
 remaining_time = '123456.0987654321'
 # если изначально не писать число в виде строки - теряется точность!
 field_names = ['current_location', 'current_experience', 'current_date']
 
+dungeon_engine.start_game()
 
 
 
