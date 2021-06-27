@@ -1,6 +1,9 @@
 import json
 import decimal
 import re
+import datetime
+import csv
+import os
 
 
 remaining_time = '123456.0987654321'
@@ -36,6 +39,10 @@ class Gameplay:
         self.location_name = "Location_0_tm0"
         self.location_data = load_dungeon("rpg.json")
         self.current_location = Location(self.location_data, self.location_name)
+        if os.path.exists("dungeon.csv"):
+            self.game_data = []
+        else:
+            self.game_data = [['current_location', 'current_experience', 'current_date']]
 
     def _change_location(self, new_location):
         for obj in self.location_data[self.location_name]:
@@ -51,7 +58,15 @@ class Gameplay:
 
     def run(self):
         while True:
+            self._add_game_data()
             self._choose_action()
+
+    def _add_game_data(self):
+        current_location = self.location_name
+        current_experience = self.exp
+        current_date = datetime.datetime.now().strftime("%H:%m %d.%m.%Y")
+        self.game_data.append([current_location, current_experience, current_date])
+        return
 
     def _choose_action(self):
         print(f"Прошло времени: {self.time_passed}")
@@ -144,14 +159,16 @@ class Gameplay:
                 continue
             break
         if "1" == player_choice:
+            self._save_game_data()
             start_game()
         elif "2" == player_choice:
+            self._save_game_data()
             exit()
         elif "0" == player_choice:
             self._choose_action()
 
-    @staticmethod
-    def _game_over():
+    def _game_over(self):
+        self._save_game_data()
         print("""1: начать заново
 2: закончить игру""")
         while True:
@@ -168,6 +185,13 @@ class Gameplay:
             start_game()
         elif "2" == player_choice:
             exit()
+
+    def _save_game_data(self):
+        with open("dungeon.csv", "a", newline="") as save_file:
+            writer = csv.writer(save_file, delimiter=',')
+            for line in self.game_data:
+                writer.writerow(line)
+        return
 
     def _fight(self):
         options = len(self.current_location.mobs)
