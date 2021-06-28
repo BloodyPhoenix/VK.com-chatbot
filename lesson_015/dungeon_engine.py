@@ -23,6 +23,43 @@ field_names = ['current_location', 'current_experience', 'current_date']
 # TODO 4) Игра - общий класс, регулирующий взаимодействие всех остальных. Тут будет выбор пользователя
 # TODO и запуск нужных методов и всё остальное что нужно.
 
+
+class Monster:
+
+    def __init__(self, description: str):
+        mob_params = description.split("_")
+        self.exp = int(mob_params[1][3:])
+        self.time = decimal.Decimal(mob_params[2][2:])
+
+    def __str__(self):
+        return f"Монстр exp_{self.exp} time{self.time}"
+
+    def __eq__(self, other):
+        if isinstance(other, Monster):
+            if self.exp == other.exp and self.time == other.time:
+                return True
+        return False
+
+
+class Character:
+
+    def __init__(self, start_time):
+        self.time_left = decimal.Decimal(start_time)
+        self.time_passed = 0
+        self.exp = 0
+        self.alive = True
+
+    def decrease_time(self, action_time: decimal.Decimal):
+        self.time_left -= action_time
+        self.time_passed += action_time
+        if self.time_left <= 0:
+            self.alive = False
+
+    def fight(self, mob: Monster):
+        self.exp += mob.exp
+        self.decrease_time(mob.time)
+
+
 class Location:
 
     def __init__(self, location_data: dict, location_name: str):
@@ -30,15 +67,22 @@ class Location:
         self.exits = []
         for obj in location_data[location_name]:
             if isinstance(obj, str):
-                self.mobs.append(obj)
+                mob = Monster(obj)
+                self.mobs.append(mob)
             elif isinstance(obj, dict):
                 for key in obj:
                     self.exits.append(key)
 
+    def __eq__(self, other):
+        if isinstance(other, Location):
+            if self.mobs == other.mobs and self.exits == other.exits:
+                return True
+        return False
+
     def print_description(self):
         print("Внутри вы видите:")
         for mob in self.mobs:
-            print(f"Монста {mob}")
+            print(f"Монстра exp_{mob.exp} time_{mob.time}")
         for location_exit in self.exits:
             print(f"Вход в локацию {location_exit}")
 
@@ -46,9 +90,7 @@ class Location:
 class Gameplay:
 
     def __init__(self, time):
-        self.remaining_time = decimal.Decimal(time)
-        self.time_passed = 0
-        self.exp = 0
+        self.hero = Character(time)
         self.location_name = "Location_0_tm0"
         self.location_data = load_dungeon("rpg.json")
         self.current_location = Location(self.location_data, self.location_name)
@@ -72,19 +114,20 @@ class Gameplay:
     def run(self):
         while True:
             self._add_game_data()
+            self._check_time()
             self._choose_action()
 
     def _add_game_data(self):
         current_location = self.location_name
-        current_experience = self.exp
+        current_experience = self.hero.exp
         current_date = datetime.datetime.now().strftime("%H:%m %d.%m.%Y")
         self.game_data.append([current_location, current_experience, current_date])
         return
 
     def _choose_action(self):
-        print(f"Прошло времени: {self.time_passed}")
-        print(f"Времени осталось: {self.remaining_time}")
-        print(f"Ваш опыт: {self.exp}")
+        print(f"Прошло времени: {self.hero.time_passed}")
+        print(f"Времени осталось: {self.hero.time_left}")
+        print(f"Ваш опыт: {self.hero.exp}")
         print()
         print(f"Вы находитесь в локации {self.location_name}")
         self.current_location.print_description()
@@ -95,16 +138,14 @@ class Gameplay:
             self._room_without_mobs_action()
             return
 
-    def _check_time(self, action_time):
-        self.time_passed += action_time
-        self.remaining_time -= action_time
-        if self.remaining_time < 0:
+    def _check_time(self):
+        if not self.hero.alive:
             print("""О нет, наводнение!
-            Пещеру затопило, и вы потеряли сознание.
-            Но почему-то вы вновь очнулись перед её входом.
-            Да что ж это за место такое?!
+Пещеру затопило, и вы потеряли сознание.
+Но почему-то вы вновь очнулись перед её входом.
+Да что ж это за место такое?!
             
-            Попробуете ещё раз?""")
+Попробуете ещё раз?""")
             self._game_over()
         else:
             return
@@ -113,9 +154,9 @@ class Gameplay:
         while True:
             print()
             print("""Выберите действие:
-            1: Атаковать монстра
-            2: Перейти в другую локацию
-            3: Сдаться и выйти из игры""")
+1: Атаковать монстра
+2: Перейти в другую локацию
+3: Сдаться и выйти из игры""")
             print()
             player_choice = input()
             if len(player_choice) > 1:
@@ -138,8 +179,8 @@ class Gameplay:
         while True:
             print()
             print("""Выберите действие:
-            2: Перейти в другую локацию
-            3: Сдаться и выйти из игры""")
+2: Перейти в другую локацию
+3: Сдаться и выйти из игры""")
             print()
             player_choice = input()
             if len(player_choice) > 1:
@@ -226,11 +267,7 @@ class Gameplay:
         print()
         mob_index = player_choice-1
         chosen_mob = self.current_location.mobs[mob_index]
-        mob_params = chosen_mob.split("_")
-        mob_exp = int(mob_params[1][3:])
-        mob_time = decimal.Decimal(mob_params[2][2:])
-        self.exp += mob_exp
-        self._check_time(mob_time)
+        self.hero.fight(chosen_mob)
         self.current_location.mobs.remove(chosen_mob)
         return
 
@@ -256,8 +293,8 @@ class Gameplay:
         chosen_exit = self.current_location.exits[exit_index]
         if "Hatch" in chosen_exit:
             action_time = decimal.Decimal("159.098765432")
-            if action_time <= self.remaining_time:
-                if self.exp >= 280:
+            if action_time <= self.hero.time_left:
+                if self.hero.exp >= 280:
                     print("""Поздравляем! Вы нашли выход!
 Сыграть ещё раз?
 """)
@@ -275,7 +312,7 @@ class Gameplay:
 Хотите попробовать ещё раз?""")
                 self._game_over()
         location_time = decimal.Decimal(chosen_exit.split("_")[2][2:])
-        self._check_time(location_time)
+        self.hero.decrease_time(location_time)
         self._change_location(chosen_exit)
         return
 
