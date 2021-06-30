@@ -9,6 +9,7 @@ import os
 remaining_time = '123456.0987654321'
 field_names = ['current_location', 'current_experience', 'current_date']
 
+
 class Monster:
 
     def __init__(self, description: str):
@@ -184,9 +185,9 @@ class Gameplay:
     def _exit(self):
         print()
         print("""Вы уверены, что хотите выйти?
-        1: начать заново
-        2: закончить игру
-        0: продолжить игру""")
+1: начать заново
+2: закончить игру
+0: продолжить игру""")
         while True:
             print()
             player_choice = input()
@@ -208,6 +209,9 @@ class Gameplay:
 
     def _game_over(self):
         self._save_game_data()
+        print(f"На момент окончания игры у вас осталось {self.hero.time_left:.10f} времени.")
+        print(f"Вы заработали {self.hero.exp} опыта.")
+        print()
         print("""1: начать заново
 2: закончить игру""")
         while True:
@@ -280,6 +284,7 @@ class Gameplay:
             action_time = decimal.Decimal("159.098765432")
             if action_time <= self.hero.time_left:
                 if self.hero.exp >= 280:
+                    self.hero.decrease_time(action_time)
                     print("""Поздравляем! Вы нашли выход!
 Сыграть ещё раз?
 """)
