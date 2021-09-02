@@ -46,3 +46,15 @@
 # Приконнектится по полученному url-пути к базе данных
 # Инициализировать её через DatabaseProxy()
 # https://peewee.readthedocs.io/en/latest/peewee/database.html#dynamically-defining-a-database
+
+
+from weather_engine import WeatherMaker
+
+if __name__ == "__main__":
+    weather = WeatherMaker()
+    weather.run("старт")
+    while True:
+        command = input()
+        if "выход" == command:
+            break
+        weather.run(command)

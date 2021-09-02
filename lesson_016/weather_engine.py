@@ -1,11 +1,10 @@
 from urllib.request import urlopen
-
-import peewee
+from sys import argv, stdin
 from bs4 import BeautifulSoup
 from db_init import *
+import peewee
 import re
 import datetime
-import argparse
 import image_maker
 
 _MONTH_DAYS = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 20, 12: 31}
@@ -129,12 +128,35 @@ class WeatherMaker:
         weather_db.create_tables([ForecastModel])
         ForecastModel.create_table()
 
-    def run(self):
+    def run(self, command):
         command_help = """Введите команду:
 1. обновить - обновляет базу прогнозов
 2. карточка - создаёт карточку с прогнозом
 3. прогноз - вывести прогноз за определённые даты на консоль
-4. архив - показать все числа, за которые есть прогноз в базе"""
+4. архив - показать все числа, за которые есть прогноз в базе
+5. выход - завершить работу программы"""
+        print()
+        if "старт" == command:
+            self._start()
+        elif "обновить" == command:
+            self._update()
+            print("База успешно обновлена!")
+        elif "помощь" == command:
+            print(command_help)
+        elif "карточка" == command:
+            self._card_options()
+        elif "прогноз" == command:
+            self._forecast_options()
+        elif "архив" == command:
+            results = ForecastModel.select()
+            for result in results:
+                print(result.date_full)
+        else:
+            print("Неизвестная команда")
+        print("""Введите команду. Введите "помощь", чтобы увидеть перечень команд""")
+        print()
+
+    def _start(self):
         self.second_day_request = datetime.date.today()
         try:
             today = ForecastModel.select().where(ForecastModel.date_full == self.second_day_request).get()
@@ -146,51 +168,31 @@ class WeatherMaker:
             self._return_data()
         except peewee.DoesNotExist:
             print("Нет данных для отображения. Перед началом работы обновите базу.")
-        while True:
-            print("""Введите команду. Введите "помощь", чтобы увидеть перечень команд""")
-            command = input()
-            print()
-            if "обновить" == command:
-                self._update()
-                print("База успешно обновлена!")
-            elif "помощь" == command:
-                print(command_help)
-            elif "карточка" == command:
-                self._card_options()
-            elif "прогноз" == command:
-                self._forecast_options()
-            elif "архив" == command:
-                results = ForecastModel.select()
-                for result in results:
-                    print(result.date_full)
-            else:
-                print("Неизвестная команда")
-            print()
 
     def _forecast_options(self):
         while True:
             print("""Введите первую дату в формате дд-мм-гггг""")
-            self.first_day_request = input()
+            self.first_day_request = stdin.readline()
             try:
                 self.first_day_request = self._input_convert(self.first_day_request)
             except Exception as exc:
                 self._print_error(exc)
                 continue
-            while True:
-                print("""Введите вторую дату в формате дд-мм-гггг""")
-                self.second_day_request = input()
-                try:
-                    self.second_day_request = self._input_convert(self.second_day_request)
-                except Exception as exc:
-                    self._print_error(exc)
-                    continue
-                break
             try:
                 first_id = ForecastModel.select().where(ForecastModel.date_full == self.first_day_request).get()
             except peewee.DoesNotExist:
                 print("Такого числа нет в базе. Обновите базу.")
                 continue
             self.first_day_request = first_id.id
+            while True:
+                print("""Введите вторую дату в формате дд-мм-гггг""")
+                self.second_day_request = stdin.readline()
+                try:
+                    self.second_day_request = self._input_convert(self.second_day_request)
+                except Exception as exc:
+                    self._print_error(exc)
+                    continue
+                break
             try:
                 second_id = ForecastModel.select().where(ForecastModel.date_full == self.second_day_request).get()
             except peewee.DoesNotExist:
@@ -211,13 +213,13 @@ class WeatherMaker:
     @staticmethod
     def _print_error(error):
         print()
-        print("Извините, произошла ошибка. Проверьте корректность воодимых данных и повторите ввод")
+        print("Извините, произошла ошибка. Проверьте корректность вводимых данных и повторите ввод")
         print(f"{error}. {error.args}")
 
     def _card_options(self):
         while True:
-            print("""Введите данные в формате дд-мм-гггг или введите"сегодня".""")
-            self.first_day_request = input()
+            print("""Введите данные в формате дд-мм-гггг или введите "сегодня".""")
+            self.first_day_request = stdin.readline()
             if "с" in self.first_day_request:
                 self.first_day_request = None
                 self._make_card()
@@ -226,7 +228,7 @@ class WeatherMaker:
                 return
             else:
                 try:
-                    self.first_day_request = self._input_convert(self.first_day_request.split)
+                    self.first_day_request = self._input_convert(str(self.first_day_request))
                     self._make_card()
                 except Exception as exc:
                     self._print_error(exc)
@@ -382,8 +384,3 @@ class WeatherMaker:
                         ]
         card = image_maker.ImageMaker(weather, weather_data)
         card.make_card()
-
-
-if __name__ == "__main__":
-    forecast_maker = WeatherMaker()
-    forecast_maker.run()
