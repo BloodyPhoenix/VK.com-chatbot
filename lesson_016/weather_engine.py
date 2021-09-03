@@ -182,16 +182,18 @@ class WeatherMaker:
                 first_id = ForecastModel.select().where(ForecastModel.date_full == self.first_day_request).get()
             except peewee.DoesNotExist:
                 print("Такого числа нет в базе. Обновите базу.")
-                continue
+                return
             self.first_day_request = first_id.id
             while True:
                 print("""Введите вторую дату в формате дд-мм-гггг""")
                 self.second_day_request = stdin.readline()
+                if "назад" == self.second_day_request:
+                    return
                 try:
                     self.second_day_request = self._input_convert(self.second_day_request)
                 except Exception as exc:
                     self._print_error(exc)
-                    continue
+                    return
                 break
             try:
                 second_id = ForecastModel.select().where(ForecastModel.date_full == self.second_day_request).get()
