@@ -1,3 +1,4 @@
+# TODO импортировать все плохой стиль
 from peewee import *
 
 weather_db = SqliteDatabase("weather.db")
@@ -96,7 +97,7 @@ class ForecastModel(Model):
         day_data.night_pressure = day["ночью"]["давление"],
         day_data.night_humidity = day["ночью"]["влажность"],
         day_data.night_wind = day["ночью"]["ветер"]
-        day_data.save
+        day_data.save()
 
     @staticmethod
     def update_table(day):

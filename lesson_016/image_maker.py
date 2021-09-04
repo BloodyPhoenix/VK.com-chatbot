@@ -31,6 +31,7 @@ class ImageMaker:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+    # TODO явно можно сократить код применив циклы и словари с данными с которыми вызывать функцию
     def _print_text(self):
         cv2.putText(self.background, self.weather_data[0], (110, 40), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0))
         cv2.putText(self.background, self.weather_data[1] + " " + self.weather_data[2],

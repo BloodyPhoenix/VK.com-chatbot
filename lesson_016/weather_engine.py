@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 from sys import argv, stdin
 from bs4 import BeautifulSoup
+# TODO импортировать все плохой стиль
 from db_init import *
 import peewee
 import re
