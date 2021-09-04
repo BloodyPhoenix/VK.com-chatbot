@@ -54,7 +54,10 @@ if __name__ == "__main__":
     weather = WeatherMaker()
     weather.run("старт")
     while True:
+        # пустых инпутов быть недолжно
         command = input()
         if "выход" == command:
             break
         weather.run(command)
+
+# зачет!
