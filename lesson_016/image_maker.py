@@ -32,6 +32,9 @@ class ImageMaker:
         cv2.destroyAllWindows()
 
     def _print_text(self):
+        # TODO Здесь я не хочу использовать цикл, потому что, если структура входящих данных изменится
+        # TODO может быть сложно сдвинуть конкретное место так, чтобы не поплыла вся карточка
+        # TODO ну и в целом код будет, конечно, короче, но поддерживать его станет труднее
         cv2.putText(self.background, self.weather_data[0], (110, 40), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0))
         cv2.putText(self.background, self.weather_data[1] + " " + self.weather_data[2],
                     (110, 80), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0))

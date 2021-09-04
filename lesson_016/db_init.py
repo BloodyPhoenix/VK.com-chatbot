@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import Model, SqliteDatabase, DateField, CharField
 
 weather_db = SqliteDatabase("weather.db")
 

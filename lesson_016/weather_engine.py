@@ -1,7 +1,7 @@
 from urllib.request import urlopen
 from sys import argv, stdin
 from bs4 import BeautifulSoup
-from db_init import *
+from db_init import ForecastModel, weather_db
 import peewee
 import re
 import datetime
