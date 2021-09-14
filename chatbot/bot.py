@@ -5,7 +5,9 @@ import logging
 import os
 import vk_api
 from vk_api import bot_longpoll
+from pony.orm import db_session
 import handlers
+from models import UserState, Registration
 
 try:
     import settings
@@ -39,13 +41,6 @@ def configure_logging(log):
     log.addHandler(file_info_handler)
 
 
-class UserState:
-    def __init__(self, scenario: str, step, context=None):
-        self.scenario_name = scenario
-        self.current_step = step
-        self.context = context or {}
-
-
 class ChatBot:
     """
     Echo bot for vk.com
@@ -63,7 +58,6 @@ class ChatBot:
         self.vk = vk_api.VkApi(token=token)
         self.api = self.vk.get_api()
         self.long_poller = bot_longpoll.VkBotLongPoll(self.vk, self.group_id, wait=1)
-        self.users_state = {} # key - user_id -> user_stage
 
     def run(self):
         """Runs echobot"""
@@ -74,6 +68,7 @@ class ChatBot:
             except Exception:
                 logger.exception("Возникла ошибка при обработке события %s", event)
 
+    @db_session
     def event_handler(self, event: bot_longpoll.VkBotEvent):
         if event.type != bot_longpoll.VkBotEventType.MESSAGE_NEW:
             logger.info("Мы пока не умеем обрабатывать событие такого типа: %s", event.type)
@@ -81,8 +76,9 @@ class ChatBot:
         """Processing vk bot event"""
         text = event.object.text
         user_id = event.object.peer_id
-        if user_id in self.users_state:
-            response = self.continue_scenario(user_id=user_id, text=text)
+        user_state = UserState.get(user_id=user_id)
+        if user_state is not None:
+            response = self.continue_scenario(text=text, state=user_state)
         else:
             for intent in settings.INTENTS:
                 if any(token in text.lower() for token in intent["tokens"]):
@@ -101,8 +97,8 @@ class ChatBot:
             user_id=user_id
         )
 
-    def continue_scenario(self, user_id, text):
-        state = self.users_state[user_id]
+    @staticmethod
+    def continue_scenario(text, state):
         steps = settings.SCENARIOS[state.scenario_name]["steps"]
         step = steps[state.current_step]
         handler = getattr(handlers, step["handler"])
@@ -114,19 +110,22 @@ class ChatBot:
                 state.current_step = step["next_step"]
             else:
                 name = state.context["name"]
-                logger.info(f"Scenario {state.scenario_name} for user {name} id {user_id} finished")
-                self.users_state.pop(user_id)
-
+                Registration(
+                    user_name=state.context["name"], user_email=state.context["email"]
+                )
+                logger.info(f"Scenario {state.scenario_name} for user {name} id {state.user_id} finished")
+                state.delete()
         else:
             response = step["failure_text"]
         response = response.format(**state.context)
         return response
 
-    def start_scenario(self, scenario_name, user_id):
+    @staticmethod
+    def start_scenario(scenario_name, user_id):
         scenario = settings.SCENARIOS[scenario_name]
         start = scenario["first_step"]
         step = scenario["steps"][start]
-        self.users_state[user_id] = UserState(scenario_name, start)
+        UserState(user_id=user_id, scenario_name=scenario_name, current_step=start, context = {})
         logger.debug(f"Пользователь {user_id} начал сценарий {scenario_name}")
         return step["text"]
 

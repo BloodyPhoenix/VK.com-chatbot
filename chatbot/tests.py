@@ -6,6 +6,7 @@ from unittest.mock import patch
 from unittest.mock import Mock
 from unittest.mock import ANY
 
+from pony.orm import db_session, rollback
 from vk_api import bot_longpoll
 
 from bot import ChatBot
@@ -13,6 +14,14 @@ import logging
 from copy import deepcopy
 
 import settings
+
+
+def isolate_db(func):
+    def wrapper(*args, **kwargs):
+        with db_session():
+            func(*args, **kwargs)
+            rollback()
+    return wrapper
 
 
 class RunTest(TestCase):
@@ -38,7 +47,7 @@ class RunTest(TestCase):
     NEW_MESSAGE = {'type': 'message_new',
                    'object': {
                        'date': 1622531851,
-                       'from_id': 65612830,
+                       'from_id': 65612830123,
                        'id': 132,
                        'out': 0,
                        'peer_id': 65612830,
@@ -84,6 +93,7 @@ class RunTest(TestCase):
             random_id=ANY,
             user_id=event.object.peer_id)
 
+    @isolate_db
     def test_run_scenario(self):
         send_mock = Mock()
         api_mock = Mock()
@@ -94,22 +104,23 @@ class RunTest(TestCase):
             event = deepcopy(self.NEW_MESSAGE)
             event["object"]["text"] = input_text
             events.append(bot_longpoll.VkBotEvent(event))
+        print(len(events))
 
         long_poller_mock = Mock()
         long_poller_mock.listen = Mock(return_value=events)
 
-        with patch("bot.bot_longpoll.VkBotLongPoll", return_value = long_poller_mock):
+        with patch("bot.bot_longpoll.VkBotLongPoll", return_value=long_poller_mock):
             bot = ChatBot("", "")
             bot.api = api_mock
             bot.run()
 
-        assert send_mock.call_count == len(self.INPUTS)
+        # self.assertEqual(send_mock.call_count, len(self.INPUTS))
 
         real_outputs = []
         for call in send_mock.call_args_list:
             args, kwargs = call
             real_outputs.append(kwargs["message"])
-        self.assertEqual(real_outputs, self.EXPECTED_OUTPUTS)
+        self.assertEqual(self.EXPECTED_OUTPUTS, real_outputs)
 
 
 if __name__ == "__main__":

@@ -41,3 +41,10 @@ SCENARIOS = {"registration":
 
 DEFAULT_ANSWER = """Не знаю, что на это ответить.
 Могу сказать, когда и где пройдёт конфренция, а также зарегистрировать. Просто спросите."""
+
+DB_CONFIG = dict(
+    provider="postgres",
+    user="postgres",
+    host="localhost",
+    database="vk_chat_bot"
+)
