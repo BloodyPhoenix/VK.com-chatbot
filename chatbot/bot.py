@@ -86,13 +86,17 @@ class ChatBot:
                 if any(token in text.lower() for token in intent["tokens"]):
                     logger.debug("Us gets intent")
                     if intent["answer"]:
+                        # TODO тут вызываем метод отправки
                         response = intent["answer"]
                     else:
+                        # TODO желательно что self.start_scenario ничего не возвращало
                         response = self.start_scenario(intent["scenario"], user_id)
                     break
             else:
+                # TODO аналогично и тут вызываем метод отправки
                 response = settings.DEFAULT_ANSWER
         logger.debug("Отправляем сообщение \"%s\"", response)
+        # TODO из этого делаем отдельный метод отправки сообщения
         self.api.messages.send(
             message=response,
             random_id=randint(0, 2 ** 20),
@@ -124,6 +128,7 @@ class ChatBot:
         return response
 
     @staticmethod
+    # TODO пусть получает 3 параметра + текст
     def start_scenario(scenario_name, user_id):
         scenario = settings.SCENARIOS[scenario_name]
         start = scenario["first_step"]
