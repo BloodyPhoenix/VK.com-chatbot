@@ -75,11 +75,11 @@ class RunTest(TestCase):
         with patch("bot.vk_api.VkApi"):
             with patch("bot.bot_longpoll.VkBotLongPoll", return_value=long_poller_mock):
                 bot = ChatBot("", "")
-                bot.event_handler = Mock()
+                bot._event_handler = Mock()
                 bot.run()
-                bot.event_handler.assert_called()
-                bot.event_handler.assert_any_call(event)
-                self.assertEqual(bot.event_handler.call_count, count)
+                bot._event_handler.assert_called()
+                bot._event_handler.assert_any_call(event)
+                self.assertEqual(bot._event_handler.call_count, count)
 
     def test_event_handler_new_message(self):
         event = bot_longpoll.VkBotEvent(raw=self.NEW_MESSAGE)
@@ -90,7 +90,7 @@ class RunTest(TestCase):
                 bot = ChatBot("", "")
                 bot.api = Mock()
                 bot.api.messages.send = send_mock
-                bot.event_handler(event)
+                bot._event_handler(event)
         send_mock.assert_called_once_with(
             message=response,
             random_id=ANY,
