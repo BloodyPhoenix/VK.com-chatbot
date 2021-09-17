@@ -3,8 +3,6 @@
 from random import randint
 import logging
 import os
-
-import pony.orm
 import vk_api
 from vk_api import bot_longpoll
 from pony.orm import db_session
@@ -60,51 +58,49 @@ class ChatBot:
         self.vk = vk_api.VkApi(token=token)
         self.api = self.vk.get_api()
         self.long_poller = bot_longpoll.VkBotLongPoll(self.vk, self.group_id, wait=1)
+        self.user_id = None
 
     def run(self):
         """Runs echobot"""
         for event in self.long_poller.listen():
             logger.debug("Получено событие класса %s", event.type)
             try:
-                self.event_handler(event)
+                self._event_handler(event)
             except Exception:
                 logger.exception("Возникла ошибка при обработке события %s", event)
 
     @db_session
-    def event_handler(self, event: bot_longpoll.VkBotEvent):
+    def _event_handler(self, event: bot_longpoll.VkBotEvent):
         if event.type != bot_longpoll.VkBotEventType.MESSAGE_NEW:
             logger.info("Мы пока не умеем обрабатывать событие такого типа: %s", event.type)
             return
         """Processing vk bot event"""
         text = event.object.text
-        user_id = event.object.peer_id
-        user_state = UserState.get(user_id=user_id)
+        self.user_id = event.object.peer_id
+        user_state = UserState.get(user_id=self.user_id)
         if user_state is not None:
-            response = self.continue_scenario(user_id=user_id, text=text, user_state=user_state)
+            self._continue_scenario(text=text, user_state=user_state)
         else:
             for intent in settings.INTENTS:
                 if any(token in text.lower() for token in intent["tokens"]):
                     logger.debug("Us gets intent")
                     if intent["answer"]:
-                        # TODO тут вызываем метод отправки
-                        response = intent["answer"]
+                        self._send_message(intent["answer"])
                     else:
-                        # TODO желательно что self.start_scenario ничего не возвращало
-                        response = self.start_scenario(intent["scenario"], user_id)
+                        self._start_scenario(intent["scenario"])
                     break
             else:
-                # TODO аналогично и тут вызываем метод отправки
-                response = settings.DEFAULT_ANSWER
-        logger.debug("Отправляем сообщение \"%s\"", response)
-        # TODO из этого делаем отдельный метод отправки сообщения
+                self._send_message(settings.DEFAULT_ANSWER)
+
+    def _send_message(self, response):
         self.api.messages.send(
             message=response,
             random_id=randint(0, 2 ** 20),
-            user_id=user_id
+            user_id=self.user_id
         )
+        logger.debug("Отправляем сообщение \"%s\"", response)
 
-    @staticmethod
-    def continue_scenario(user_id, text, user_state):
+    def _continue_scenario(self, text, user_state):
         state = user_state
         steps = settings.SCENARIOS[state.scenario_name]["steps"]
         step = steps[state.current_step]
@@ -117,7 +113,7 @@ class ChatBot:
                 state.current_step = step["next_step"]
             else:
                 name = state.context["name"]
-                logger.info(f"Scenario {state.scenario_name} for user {name} id {user_id} finished")
+                logger.info(f"Scenario {state.scenario_name} for user {name} id {self.user_id} finished")
                 Registration(
                     user_name=state.context["name"], user_email=state.context["email"]
                 )
@@ -125,17 +121,15 @@ class ChatBot:
         else:
             response = step["failure_text"]
         response = response.format(**state.context)
-        return response
+        self._send_message(response)
 
-    @staticmethod
-    # TODO пусть получает 3 параметра + текст
-    def start_scenario(scenario_name, user_id):
+    def _start_scenario(self, scenario_name):
         scenario = settings.SCENARIOS[scenario_name]
         start = scenario["first_step"]
         step = scenario["steps"][start]
-        UserState(user_id=user_id, scenario_name=scenario_name, current_step=start, context={})
-        logger.debug(f"Пользователь {user_id} начал сценарий {scenario_name}")
-        return step["text"]
+        UserState(user_id=self.user_id, scenario_name=scenario_name, current_step=start, context={})
+        logger.debug(f"Пользователь {self.user_id} начал сценарий {scenario_name}")
+        self._send_message(step["text"])
 
 
 logger = logging.getLogger("bot")
