@@ -18,7 +18,7 @@ import settings
 
 def isolate_db(func):
     def wrapper(*args, **kwargs):
-        with db_session():
+        with db_session:
             func(*args, **kwargs)
             rollback()
     return wrapper
@@ -32,7 +32,8 @@ class RunTest(TestCase):
               "Зарегистрируй меня",
               "Вениамин",
               "мой адрес email@email",
-              "email@email.ru"]
+              "email@email.ru",
+]
 
     EXPECTED_OUTPUTS = [
         settings.DEFAULT_ANSWER,
@@ -104,7 +105,6 @@ class RunTest(TestCase):
             event = deepcopy(self.NEW_MESSAGE)
             event["object"]["text"] = input_text
             events.append(bot_longpoll.VkBotEvent(event))
-        print(len(events))
 
         long_poller_mock = Mock()
         long_poller_mock.listen = Mock(return_value=events)
@@ -114,7 +114,7 @@ class RunTest(TestCase):
             bot.api = api_mock
             bot.run()
 
-        # self.assertEqual(send_mock.call_count, len(self.INPUTS))
+        self.assertEqual(len(self.INPUTS), send_mock.call_count)
 
         real_outputs = []
         for call in send_mock.call_args_list:

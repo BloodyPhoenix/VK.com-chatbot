@@ -3,11 +3,13 @@
 from random import randint
 import logging
 import os
+
+import pony.orm
 import vk_api
 from vk_api import bot_longpoll
 from pony.orm import db_session
-import handlers
 from models import UserState, Registration
+import handlers
 
 try:
     import settings
@@ -78,7 +80,7 @@ class ChatBot:
         user_id = event.object.peer_id
         user_state = UserState.get(user_id=user_id)
         if user_state is not None:
-            response = self.continue_scenario(text=text, state=user_state)
+            response = self.continue_scenario(user_id=user_id, text=text, user_state=user_state)
         else:
             for intent in settings.INTENTS:
                 if any(token in text.lower() for token in intent["tokens"]):
@@ -98,7 +100,8 @@ class ChatBot:
         )
 
     @staticmethod
-    def continue_scenario(text, state):
+    def continue_scenario(user_id, text, user_state):
+        state = user_state
         steps = settings.SCENARIOS[state.scenario_name]["steps"]
         step = steps[state.current_step]
         handler = getattr(handlers, step["handler"])
@@ -110,10 +113,10 @@ class ChatBot:
                 state.current_step = step["next_step"]
             else:
                 name = state.context["name"]
+                logger.info(f"Scenario {state.scenario_name} for user {name} id {user_id} finished")
                 Registration(
                     user_name=state.context["name"], user_email=state.context["email"]
                 )
-                logger.info(f"Scenario {state.scenario_name} for user {name} id {state.user_id} finished")
                 state.delete()
         else:
             response = step["failure_text"]
@@ -125,7 +128,7 @@ class ChatBot:
         scenario = settings.SCENARIOS[scenario_name]
         start = scenario["first_step"]
         step = scenario["steps"][start]
-        UserState(user_id=user_id, scenario_name=scenario_name, current_step=start, context = {})
+        UserState(user_id=user_id, scenario_name=scenario_name, current_step=start, context={})
         logger.debug(f"Пользователь {user_id} начал сценарий {scenario_name}")
         return step["text"]
 
