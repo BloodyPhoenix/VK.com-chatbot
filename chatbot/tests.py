@@ -25,7 +25,10 @@ def isolate_db(func):
 
 
 class RunTest(TestCase):
-
+    # TODO первый ассерт упал потому что у вас должна быть дописана структура
+    # TODO первый вопрос должен быть любым
+    # TODO в INTENTS в настройках нужно прописать то же что делать для привет пусть тоже привествует
+    # TODO тогда у вас тут будет 8
     INPUTS = ["Привет",
               "А когда?",
               "Где будет конференция?",
@@ -34,7 +37,7 @@ class RunTest(TestCase):
               "мой адрес email@email",
               "email@email.ru",
 ]
-
+    # TODO и тут будет 8 первый тест пройдет
     EXPECTED_OUTPUTS = [
         settings.DEFAULT_ANSWER,
         settings.INTENTS[0]["answer"],
@@ -106,6 +109,7 @@ class RunTest(TestCase):
         for input_text in self.INPUTS:
             event = deepcopy(self.NEW_MESSAGE)
             event["object"]["text"] = input_text
+            # TODO попробуйте использовать VkBotMessageEvent(event) это дочерний класс
             events.append(bot_longpoll.VkBotEvent(event))
 
         long_poller_mock = Mock()
@@ -122,6 +126,8 @@ class RunTest(TestCase):
         for call in send_mock.call_args_list:
             args, kwargs = call
             real_outputs.append(kwargs["message"])
+        # TODO киньте по отдельности что тут self.EXPECTED_OUTPUTS и в real_outputs
+        # TODO можно закомитеть тут в коментариях
         self.assertEqual(self.EXPECTED_OUTPUTS, real_outputs)
 
 
