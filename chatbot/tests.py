@@ -14,29 +14,33 @@ import settings
 from bot import ChatBot
 from generate_ticket import generate_ticket
 
+
 def isolate_db(func):
     def wrapper(*args, **kwargs):
         with db_session:
             func(*args, **kwargs)
             rollback()
+
     return wrapper
 
 
 class RunTest(TestCase):
     # TODO Так сейчас равное число, 7 и 7, какая разница, 7 будет или 8?
     INPUTS = ["Привет",
+              "Э-э",
               "А когда?",
               "Где будет конференция?",
               "Зарегистрируй меня",
               "Вениамин",
               "мой адрес email@email",
               "email@email.ru",
-]
+              ]
 
     EXPECTED_OUTPUTS = [
-        settings.DEFAULT_ANSWER,
         settings.INTENTS[0]["answer"],
+        settings.DEFAULT_ANSWER,
         settings.INTENTS[1]["answer"],
+        settings.INTENTS[2]["answer"],
         settings.SCENARIOS["registration"]["steps"]["step1"]["text"],
         settings.SCENARIOS["registration"]["steps"]["step2"]["text"].format(name="Вениамин"),
         settings.SCENARIOS["registration"]["steps"]["step2"]["failure_text"],
@@ -86,6 +90,7 @@ class RunTest(TestCase):
                 bot = ChatBot("", "")
                 bot.api = Mock()
                 bot.api.messages.send = send_mock
+                bot._send_image = Mock()
                 bot._event_handler(event)
         send_mock.assert_called_once_with(
             message=response,

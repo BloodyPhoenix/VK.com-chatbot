@@ -3,6 +3,11 @@ TOKEN = ""
 GROUP_ID = ""
 
 INTENTS = [
+    {"name": "Приветствие",
+     "tokens": ("привет", "здравствуй", "ку-ку"),
+     "scenario": None,
+     "answer": "Здравствуйте. Я могу рассказать вам, где и когда проводится конференция Skillbox Conf "
+               "и зарегистрировать на неё. Просто спросите"},
     {"name": "Дата проведения",
      "tokens": ("когда", "сколько", "число", "дата", "дату"),
      "scenario": None,
@@ -35,7 +40,7 @@ SCENARIOS = {"registration":
                                "next_step": "step3"
                                },
                      "step3": {
-                         "text": "Спасибо за регистрацию, {name}! Мы отправили на {email} билет, распечатайте его.",
+                         "text": "Спасибо за регистрацию, {name}! Вот ваш билет, пожалуйста, распечатайте его.",
                          "failure_text": None,
                          "image": "generate_ticket_handler",
                          "failure_image": None,
