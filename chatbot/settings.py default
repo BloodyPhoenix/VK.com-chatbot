@@ -48,3 +48,11 @@ DB_CONFIG = dict(
     host="localhost",
     database="vk_chat_bot"
 )
+
+TICKET_CONFIG = {"template_path": "files/Ticket_template.png",
+                 "font_path": "files/Roboto/Roboto-Regular.ttf",
+                 "font_size": 24,
+                 "font_colour": (0, 0, 0, 255),
+                 "avatar_size": 100,
+                 "name_space": (250, 295),
+                 "email_space": (250, 350)}

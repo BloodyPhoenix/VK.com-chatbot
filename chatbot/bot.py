@@ -117,7 +117,6 @@ class ChatBot:
                     user_name=state.context["name"], user_email=state.context["email"]
                 )
                 response = response.format(**state.context)
-                # TODO Вот тут если вынести отправку сообщения вперёд, всё сразу работает
                 self._send_message(response, user_id)
                 state.delete()
                 return

@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 
-
+import logging
 from unittest import TestCase
 from unittest.mock import patch
 from unittest.mock import Mock
 from unittest.mock import ANY
+from copy import deepcopy
 
 from pony.orm import db_session, rollback
 from vk_api import bot_longpoll
 
-from bot import ChatBot
-import logging
-from copy import deepcopy
-
 import settings
-
+from bot import ChatBot
+from generate_ticket import generate_ticket
 
 def isolate_db(func):
     def wrapper(*args, **kwargs):
@@ -114,7 +112,7 @@ class RunTest(TestCase):
             bot.api = api_mock
             bot.run()
 
-        # self.assertEqual(len(self.INPUTS), send_mock.call_count)
+        self.assertEqual(len(self.INPUTS), send_mock.call_count)
 
         real_outputs = []
         for call in send_mock.call_args_list:
@@ -122,6 +120,19 @@ class RunTest(TestCase):
             real_outputs.append(kwargs["message"])
 
         self.assertEqual(self.EXPECTED_OUTPUTS, real_outputs)
+
+    def test_ticket_generation(self):
+        avatar_mock = Mock()
+        with open("files/test_avatar.png", "rb") as image:
+            avatar_mock.content = image.read()
+
+        with patch("requests.get", return_value=avatar_mock):
+            ticket = generate_ticket("Vasya", "email@email.com")
+
+        with open("files/ticket_example.png", "rb") as example:
+            expected = example.read()
+
+        assert ticket.read() == expected
 
 
 if __name__ == "__main__":
