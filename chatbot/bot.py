@@ -3,6 +3,8 @@
 from random import randint
 import logging
 import os
+
+import requests
 import vk_api
 from vk_api import bot_longpoll
 from pony.orm import db_session
@@ -100,7 +102,17 @@ class ChatBot:
         logger.debug("Отправляем сообщение \"%s\"", response)
 
     def _send_image(self, image, user_id):
-        pass
+        server = self.api.photos.getMessagesUploadServer()["upload_url"]
+        upload_data = requests.post(url=server, files={"photo": ("image.png", image, "image/png")}).json()
+        image_data = self.api.photos.saveMessagesPhoto(**upload_data)
+        owner_id = image_data[0]["owner_id"]
+        media_id = image_data[0]["id"]
+        attachment = f"photo{owner_id}_{media_id}"
+        self.api.messages.send(
+            attachment=attachment,
+            random_id=randint(0, 2 ** 20),
+            user_id=user_id
+        )
 
     def _send_step(self, step: dict, user_id: int, user_state=None, failure=False):
         if failure:
@@ -114,10 +126,10 @@ class ChatBot:
             if user_state:
                 text = text.format(**user_state.context)
             self._send_message(text, user_id)
-
         if image_handler:
-            image_handler = getattr(handlers, image_handler)
-            image = image_handler(user_state.context)
+            handler = getattr(handlers, image_handler)
+            image = handler(user_state.context)
+            self._send_image(image, user_id)
 
     def _continue_scenario(self, text, user_state, user_id):
         state = user_state
