@@ -2,6 +2,7 @@
 
 
 import re
+from generate_ticket import generate_ticket
 
 name_pattern = re.compile(r"^[\w\-\s]{3,40}$")
 email_pattern = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
@@ -23,3 +24,7 @@ def handle_email(text: str, context: dict):
         return True
     else:
         return False
+
+
+def generate_ticket_handler(context: dict):
+    return generate_ticket(context["name"], context["email"])

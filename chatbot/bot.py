@@ -99,6 +99,26 @@ class ChatBot:
         )
         logger.debug("Отправляем сообщение \"%s\"", response)
 
+    def _send_image(self, image, user_id):
+        pass
+
+    def _send_step(self, step: dict, user_id: int, user_state=None, failure=False):
+        if failure:
+            text = step["failure_text"]
+            image_handler = step["failure_image"]
+        else:
+            text = step["text"]
+            image_handler = step["image"]
+
+        if text:
+            if user_state:
+                text = text.format(**user_state.context)
+            self._send_message(text, user_id)
+
+        if image_handler:
+            image_handler = getattr(handlers, image_handler)
+            image = image_handler(user_state.context)
+
     def _continue_scenario(self, text, user_state, user_id):
         state = user_state
         steps = settings.SCENARIOS[state.scenario_name]["steps"]
@@ -106,9 +126,8 @@ class ChatBot:
         handler = getattr(handlers, step["handler"])
         if handler(text, context=state.context):
             next_step = steps[step["next_step"]]
-            response = next_step["text"]
-            if next_step["next_step"]:
-                logger.info(state.context)
+            self._send_step(next_step, user_id, state)
+            if step["next_step"]:
                 state.current_step = step["next_step"]
             else:
                 name = state.context["name"]
@@ -116,14 +135,10 @@ class ChatBot:
                 Registration(
                     user_name=state.context["name"], user_email=state.context["email"]
                 )
-                response = response.format(**state.context)
-                self._send_message(response, user_id)
                 state.delete()
                 return
         else:
-            response = step["failure_text"]
-        response = response.format(**state.context)
-        self._send_message(response, user_id)
+            self._send_step(step, user_id, state, failure=True)
 
     def _start_scenario(self, scenario_name, user_id):
         scenario = settings.SCENARIOS[scenario_name]
@@ -131,7 +146,7 @@ class ChatBot:
         step = scenario["steps"][start]
         UserState(user_id=user_id, scenario_name=scenario_name, current_step=start, context={})
         logger.debug(f"Пользователь {user_id} начал сценарий {scenario_name}")
-        self._send_message(step["text"], user_id)
+        self._send_step(step, user_id)
 
 
 logger = logging.getLogger("bot")
