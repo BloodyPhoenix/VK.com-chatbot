@@ -126,7 +126,8 @@ class RunTest(TestCase):
 
         self.assertEqual(self.EXPECTED_OUTPUTS, real_outputs)
 
-    def test_ticket_generation(self):
+    @staticmethod
+    def test_ticket_generation():
         avatar_mock = Mock()
         with open("files/test_avatar.png", "rb") as image:
             avatar_mock.content = image.read()
